@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEXBRASIL — Área do Colaborador</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--bg2:#0f1422;--bg3:#141929;--border:rgba(65,105,200,.18);--border2:rgba(65,105,200,.4);--royal:#2a4fab;--royal-lt:#3a62cc;--accent:#c8d8ff;--text:#d4dcf0;--text-dim:#6878a0;--text-faint:#2e3a55;--green:#3a9a5c;--gold:#c8a020;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;background:var(--bg);font-family:'Lato',sans-serif;color:var(--text);display:flex;align-items:flex-start;justify-content:center;padding:30px 20px;}
+.page{max-width:520px;width:100%;}
+#back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);margin-bottom:20px;text-decoration:none;}
+#back:hover{color:var(--text-dim);}
+.logo-area{text-align:center;margin-bottom:24px;}
+.logo-nome{font-family:'Playfair Display',serif;font-size:22px;color:var(--accent);letter-spacing:2px;}
+.logo-sub{font-size:10px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
+/* ABAS */
+.abas-wrap{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;gap:4px;}
+.aba-btn{flex:1;background:transparent;border:none;color:var(--text-faint);padding:8px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'Lato',sans-serif;font-weight:700;transition:all .2s;}
+.aba-btn.on{background:var(--royal);color:#fff;}
+/* FORMULÁRIOS */
+.secao{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:none;}
+.secao.ativa{display:block;}
+h2{font-family:'Playfair Display',serif;font-size:17px;color:var(--accent);margin-bottom:14px;}
+label{display:block;font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px;}
+input,textarea,select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Lato',sans-serif;outline:none;margin-bottom:14px;transition:border-color .2s;resize:vertical;}
+input:focus,textarea:focus{border-color:var(--border2);}
+.row{display:flex;gap:10px;}
+.row>div{flex:1;}
+.btn-p{width:100%;background:var(--royal);border:none;color:#fff;padding:11px;border-radius:8px;cursor:pointer;font-size:14px;font-family:'Playfair Display',serif;font-weight:700;transition:background .2s;margin-top:4px;}
+.btn-p:hover{background:var(--royal-lt);}
+.btn-p:disabled{opacity:.4;cursor:not-allowed;}
+.msg{margin-top:12px;padding:10px 14px;border-radius:7px;font-size:12px;line-height:1.6;border:1px solid;display:none;}
+.msg.ok{background:rgba(58,154,92,.08);border-color:rgba(58,154,92,.3);color:#6abf8a;}
+.msg.err{background:rgba(170,74,74,.08);border-color:rgba(170,74,74,.3);color:#cf8a8a;}
+.msg.load{background:rgba(42,79,171,.08);border-color:var(--border);color:var(--text-dim);}
+.info-box{background:rgba(42,79,171,.06);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-faint);line-height:1.8;margin-bottom:16px;}
+/* ÁREA LOGADA */
+#area-logada{display:none;}
+.bem-vindo{background:linear-gradient(135deg,rgba(42,79,171,.15),rgba(42,79,171,.05));border:1px solid var(--border2);border-radius:10px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.colab-avatar-g{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--royal),var(--royal-lt));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.pubs-lista{margin-top:16px;}
+.pub-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;}
+.pub-info{flex:1;}
+.pub-titulo{font-size:13px;color:var(--accent);margin-bottom:3px;}
+.pub-meta{font-size:10px;color:var(--text-faint);}
+.btn-rem{background:rgba(170,74,74,.15);border:1px solid rgba(170,74,74,.3);color:#cf8a8a;padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;}
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="/" id="back">← Voltar ao LEXBRASIL</a>
+  <div class="logo-area">
+    <div class="logo-nome">LEXBRASIL</div>
+    <div class="logo-sub">Área do Colaborador</div>
+  </div>
+
+  <!-- ABAS -->
+  <div class="abas-wrap" id="abas-login">
+    <button class="aba-btn on" onclick="setAba('login')">🔑 Entrar</button>
+    <button class="aba-btn" onclick="setAba('cadastro')">📝 Solicitar Acesso</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="secao ativa" id="sec-login">
+    <h2>Entrar na Área do Colaborador</h2>
+    <label>Usuário</label>
+    <input type="text" id="l-user" placeholder="seu usuário" style="font-family:'JetBrains Mono',monospace">
+    <label>Senha</label>
+    <input type="password" id="l-senha" placeholder="sua senha">
+    <button class="btn-p" onclick="fazerLogin()">Entrar</button>
+    <div class="msg" id="msg-login"></div>
+  </div>
+
+  <!-- CADASTRO -->
+  <div class="secao" id="sec-cadastro">
+    <h2>Solicitar Acesso como Colaborador</h2>
+    <div class="info-box">Após enviar, seu cadastro será analisado pelo administrador. Você receberá a aprovação para começar a publicar.</div>
+    <div class="row">
+      <div><label>Nome completo</label><input type="text" id="c-nome" placeholder="Seu nome"></div>
+      <div><label>Email</label><input type="email" id="c-email" placeholder="seu@email.com"></div>
+    </div>
+    <div class="row">
+      <div><label>Cargo / Título</label><input type="text" id="c-cargo" placeholder="Prof. Dr. / Advogado / Aluno"></div>
+      <div><label>Instituição</label><input type="text" id="c-inst" placeholder="Faculdade, escritório..."></div>
+    </div>
+    <label>URL da sua foto (opcional — LinkedIn, site pessoal...)</label>
+    <input type="url" id="c-foto" placeholder="https://...">
+    <div class="row">
+      <div><label>Usuário desejado</label><input type="text" id="c-user" placeholder="semnome.sobrenome" style="font-family:'JetBrains Mono',monospace"></div>
+      <div><label>Senha</label><input type="password" id="c-senha" placeholder="crie uma senha segura"></div>
+    </div>
+    <button class="btn-p" id="btn-cad" onclick="solicitarCadastro()">Enviar Solicitação</button>
+    <div class="msg" id="msg-cad"></div>
+  </div>
+
+  <!-- ÁREA LOGADA -->
+  <div id="area-logada">
+    <div class="bem-vindo">
+      <div class="colab-avatar-g" id="avatar-ini">?</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--accent)" id="bv-nome">Bem-vindo!</div>
+        <div style="font-size:11px;color:var(--text-faint)" id="bv-cargo"></div>
+        <div style="font-size:10px;color:var(--royal-lt);margin-top:3px;cursor:pointer" onclick="sair()">Sair da conta →</div>
+      </div>
+    </div>
+
+    <!-- NOVA PUBLICAÇÃO -->
+    <div class="secao ativa" style="margin-bottom:14px">
+      <h2>✍️ Nova Publicação</h2>
+      <label>Tipo de conteúdo</label>
+      <select id="p-tipo">
+        <option value="Artigo">Artigo Jurídico</option>
+        <option value="Dica">Dica Prática</option>
+        <option value="Informativo">Informativo</option>
+        <option value="Jurisprudência">Jurisprudência Comentada</option>
+        <option value="Notícia">Notícia Jurídica</option>
+      </select>
+      <label>Título</label>
+      <input type="text" id="p-titulo" placeholder="Título da sua publicação">
+      <label>Conteúdo</label>
+      <textarea id="p-texto" rows="5" placeholder="Escreva o conteúdo da sua publicação..."></textarea>
+      <label>Duração (dias — deixe em branco para padrão de 3 dias)</label>
+      <input type="number" id="p-dias" placeholder="3" min="1" max="365">
+      <button class="btn-p" id="btn-pub" onclick="publicar()">📤 Publicar</button>
+      <div class="msg" id="msg-pub"></div>
+    </div>
+
+    <!-- MINHAS PUBLICAÇÕES -->
+    <div class="secao ativa">
+      <h2>📋 Minhas Publicações</h2>
+      <div id="minhas-pubs"><div style="color:var(--text-faint);font-size:12px">Carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let usuarioLogado=null;
+
+function setAba(aba){
+  document.querySelectorAll(".aba-btn").forEach((b,i)=>b.classList.toggle("on",i===(aba==="login"?0:1)));
+  document.getElementById("sec-login").classList.toggle("ativa",aba==="login");
+  document.getElementById("sec-cadastro").classList.toggle("ativa",aba==="cadastro");
+}
+
+function mostrarMsg(id,tipo,txt){const el=document.getElementById(id);el.className="msg "+tipo;el.innerHTML=txt;el.style.display="block";}
+
+async function fazerLogin(){
+  const user=document.getElementById("l-user").value.trim();
+  const senha=document.getElementById("l-senha").value.trim();
+  if(!user||!senha){mostrarMsg("msg-login","err","Preencha usuário e senha.");return;}
+  mostrarMsg("msg-login","load","Verificando...");
+  try{
+    const r=await fetch("/api/colab-publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"login",usuario:user,senha})});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||"Usuário ou senha inválidos.");
+    usuarioLogado={...d.colab,usuario:user,senha};
+    sessionStorage.setItem("colab_user",user);sessionStorage.setItem("colab_senha",senha);
+    mostrarAreaLogada();
+  }catch(e){mostrarMsg("msg-login","err","❌ "+e.message);}
+}
+
+function mostrarAreaLogada(){
+  const c=usuarioLogado;
+  document.getElementById("abas-login").style.display="none";
+  document.getElementById("sec-login").style.display="none";
+  document.getElementById("sec-cadastro").style.display="none";
+  document.getElementById("area-logada").style.display="block";
+  document.getElementById("bv-nome").textContent="Olá, "+c.nome+"!";
+  document.getElementById("bv-cargo").textContent=(c.cargo||"")+(c.instituicao?" · "+c.instituicao:"");
+  document.getElementById("avatar-ini").textContent=c.nome?c.nome[0].toUpperCase():"?";
+  carregarMinhasPubs();
+}
+
+function sair(){
+  usuarioLogado=null;
+  sessionStorage.removeItem("colab_user");sessionStorage.removeItem("colab_senha");
+  location.reload();
+}
+
+async function solicitarCadastro(){
+  const nome=document.getElementById("c-nome").value.trim();
+  const email=document.getElementById("c-email").value.trim();
+  const user=document.getElementById("c-user").value.trim();
+  const senha=document.getElementById("c-senha").value.trim();
+  if(!nome||!email||!user||!senha){mostrarMsg("msg-cad","err","Preencha todos os campos obrigatórios.");return;}
+  const btn=document.getElementById("btn-cad");btn.disabled=true;btn.textContent="Enviando...";
+  mostrarMsg("msg-cad","load","Enviando solicitação...");
+  try{
+    const r=await fetch("/api/colab-cadastro",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nome,email,cargo:document.getElementById("c-cargo").value,instituicao:document.getElementById("c-inst").value,foto:document.getElementById("c-foto").value,usuario:user,senha})});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||"Erro ao enviar");
+    mostrarMsg("msg-cad","ok","✅ Solicitação enviada! O administrador analisará seu pedido em breve. Você será notificado por email quando for aprovado.");
+    btn.textContent="Solicitação enviada ✓";
+  }catch(e){mostrarMsg("msg-cad","err","❌ "+e.message);btn.disabled=false;btn.textContent="Enviar Solicitação";}
+}
+
+async function publicar(){
+  const titulo=document.getElementById("p-titulo").value.trim();
+  const texto=document.getElementById("p-texto").value.trim();
+  if(!titulo||!texto){mostrarMsg("msg-pub","err","Título e conteúdo são obrigatórios.");return;}
+  const btn=document.getElementById("btn-pub");btn.disabled=true;btn.textContent="Publicando...";
+  mostrarMsg("msg-pub","load","Publicando...");
+  try{
+    const r=await fetch("/api/colab-publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"publicar",usuario:usuarioLogado.usuario,senha:usuarioLogado.senha,titulo,tipo:document.getElementById("p-tipo").value,texto,dias:parseInt(document.getElementById("p-dias").value)||3})});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||"Erro ao publicar");
+    mostrarMsg("msg-pub","ok","✅ Publicado com sucesso! Já aparece na tela inicial do LEXBRASIL.");
+    document.getElementById("p-titulo").value="";document.getElementById("p-texto").value="";
+    carregarMinhasPubs();
+  }catch(e){mostrarMsg("msg-pub","err","❌ "+e.message);}
+  btn.disabled=false;btn.textContent="📤 Publicar";
+}
+
+async function carregarMinhasPubs(){
+  const el=document.getElementById("minhas-pubs");
+  try{
+    const r=await fetch(`/api/colab-publicar?acao=minhas&usuario=${usuarioLogado.usuario}&senha=${usuarioLogado.senha}`);
+    const d=await r.json();
+    const pubs=d.publicacoes||[];
+    if(!pubs.length){el.innerHTML='<div style="color:var(--text-faint);font-size:12px">Você ainda não fez nenhuma publicação.</div>';return;}
+    el.innerHTML=pubs.map(p=>{
+      const data=p.criado_em?new Date(p.criado_em).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"";
+      return`<div class="pub-item"><div class="pub-info"><div class="pub-titulo">${p.titulo}</div><div class="pub-meta">${p.tipo} · 📅 ${data}${p.fixada?" · 📌 Fixada":""}</div></div><button class="btn-rem" onclick="removerPub(${p.id})">Remover</button></div>`;
+    }).join("");
+  }catch(e){el.innerHTML='<div style="color:var(--text-faint);font-size:12px">Erro ao carregar publicações.</div>';}
+}
+
+async function removerPub(id){
+  if(!confirm("Remover esta publicação?"))return;
+  try{
+    const r=await fetch("/api/colab-publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"remover",usuario:usuarioLogado.usuario,senha:usuarioLogado.senha,id})});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error);
+    carregarMinhasPubs();
+  }catch(e){alert("Erro: "+e.message);}
+}
+
+// Auto-login se tiver sessão salva
+window.onload=async()=>{
+  const u=sessionStorage.getItem("colab_user"),s=sessionStorage.getItem("colab_senha");
+  if(u&&s){
+    document.getElementById("l-user").value=u;document.getElementById("l-senha").value=s;
+    await fazerLogin();
+  }
+};
+</script>
+</body>
+</html>

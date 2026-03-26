@@ -6,106 +6,316 @@
 <title>LEXBRASIL — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#07090f;--bg2:#0f1422;--bg3:#141929;--border:rgba(65,105,200,.18);--border2:rgba(65,105,200,.4);--royal:#2a4fab;--royal-lt:#3a62cc;--accent:#c8d8ff;--text:#d4dcf0;--text-dim:#6878a0;--text-faint:#2e3a55;--green:#3a9a5c;}
+:root{--bg:#07090f;--bg2:#0f1422;--bg3:#141929;--border:rgba(65,105,200,.18);--border2:rgba(65,105,200,.4);--royal:#2a4fab;--royal-lt:#3a62cc;--accent:#c8d8ff;--text:#d4dcf0;--text-dim:#6878a0;--text-faint:#2e3a55;--green:#3a9a5c;--gold:#c8a020;--red:#aa4a4a;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{min-height:100vh;background:var(--bg);font-family:'Lato',sans-serif;color:var(--text);display:flex;align-items:center;justify-content:center;padding:20px;}
-#box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:36px 40px;max-width:580px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.6);}
-#back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);margin-bottom:22px;text-decoration:none;transition:color .2s;}
+body{min-height:100vh;background:var(--bg);font-family:'Lato',sans-serif;color:var(--text);padding:20px;}
+a{color:var(--royal-lt);}
+.page{max-width:720px;margin:0 auto;}
+#back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-faint);margin-bottom:20px;text-decoration:none;transition:color .2s;}
 #back:hover{color:var(--text-dim);}
 h1{font-family:'Playfair Display',serif;font-size:22px;color:var(--accent);margin-bottom:4px;}
-.sub{font-size:12px;color:var(--text-faint);margin-bottom:26px;line-height:1.6;}
-label{display:block;font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px 13px;color:var(--text);font-size:13px;font-family:'JetBrains Mono',monospace;outline:none;margin-bottom:18px;transition:border-color .2s;}
-input:focus{border-color:var(--border2);}
+.sub{font-size:12px;color:var(--text-faint);margin-bottom:24px;line-height:1.6;}
+/* SEÇÕES */
+.secao{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin-bottom:16px;}
+.secao h2{font-family:'Playfair Display',serif;font-size:16px;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+label{display:block;font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px;}
+input,textarea,select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Lato',sans-serif;outline:none;margin-bottom:14px;transition:border-color .2s;resize:vertical;}
+input:focus,textarea:focus,select:focus{border-color:var(--border2);}
+input[type="password"]{font-family:'JetBrains Mono',monospace;}
 .row{display:flex;gap:12px;}
 .row>div{flex:1;}
-#btn{width:100%;background:var(--royal);border:none;color:#fff;padding:13px;border-radius:8px;cursor:pointer;font-size:15px;font-family:'Playfair Display',serif;font-weight:700;letter-spacing:.5px;transition:background .2s;margin-top:6px;}
-#btn:hover{background:var(--royal-lt);}
-#btn:disabled{opacity:.4;cursor:not-allowed;}
-#res{margin-top:20px;padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.7;display:none;border:1px solid;}
-#res.ok{background:rgba(58,154,92,.08);border-color:rgba(58,154,92,.3);color:#6abf8a;}
-#res.err{background:rgba(170,74,74,.08);border-color:rgba(170,74,74,.3);color:#cf8a8a;}
-#res.loading{background:rgba(42,79,171,.08);border-color:var(--border);color:var(--text-dim);}
-.info{background:rgba(42,79,171,.06);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text-faint);line-height:1.8;margin-bottom:22px;}
-.info strong{color:var(--text-dim);}
-.sep{border:none;border-top:1px solid var(--border);margin:22px 0;}
-code{display:block;background:rgba(0,0,0,.4);padding:10px 13px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#7aa0e8;margin:8px 0;white-space:pre;}
-a{color:var(--royal-lt);}
+.btn-p{background:var(--royal);border:none;color:#fff;padding:10px 20px;border-radius:7px;cursor:pointer;font-size:13px;font-family:'Lato',sans-serif;font-weight:700;transition:background .2s;}
+.btn-p:hover{background:var(--royal-lt);}
+.btn-p:disabled{opacity:.4;cursor:not-allowed;}
+.btn-s{background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:7px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Lato',sans-serif;transition:all .18s;}
+.btn-s:hover{border-color:var(--border2);color:var(--text-dim);}
+.btn-r{background:rgba(170,74,74,.15);border:1px solid rgba(170,74,74,.3);color:#cf8a8a;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;transition:all .18s;}
+.btn-r:hover{background:rgba(170,74,74,.3);}
+.msg{margin-top:10px;padding:10px 14px;border-radius:7px;font-size:12px;line-height:1.6;border:1px solid;display:none;}
+.msg.ok{background:rgba(58,154,92,.08);border-color:rgba(58,154,92,.3);color:#6abf8a;}
+.msg.err{background:rgba(170,74,74,.08);border-color:rgba(170,74,74,.3);color:#cf8a8a;}
+.msg.load{background:rgba(42,79,171,.08);border-color:var(--border);color:var(--text-dim);}
+/* LISTA COLABS */
+.colab-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}
+.colab-info{flex:1;}
+.colab-nome{font-size:12px;color:var(--accent);font-weight:700;}
+.colab-meta{font-size:10px;color:var(--text-faint);margin-top:2px;}
+.colab-titulo-pub{font-size:11px;color:var(--text-dim);margin-top:4px;}
+.tag-ativo{font-size:9px;background:rgba(58,154,92,.1);border:1px solid rgba(58,154,92,.25);color:#5ab87a;padding:1px 7px;border-radius:10px;}
+.tag-inativo{font-size:9px;background:rgba(170,74,74,.1);border:1px solid rgba(170,74,74,.25);color:#cf8a8a;padding:1px 7px;border-radius:10px;}
+.sep{border:none;border-top:1px solid var(--border);margin:16px 0;}
+code{display:block;background:rgba(0,0,0,.4);padding:10px 13px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#7aa0e8;margin:8px 0;white-space:pre;overflow-x:auto;}
+.info-box{background:rgba(42,79,171,.06);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-faint);line-height:1.8;margin-bottom:16px;}
+.info-box strong{color:var(--text-dim);}
 </style>
 </head>
 <body>
-<div id="box">
+<div class="page">
   <a href="/" id="back">← Voltar ao sistema</a>
-  <h1>⚙️ Painel do Administrador</h1>
-  <div class="sub">Acesso restrito. Ao buscar novidades, <strong>todos os visitantes</strong> verão as atualizações publicadas.</div>
+  <h1>⚙️ Painel do Administrador — LEXBRASIL</h1>
+  <div class="sub">Acesso restrito ao administrador. Todas as ações aqui afetam o site público.</div>
 
-  <div class="info">
-    <strong>Como funciona:</strong> informe sua senha e API key, clique em buscar. A IA pesquisa na web as últimas novidades do STF, STJ, TST e Planalto e salva no banco de dados. Visitantes veem automaticamente em <strong>🔔 Novidades</strong>.
-  </div>
-
-  <div class="row">
-    <div>
-      <label>Senha Admin</label>
-      <input type="password" id="senha" placeholder="sua senha secreta">
+  <!-- LOGIN -->
+  <div class="secao" id="login-secao">
+    <h2>🔐 Autenticação</h2>
+    <div class="row">
+      <div><label>Senha Admin</label><input type="password" id="senha" placeholder="sua senha"></div>
+      <div><label>API Key Anthropic</label><input type="password" id="apikey" placeholder="sk-ant-..."></div>
     </div>
-    <div>
-      <label>API Key Anthropic</label>
-      <input type="password" id="apikey" placeholder="sk-ant-api03-...">
+    <button class="btn-p" onclick="salvarAuth()">Entrar no Painel</button>
+    <div class="msg" id="msg-auth"></div>
+  </div>
+
+  <!-- PAINEL PRINCIPAL -->
+  <div id="painel-admin" style="display:none">
+
+    <!-- 1. NOVIDADES IA -->
+    <div class="secao">
+      <h2>🔔 Buscar Novidades com IA</h2>
+      <div class="info-box">A IA pesquisa automaticamente as últimas atualizações do STF, STJ, TST e Planalto e publica para todos os visitantes em <strong>🔔 Novidades</strong>.</div>
+      <button class="btn-p" id="btn-nov" onclick="buscarNovidades()">🔍 Buscar e Publicar Novidades</button>
+      <div class="msg" id="msg-nov"></div>
     </div>
-  </div>
 
-  <button id="btn" onclick="atualizar()">🔍 Buscar Novidades e Publicar</button>
-  <div id="res"></div>
+    <!-- 2. ADICIONAR NORMA MANUALMENTE -->
+    <div class="secao">
+      <h2>📜 Adicionar Norma Manualmente</h2>
+      <div class="info-box">Adicione uma lei, decreto, súmula ou resolução que não esteja no sistema. Será exibida na seção correspondente para todos os visitantes.</div>
+      <div class="row">
+        <div>
+          <label>Tipo</label>
+          <select id="norma-tipo">
+            <option value="norma">📜 Norma / Lei / Decreto</option>
+            <option value="sumula">⚖️ Súmula STF/STJ</option>
+            <option value="sumula_vinculante">🔒 Súmula Vinculante</option>
+            <option value="repercussao">🏛️ Tema de Repercussão Geral</option>
+            <option value="dh">🌍 Direitos Humanos / Tratado</option>
+          </select>
+        </div>
+        <div>
+          <label>Sigla (ex: LINDB, Lei 14.550)</label>
+          <input type="text" id="norma-sigla" placeholder="Ex: LINDB ou Lei 14.550">
+        </div>
+      </div>
+      <label>Nome completo</label>
+      <input type="text" id="norma-nome" placeholder="Ex: Lei de Introdução às Normas do Direito Brasileiro">
+      <label>Número da Lei / Decreto (opcional)</label>
+      <input type="text" id="norma-numero" placeholder="Ex: 4657">
+      <label>Link oficial (Planalto, STF, STJ…)</label>
+      <input type="url" id="norma-url" placeholder="https://www.planalto.gov.br/...">
+      <label>Enunciado ou Ementa (texto principal)</label>
+      <textarea id="norma-texto" rows="3" placeholder="O texto principal da norma, súmula ou tema..."></textarea>
+      <label>Análise e Contexto (explicação para os visitantes)</label>
+      <textarea id="norma-analise" rows="4" placeholder="Explique o que é, para que serve e qual a importância prática desta norma..."></textarea>
+      <label>Temas / Palavras-chave (separe por vírgula)</label>
+      <input type="text" id="norma-temas" placeholder="Ex: contratos, família, responsabilidade civil">
+      <div class="row">
+        <div><label>Tribunal (se aplicável)</label><input type="text" id="norma-tribunal" placeholder="STF, STJ, TST..."></div>
+        <div><label>Tese fixada (Rep. Geral)</label><input type="text" id="norma-tese" placeholder="Resultado do julgamento..."></div>
+      </div>
+      <button class="btn-p" id="btn-norma" onclick="adicionarNorma()">➕ Adicionar ao Sistema</button>
+      <div class="msg" id="msg-norma"></div>
+    </div>
 
-  <div class="sep"></div>
+    <!-- 3. COLABORADORES -->
+    <div class="secao">
+      <h2>👥 Gerenciar Colaboradores</h2>
+      <div class="info-box">Colaboradores autorizados podem publicar artigos, dicas e informativos diretamente na tela inicial do LEXBRASIL. Você pode remover qualquer publicação a qualquer momento.</div>
 
-  <div style="font-size:11px;color:var(--text-faint);line-height:1.9;">
-    <strong style="color:var(--text-dim);">SQL para criar tabelas no Supabase (rodar uma vez):</strong>
-    <code>CREATE TABLE novidades (
-  id SERIAL PRIMARY KEY,
-  tipo TEXT, fonte TEXT, titulo TEXT,
-  descricao TEXT, impacto TEXT,
-  data_aproximada TEXT,
-  criado_em TIMESTAMPTZ DEFAULT NOW()
-);
-CREATE TABLE meta (
-  chave TEXT PRIMARY KEY,
-  valor TEXT
-);</code>
-    <strong style="color:var(--text-dim);">Variáveis no Vercel:</strong><br>
-    SUPABASE_URL · SUPABASE_ANON_KEY · SUPABASE_SERVICE_KEY · ADMIN_SENHA<br><br>
-    API key Anthropic: <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>
-  </div>
+      <h3 style="font-size:13px;color:var(--text-dim);margin-bottom:10px">➕ Cadastrar Novo Colaborador</h3>
+      <div class="row">
+        <div><label>Nome do Colaborador</label><input type="text" id="colab-nome" placeholder="Prof. Dr. João Silva"></div>
+        <div><label>Cargo / Título</label><input type="text" id="colab-cargo" placeholder="Diretor / Professor / Advogado"></div>
+      </div>
+      <div class="row">
+        <div><label>Usuário (login)</label><input type="text" id="colab-user" placeholder="joaosilva" style="font-family:'JetBrains Mono',monospace"></div>
+        <div><label>Senha do Colaborador</label><input type="password" id="colab-senha" placeholder="senha que ele usará"></div>
+      </div>
+      <button class="btn-p" onclick="cadastrarColab()">Cadastrar Colaborador</button>
+      <div class="msg" id="msg-colab-cad"></div>
+
+      <div class="sep"></div>
+      <h3 style="font-size:13px;color:var(--text-dim);margin-bottom:10px">📋 Publicações Ativas</h3>
+      <div id="lista-colabs-admin"><div style="color:var(--text-faint);font-size:12px">Carregando publicações...</div></div>
+      <div class="msg" id="msg-colab-rem"></div>
+    </div>
+
+    <!-- 4. INFO TÉCNICA -->
+    <div class="secao">
+      <h2>ℹ️ Informações Técnicas</h2>
+      <div class="info-box">
+        <strong>SQL para criar tabelas (executar no Supabase uma única vez):</strong>
+      </div>
+      <code>CREATE TABLE novidades (id SERIAL PRIMARY KEY, tipo TEXT, fonte TEXT, titulo TEXT, descricao TEXT, impacto TEXT, data_aproximada TEXT, criado_em TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE meta (chave TEXT PRIMARY KEY, valor TEXT);
+CREATE TABLE normas_extras (id SERIAL PRIMARY KEY, tipo TEXT, nome TEXT, sigla TEXT, numero TEXT, url TEXT, texto TEXT, analise TEXT, temas TEXT, tribunal TEXT, tese TEXT, criado_em TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE colaboradores (id SERIAL PRIMARY KEY, nome TEXT, cargo TEXT, usuario TEXT UNIQUE, senha TEXT, ativo BOOLEAN DEFAULT TRUE, criado_em TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE colabs_conteudo (id SERIAL PRIMARY KEY, colab_id INT, autor TEXT, cargo TEXT, titulo TEXT, tipo TEXT, texto TEXT, expira_em TIMESTAMPTZ, criado_em TIMESTAMPTZ DEFAULT NOW());</code>
+      <div class="sep"></div>
+      <div class="info-box"><strong>Variáveis de ambiente no Vercel:</strong><br>SUPABASE_URL · SUPABASE_ANON_KEY · SUPABASE_SERVICE_KEY · ADMIN_SENHA</div>
+    </div>
+
+  </div><!-- /painel-admin -->
 </div>
 
 <script>
 const ss=sessionStorage;
-const si=id=>document.getElementById(id);
-if(ss.getItem("adm_s"))si("senha").value=ss.getItem("adm_s");
-if(ss.getItem("adm_k"))si("apikey").value=ss.getItem("adm_k");
+let senhaAdmin="",apiAdmin="";
 
-async function atualizar(){
-  const senha=si("senha").value.trim();
-  const key=si("apikey").value.trim();
-  if(!senha){alert("Informe a senha admin.");return;}
-  if(!key||!key.startsWith("sk-")){alert("API key inválida.");return;}
-  ss.setItem("adm_s",senha); ss.setItem("adm_k",key);
-  const btn=si("btn"), res=si("res");
-  btn.disabled=true; btn.textContent="⏳ Buscando…";
-  res.style.display="block"; res.className="loading";
-  res.innerHTML="🔍 A IA está pesquisando novidades no STF, STJ, TST e Planalto…<br><small>Aguarde 20-40 segundos.</small>";
+window.onload=()=>{
+  if(ss.getItem("adm_s"))document.getElementById("senha").value=ss.getItem("adm_s");
+  if(ss.getItem("adm_k"))document.getElementById("apikey").value=ss.getItem("adm_k");
+};
+
+function mostrarMsg(id,tipo,texto){
+  const el=document.getElementById(id);
+  el.className="msg "+tipo;el.innerHTML=texto;el.style.display="block";
+}
+
+function salvarAuth(){
+  const s=document.getElementById("senha").value.trim();
+  const k=document.getElementById("apikey").value.trim();
+  if(!s){mostrarMsg("msg-auth","err","Informe a senha admin.");return;}
+  if(!k||!k.startsWith("sk-")){mostrarMsg("msg-auth","err","API key inválida.");return;}
+  senhaAdmin=s;apiAdmin=k;
+  ss.setItem("adm_s",s);ss.setItem("adm_k",k);
+  document.getElementById("login-secao").style.opacity=".5";
+  document.getElementById("painel-admin").style.display="block";
+  mostrarMsg("msg-auth","ok","✅ Autenticado. Painel disponível abaixo.");
+  carregarColabsAdmin();
+}
+
+// ── NOVIDADES ──────────────────────────────────────────
+async function buscarNovidades(){
+  const btn=document.getElementById("btn-nov");
+  btn.disabled=true;btn.textContent="⏳ Buscando...";
+  mostrarMsg("msg-nov","load","🔍 A IA está pesquisando novidades no STF, STJ, TST e Planalto...<br><small>Aguarde 20-40 segundos.</small>");
   try{
-    const r=await fetch("/api/admin-atualizar",{method:"POST",
-      headers:{"Content-Type":"application/json","x-admin-senha":senha,"x-api-key":key}});
+    const r=await fetch("/api/admin-atualizar",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin,"x-api-key":apiAdmin}});
     const d=await r.json();
     if(!r.ok||d.error)throw new Error(d.error||"Erro");
-    res.className="ok";
-    res.innerHTML=`✅ <strong>${d.total} novidades</strong> publicadas com sucesso!<br>Todos os visitantes já podem ver. Atualizado: ${d.atualizado_em}`;
-  }catch(e){
-    res.className="err";
-    res.innerHTML=`❌ ${e.message}<br><small>Verifique senha, API key e configuração do Supabase.</small>`;
-  }
-  btn.disabled=false; btn.textContent="🔍 Buscar Novidades e Publicar";
+    mostrarMsg("msg-nov","ok",`✅ <strong>${d.total} novidades</strong> publicadas! Visível para todos em 🔔 Novidades.`);
+  }catch(e){mostrarMsg("msg-nov","err","❌ "+e.message);}
+  btn.disabled=false;btn.textContent="🔍 Buscar e Publicar Novidades";
+}
+
+// ── ADICIONAR NORMA ──────────────────────────────────────
+async function adicionarNorma(){
+  const btn=document.getElementById("btn-norma");
+  const nome=document.getElementById("norma-nome").value.trim();
+  const tipo=document.getElementById("norma-tipo").value;
+  if(!nome){mostrarMsg("msg-norma","err","Informe o nome da norma.");return;}
+  btn.disabled=true;btn.textContent="⏳ Salvando...";
+  mostrarMsg("msg-norma","load","Salvando no sistema...");
+  const payload={
+    tipo,nome,
+    sigla:document.getElementById("norma-sigla").value.trim(),
+    numero:document.getElementById("norma-numero").value.trim(),
+    url:document.getElementById("norma-url").value.trim(),
+    texto:document.getElementById("norma-texto").value.trim(),
+    analise:document.getElementById("norma-analise").value.trim(),
+    temas:document.getElementById("norma-temas").value.trim(),
+    tribunal:document.getElementById("norma-tribunal").value.trim(),
+    tese:document.getElementById("norma-tese").value.trim(),
+  };
+  try{
+    const r=await fetch("/api/admin-norma",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||"Erro");
+    mostrarMsg("msg-norma","ok","✅ Norma adicionada! Aparecerá no sistema para todos os visitantes.");
+    ["norma-nome","norma-sigla","norma-numero","norma-url","norma-texto","norma-analise","norma-temas","norma-tribunal","norma-tese"].forEach(id=>document.getElementById(id).value="");
+  }catch(e){mostrarMsg("msg-norma","err","❌ "+e.message);}
+  btn.disabled=false;btn.textContent="➕ Adicionar ao Sistema";
+}
+
+// ── COLABORADORES ────────────────────────────────────────
+async function cadastrarColab(){
+  const nome=document.getElementById("colab-nome").value.trim();
+  const user=document.getElementById("colab-user").value.trim();
+  const senha=document.getElementById("colab-senha").value.trim();
+  const cargo=document.getElementById("colab-cargo").value.trim();
+  if(!nome||!user||!senha){mostrarMsg("msg-colab-cad","err","Preencha nome, usuário e senha.");return;}
+  try{
+    const r=await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"cadastrar",nome,cargo,usuario:user,senha})});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||"Erro");
+    mostrarMsg("msg-colab-cad","ok",`✅ Colaborador <strong>${nome}</strong> cadastrado! Login: ${user}`);
+    carregarColabsAdmin();
+  }catch(e){mostrarMsg("msg-colab-cad","err","❌ "+e.message);}
+}
+
+async function carregarColabsAdmin(){
+  const el=document.getElementById("lista-colabs-admin");
+  try{
+    const r=await fetch("/api/admin-colab?lista=1",{headers:{"x-admin-senha":senhaAdmin}});
+    const d=await r.json();
+    if(!r.ok)throw new Error();
+    const colabs=d.colabs||[];
+    const pubs=d.publicacoes||[];
+
+    const pendentes=colabs.filter(c=>!c.ativo);
+    const ativos=colabs.filter(c=>c.ativo);
+    let html="";
+
+    if(pendentes.length){
+      html+=`<div style="font-size:10px;color:#d4a040;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">⏳ Aguardando Aprovação (${pendentes.length})</div>`;
+      html+=pendentes.map(c=>`<div class="colab-item" style="border-color:rgba(200,160,32,.3)"><div class="colab-info"><div class="colab-nome">${c.nome} <span class="tag-inativo">pendente</span></div><div class="colab-meta">${c.cargo||""} · ${c.email||""} · login: <code style="display:inline;padding:1px 5px;font-size:10px;border-radius:3px">${c.usuario}</code></div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn-p" style="padding:5px 12px;font-size:11px;margin:0" onclick="aprovarColab(${c.id})">✅ Aprovar</button><button class="btn-r" onclick="rejeitarColab(${c.id})">✗ Rejeitar</button></div></div>`).join("");
+      html+='<div style="height:8px"></div>';
+    }
+
+    if(ativos.length){
+      html+=`<div style="font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Colaboradores Ativos (${ativos.length}) — <a href="/colaborador" target="_blank" style="color:var(--royal-lt)">Página do colaborador →</a></div>`;
+      html+=ativos.map(c=>`<div class="colab-item"><div class="colab-info"><div class="colab-nome">${c.nome} <span class="tag-ativo">ativo</span></div><div class="colab-meta">${c.cargo||""} ${c.instituicao?"· "+c.instituicao:""} · login: <code style="display:inline;padding:1px 5px;font-size:10px;border-radius:3px">${c.usuario}</code></div></div><button class="btn-r" onclick="removerColab(${c.id},'colab')">Remover</button></div>`).join("");
+    }
+
+    if(pubs.length){
+      html+=`<div style="font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px">Publicações Ativas (${pubs.length})</div>`;
+      html+=pubs.map(p=>{
+        const data=p.criado_em?new Date(p.criado_em).toLocaleDateString("pt-BR"):"";
+        const expira=p.expira_em?new Date(p.expira_em).toLocaleDateString("pt-BR"):"sem prazo";
+        return`<div class="colab-item"><div class="colab-info"><div class="colab-nome">${p.fixada?"📌 ":""}${p.titulo}</div><div class="colab-meta">Por: ${p.autor} · ${p.tipo||""} · Publicado: ${data} · Expira: ${expira}</div><div class="colab-titulo-pub">${p.texto?.slice(0,80)}...</div></div><div style="display:flex;gap:5px;flex-shrink:0"><button class="btn-s" style="font-size:10px;padding:4px 8px" onclick="fixarPub(${p.id},${!p.fixada})">${p.fixada?"Desafixar":"📌 Fixar"}</button><button class="btn-r" onclick="removerColab(${p.id},'pub')">Remover</button></div></div>`;
+      }).join("");
+    }
+
+    if(!colabs.length&&!pubs.length)html='<div style="color:var(--text-faint);font-size:12px">Nenhum colaborador ainda. Compartilhe o link: <a href="/colaborador">/colaborador</a></div>';
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div style="color:var(--text-faint);font-size:12px">Erro ao carregar.</div>';}
+}
+
+async function aprovarColab(id){
+  try{
+    const r=await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"aprovar",id})});
+    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error);
+    mostrarMsg("msg-colab-rem","ok","✅ Colaborador aprovado! Email de confirmação enviado.");
+    carregarColabsAdmin();
+  }catch(e){mostrarMsg("msg-colab-rem","err","❌ "+e.message);}
+}
+
+async function rejeitarColab(id){
+  if(!confirm("Rejeitar e excluir este cadastro?"))return;
+  try{
+    await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"rejeitar",id})});
+    mostrarMsg("msg-colab-rem","ok","Cadastro rejeitado e removido.");
+    carregarColabsAdmin();
+  }catch(e){mostrarMsg("msg-colab-rem","err","❌ "+e.message);}
+}
+
+async function fixarPub(id,fixada){
+  try{
+    await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"fixar",id,fixada})});
+    carregarColabsAdmin();
+  }catch(e){alert("Erro ao fixar: "+e.message);}
+}
+
+async function removerColab(id,tipo){
+  if(!confirm("Confirma a remoção?"))return;
+  try{
+    const r=await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"remover",id,tipo})});
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||"Erro");
+    mostrarMsg("msg-colab-rem","ok","✅ Removido com sucesso.");
+    carregarColabsAdmin();
+  }catch(e){mostrarMsg("msg-colab-rem","err","❌ "+e.message);}
 }
 </script>
 </body>
