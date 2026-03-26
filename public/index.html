@@ -37,8 +37,6 @@ a{color:var(--royal-lt);text-decoration:none;}
 .logo-icone{width:34px;height:34px;border-radius:8px;background:linear-gradient(145deg,#1a3896,#3a62cc);display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(42,79,171,.45);flex-shrink:0;}
 #logo-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:2px;}
 #logo-sub{font-size:8px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;}
-#btn-home{background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;transition:all .2s;white-space:nowrap;}
-#btn-home:hover{border-color:var(--border2);color:var(--accent);}
 #srch{flex:1;min-width:160px;max-width:460px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;padding:0 12px;gap:8px;transition:border-color .2s;}
 #srch:focus-within{border-color:var(--border2);}
 #srch input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Lato',sans-serif;font-size:13px;padding:8px 0;}
@@ -47,10 +45,13 @@ a{color:var(--royal-lt);text-decoration:none;}
 #contador{display:flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:10px;color:var(--text-dim);}
 .green-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2.5s infinite;flex-shrink:0;}
 #cnt-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);font-weight:500;}
-#btn-simpl{background:linear-gradient(135deg,rgba(200,160,32,.22),rgba(200,160,32,.08));border:1px solid rgba(200,160,32,.55);color:#d4b040;padding:7px 12px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:all .2s;white-space:nowrap;}
-#btn-simpl:hover{background:linear-gradient(135deg,rgba(200,160,32,.38),rgba(200,160,32,.18));border-color:rgba(200,160,32,.9);}
-#btn-nov{background:var(--royal);border:none;color:#fff;padding:7px 12px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:background .2s;white-space:nowrap;}
-#btn-nov:hover{background:var(--royal-lt);}
+/* ACESSIBILIDADE */
+#acessib{display:flex;align-items:center;gap:2px;}
+#acessib button{background:var(--bg2);border:1px solid var(--border);color:var(--text-dim);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:all .18s;line-height:1;}
+#acessib button:hover{border-color:var(--border2);color:var(--accent);}
+/* LOGIN */
+#btn-login{background:var(--royal);border:none;color:#fff;padding:7px 13px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:background .2s;white-space:nowrap;}
+#btn-login:hover{background:var(--royal-lt);}
 /* botão mobile menu */
 #btn-menu-mobile{display:none;background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:6px 10px;border-radius:7px;cursor:pointer;font-size:16px;}
 
@@ -58,14 +59,16 @@ a{color:var(--royal-lt);text-decoration:none;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 @keyframes slideIn{from{transform:translateX(-100%);}to{transform:translateX(0);}}
 
-/* FILTROS */
-#filtros{padding:6px 18px;background:rgba(11,14,24,.6);border-bottom:1px solid rgba(65,105,200,.07);display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.flabel{font-size:9px;color:var(--text-faint);letter-spacing:1.5px;text-transform:uppercase;margin-right:4px;}
-.fb{background:transparent;border:1px solid rgba(65,105,200,.18);color:var(--text-dim);padding:3px 11px;border-radius:20px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;transition:all .18s;}
+/* NAVEGAÇÃO PRINCIPAL */
+#filtros{padding:5px 14px;background:rgba(11,14,24,.8);border-bottom:1px solid rgba(65,105,200,.12);display:flex;align-items:center;gap:4px;flex-wrap:wrap;overflow-x:auto;}
+.flabel{display:none;}
+.fb{background:transparent;border:1px solid rgba(65,105,200,.2);color:var(--text-dim);padding:5px 13px;border-radius:20px;cursor:pointer;font-size:12.5px;font-family:'Lato',sans-serif;font-weight:600;transition:all .18s;white-space:nowrap;letter-spacing:.2px;}
 .fb:hover,.fb.on{background:var(--royal-dim);border-color:var(--border2);color:var(--accent);}
-.fb-sobre{background:transparent;border:1px solid rgba(200,160,32,.25);color:rgba(200,160,32,.7);padding:3px 11px;border-radius:20px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;transition:all .18s;}
-.fb-sobre:hover{background:rgba(200,160,32,.1);border-color:rgba(200,160,32,.6);color:var(--gold);}
-#cnt-badge{margin-left:auto;font-size:10px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;}
+.fb-gold{border-color:rgba(200,160,32,.35);color:rgba(200,160,32,.85);}
+.fb-gold:hover,.fb-gold.on{background:rgba(200,160,32,.1);border-color:rgba(200,160,32,.7);color:var(--gold);}
+.fb-sobre{border-color:rgba(100,140,220,.25);color:rgba(140,180,255,.65);}
+.fb-sobre:hover,.fb-sobre.on{background:rgba(42,79,171,.1);border-color:var(--border2);color:var(--accent);}
+#cnt-badge{margin-left:auto;font-size:10px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
 
 /* LAYOUT */
 #main{display:flex;flex:1;min-height:0;overflow:hidden;position:relative;}
@@ -229,7 +232,9 @@ a{color:var(--royal-lt);text-decoration:none;}
   overflow:hidden;
 }
 #dropdown-links.aberto{display:block;}
-#links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+#links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0;}
+.links-col{padding:16px 14px;border-right:1px solid var(--border);background:var(--bg2);}
+.links-col:last-child{border-right:none;}
 .links-col{padding:14px 12px;border-right:1px solid var(--border);}
 .links-col:last-child{border-right:none;}
 .links-col-titulo{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(200,160,32,.15);}
@@ -237,20 +242,21 @@ a{color:var(--royal-lt);text-decoration:none;}
 .link-item:hover{background:var(--royal-dim);}
 .link-sigla{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--royal-lt);font-weight:500;flex-shrink:0;min-width:52px;}
 .link-sigla.destaque{color:var(--gold);}
-.link-desc{font-size:10px;color:var(--text-faint);line-height:1.3;}
+.link-desc{font-size:11px;color:#dde8ff;line-height:1.3;}
 /* sub-lista expansível dentro do dropdown */
 .links-sub-toggle{display:flex;align-items:center;justify-content:space-between;padding:4px 6px;border-radius:5px;cursor:pointer;transition:background .15s;}
 .links-sub-toggle:hover{background:var(--royal-dim);}
 .links-sub-toggle .link-sigla{color:var(--text-dim);}
 .links-sub-arrow{font-size:9px;color:var(--text-faint);transition:transform .2s;}
 .links-sub-arrow.open{transform:rotate(180deg);}
-.links-sub-lista{display:none;padding-left:8px;margin-top:2px;max-height:200px;overflow-y:auto;}
+.links-sub-lista{display:none;padding-left:8px;margin-top:2px;max-height:220px;overflow-y:auto;}
 .links-sub-lista.visivel{display:block;}
 .links-sub-lista .link-item .link-sigla{min-width:44px;font-size:10px;}
+.links-sub-lista .link-item .link-desc{color:#dde8ff;font-size:11px;}
 /* ES destaque */
 .link-es{background:rgba(200,160,32,.06);border-radius:5px;margin-bottom:2px;}
-/* footer do dropdown */
-#links-footer{padding:8px 14px;background:rgba(42,79,171,.06);border-top:1px solid var(--border);font-size:9px;color:var(--text-faint);text-align:center;}
+/* footer dos links */
+#links-footer{padding:10px 16px;background:rgba(42,79,171,.08);border-top:1px solid var(--border);font-size:12px;color:#fff;text-align:center;letter-spacing:.2px;}
 
 /* DETALHE */
 #det-wrap{animation:fadeIn .25s ease;}
@@ -321,22 +327,27 @@ a{color:var(--royal-lt);text-decoration:none;}
 .termo-ex{font-size:11px;color:rgba(200,160,32,.7);margin-top:6px;padding-top:6px;border-top:1px solid rgba(200,160,32,.1);font-style:italic;}
 
 /* SOBRE */
-#sobre-wrap{animation:fadeIn .3s ease;max-width:600px;margin:0 auto;text-align:center;}
-.sobre-balanca{text-align:center;margin-bottom:18px;}
-.sobre-titulo{font-family:'Playfair Display',serif;font-size:23px;color:var(--accent);margin-bottom:18px;}
-.sobre-deus{background:linear-gradient(135deg,rgba(200,160,32,.1),rgba(200,160,32,.04));border:1px solid rgba(200,160,32,.3);border-radius:10px;padding:20px 24px;margin-bottom:14px;text-align:center;}
-.sobre-deus h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);margin-bottom:11px;}
-.sobre-deus p{font-size:13px;color:var(--text-dim);line-height:1.85;margin-bottom:10px;}
-.sobre-deus em{color:rgba(200,160,32,.85);font-style:italic;font-family:'Playfair Display',serif;font-size:13px;}
-.sobre-bloco{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:22px 26px;margin-bottom:14px;line-height:1.85;font-size:13px;color:var(--text-dim);text-align:left;}
-.sobre-bloco p{margin-bottom:12px;}
+#sobre-wrap{animation:fadeIn .3s ease;max-width:580px;margin:0 auto;text-align:center;}
+.sobre-balanca{text-align:center;margin-bottom:8px;}
+.sobre-titulo{font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:10px;}
+.sobre-deus{background:linear-gradient(135deg,rgba(200,160,32,.1),rgba(200,160,32,.04));border:1px solid rgba(200,160,32,.3);border-radius:10px;padding:14px 20px;margin-bottom:10px;text-align:center;}
+.sobre-deus h3{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);margin-bottom:8px;}
+.sobre-deus p{font-size:12.5px;color:var(--text-dim);line-height:1.75;margin-bottom:8px;}
+.sobre-deus em{color:rgba(200,160,32,.85);font-style:italic;font-family:'Playfair Display',serif;font-size:12.5px;}
+.sobre-bloco{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;line-height:1.75;font-size:12.5px;color:var(--text-dim);text-align:left;}
+.sobre-bloco p{margin-bottom:10px;}
 .sobre-bloco p:last-child{margin-bottom:0;}
 .sobre-bloco strong{color:var(--accent);}
-.sobre-citacao{background:rgba(42,79,171,.08);border:1px solid rgba(65,105,200,.2);border-radius:8px;padding:14px 18px;margin:14px 0;font-family:'Playfair Display',serif;font-size:14px;color:var(--accent);font-style:italic;line-height:1.6;text-align:center;}
-.sobre-rodape{text-align:center;margin-top:16px;padding:16px;background:var(--bg2);border:1px solid rgba(200,160,32,.2);border-radius:10px;}
-.sobre-rodape p{font-size:12px;color:var(--text-faint);line-height:1.8;}
+/* BLOCO RAYANE — foto + texto lado a lado */
+.sobre-rayane{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:flex-start;gap:16px;text-align:left;}
+.rayane-foto{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);flex-shrink:0;box-shadow:0 4px 16px rgba(42,79,171,.3);}
+.rayane-texto{flex:1;font-size:12.5px;color:var(--text-dim);line-height:1.75;}
+.rayane-texto strong{color:var(--accent);}
+.sobre-citacao{background:rgba(42,79,171,.08);border:1px solid rgba(65,105,200,.2);border-radius:8px;padding:11px 16px;margin:10px 0;font-family:'Playfair Display',serif;font-size:13.5px;color:var(--accent);font-style:italic;line-height:1.6;text-align:center;}
+.sobre-rodape{text-align:center;margin-top:10px;padding:12px 16px;background:var(--bg2);border:1px solid rgba(200,160,32,.2);border-radius:10px;}
+.sobre-rodape p{font-size:12px;color:var(--text-faint);line-height:1.7;}
 .sobre-rodape strong{color:var(--gold);}
-.sobre-aviso{color:#fff !important;margin-top:8px !important;font-size:11px !important;}
+.sobre-aviso{color:#fff !important;margin-top:6px !important;font-size:11px !important;}
 
 /* FOOTER */
 #footer{border-top:1px solid rgba(65,105,200,.08);padding:9px 22px;background:rgba(7,9,15,.9);display:flex;align-items:center;justify-content:space-between;font-size:9.5px;color:var(--text-faint);flex-wrap:wrap;gap:6px;}
@@ -347,32 +358,21 @@ a{color:var(--royal-lt);text-decoration:none;}
 /* ── MOBILE ────────────────────────────────── */
 @media(max-width:768px){
   #hdr{height:auto;padding:10px 12px;gap:7px;}
-  #srch{max-width:100%;order:4;width:100%;min-width:0;}
+  #srch{max-width:100%;order:3;width:100%;min-width:0;}
   #logo{order:1;}
-  #btn-home{order:2;font-size:10px;padding:5px 9px;}
-  #hdr-right{order:3;gap:5px;}
+  #hdr-right{order:2;gap:5px;}
   #contador{display:none;}
   #logo-sub{display:none;}
-  #btn-menu-mobile{display:block;order:2;}
-  #filtros{padding:6px 10px;}
-  .flabel{display:none;}
-  .fb,.fb-sobre{padding:3px 8px;font-size:10px;}
+  #btn-menu-mobile{display:block;order:0;}
+  #filtros{padding:5px 8px;gap:3px;}
+  .fb{padding:4px 9px;font-size:11px;}
   #cnt-badge{display:none;}
-
   /* LISTA como drawer lateral no mobile */
   #main{flex-direction:row;overflow:hidden;}
-  #lista{
-    position:fixed;top:0;left:0;bottom:0;
-    width:80%;max-width:300px;
-    z-index:50;
-    transform:translateX(-100%);
-    transition:transform .3s ease;
-    box-shadow:4px 0 24px rgba(0,0,0,.5);
-  }
+  #lista{position:fixed;top:0;left:0;bottom:0;width:80%;max-width:300px;z-index:50;transform:translateX(-100%);transition:transform .3s ease;box-shadow:4px 0 24px rgba(0,0,0,.5);}
   #lista.aberta{transform:translateX(0);}
   #lista-overlay{display:block;}
   #lista-overlay.visivel{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49;}
-
   #painel{padding:14px 12px;}
   .stats{grid-template-columns:repeat(2,1fr);}
   .termos-grid{grid-template-columns:1fr;}
@@ -380,14 +380,13 @@ a{color:var(--royal-lt);text-decoration:none;}
   .btns-row a,.btns-row button{width:100%;}
   #simpl-wrap,#sobre-wrap{max-width:100%;}
   .det-titulo{font-size:17px;}
-  #dropdown-links{width:95vw;right:-10px;}
   #links-grid{grid-template-columns:1fr;}
   .links-col{border-right:none;border-bottom:1px solid var(--border);padding:12px 10px;}
   .links-col:last-child{border-bottom:none;}
 }
 @media(max-width:480px){
-  #btn-simpl{font-size:10px;padding:6px 9px;}
-  #btn-nov{font-size:10px;padding:6px 9px;}
+  .fb{font-size:10px;padding:3px 7px;}
+  #acessib button{font-size:10px;padding:3px 6px;}
 }
 </style>
 </head>
@@ -398,7 +397,7 @@ a{color:var(--royal-lt);text-decoration:none;}
   <div id="aviso-box">
     <svg width="56" height="52" viewBox="0 0 60 56" fill="none"><rect x="28.5" y="4" width="3" height="44" rx="1.5" fill="#3a62cc"/><rect x="10" y="15" width="40" height="2.5" rx="1.25" fill="#c8d8ff"/><circle cx="30" cy="4" r="3.5" fill="#c8a020"/><line x1="15" y1="17.5" x2="10" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="17.5" x2="20" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><path d="M8 28 Q15 33 22 28" stroke="#c8d8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="45" y1="17.5" x2="40" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><line x1="45" y1="17.5" x2="50" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><path d="M38 28 Q45 33 52 28" stroke="#c8d8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="22" y="47" width="16" height="2.5" rx="1.25" fill="#3a62cc"/><rect x="18" y="49.5" width="24" height="3" rx="1.5" fill="#2a4fab"/></svg>
     <h2>Bem-vindo ao LEXBRASIL</h2>
-    <p>Este site é <strong style="color:var(--accent)">sem fins lucrativos</strong> e foi criado para facilitar estudos e pesquisas jurídicas.<br><br>Tentaremos manter o conteúdo o mais atualizado possível, mas <strong style="color:var(--accent)">confira sempre nos sites oficiais</strong> do governo e dos tribunais antes de tomar qualquer decisão.</p>
+    <p>Este site foi criado para facilitar estudos e pesquisas jurídicas.<br><br>Tentaremos manter o conteúdo o mais atualizado possível, mas <strong style="color:var(--accent)">confira sempre nos sites oficiais</strong> do governo e dos tribunais antes de tomar qualquer decisão.</p>
     <button id="aviso-btn" onclick="fecharAviso()">Entendido — Acessar o Sistema</button>
   </div>
 </div>
@@ -412,37 +411,34 @@ a{color:var(--royal-lt);text-decoration:none;}
     <div><div id="logo-name">LEXBRASIL</div><div id="logo-sub">Sistema Jurídico Integrado</div></div>
   </div>
   <button id="btn-menu-mobile" onclick="toggleMenuMobile()">☰</button>
-  <button id="btn-home" onclick="irHome()">🏠 Início</button>
   <div id="srch">
     <span style="font-size:12px;color:var(--text-faint)">🔍</span>
     <input type="text" id="srch-input" placeholder="Buscar em tudo... ex: dolo, progressão, § único" oninput="buscarGlobal(this.value)">
   </div>
   <div id="hdr-right">
     <div id="contador"><span class="green-dot"></span><span id="cnt-num">...</span><span>acessos</span></div>
-    <button id="btn-simpl" onclick="mostrarSimplificando()">✦ Simplificando o Direito</button>
-    <button id="btn-modelos" onclick="mostrarModelos()" style="background:transparent;border:1px solid rgba(65,105,200,.3);color:var(--text-dim);padding:7px 12px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:all .2s;white-space:nowrap;">📄 Modelos</button>
-    <button id="btn-nov" onclick="mostrarNovidades()">🔔 Novidades</button>
-    <div id="menu-links-wrap">
-      <button id="btn-links" onclick="toggleLinks()">🔗 Links Úteis ▾</button>
-      <div id="dropdown-links"></div>
+    <div id="acessib">
+      <button onclick="ajustarFonte(-1)" title="Diminuir fonte">A−</button>
+      <button onclick="ajustarFonte(1)" title="Aumentar fonte">A+</button>
     </div>
-    <div id="menu-colabs-wrap">
-      <button id="btn-colabs" onclick="toggleDropdownColabs()">👥 Colaboradores ▾</button>
-      <div id="dropdown-colabs"></div>
-    </div>
+    <button id="btn-login" onclick="abrirLogin()">👤 Login</button>
   </div>
 </div>
 
-<!-- FILTROS -->
+<!-- NAVEGAÇÃO PRINCIPAL -->
 <div id="filtros">
-  <span class="flabel">Seção</span>
-  <button class="fb on" onclick="setSecao('todos',this)">Todos</button>
+  <button class="fb on" onclick="irHome();setNav(this)">🏠 Início</button>
   <button class="fb" onclick="setSecao('norma',this)">📜 Normas</button>
   <button class="fb" onclick="setSecao('sumula',this)">⚖️ Súmulas</button>
   <button class="fb" onclick="setSecao('sumula_vinculante',this)">🔒 Vinculantes</button>
   <button class="fb" onclick="setSecao('repercussao',this)">🏛️ Rep. Geral</button>
   <button class="fb" onclick="setSecao('dh',this)">🌍 Dir. Humanos</button>
-  <button class="fb-sobre" onclick="mostrarSobre()">💙 Sobre o Site</button>
+  <button class="fb" onclick="mostrarModelos();setNav(this)">📄 Docs. Jurídicos</button>
+  <button class="fb" onclick="mostrarLinksPage();setNav(this)">🔗 Links Úteis</button>
+  <button class="fb fb-gold" onclick="mostrarSimplificando();setNav(this)">✦ Simplificando o Direito</button>
+  <button class="fb" onclick="mostrarColabsPage();setNav(this)">👥 Colaboradores</button>
+  <button class="fb fb-sobre" onclick="mostrarSobre();setNav(this)">💙 Sobre</button>
+  <button class="fb" onclick="mostrarNovidades();setNav(this)">🔔 Novidades</button>
   <span id="cnt-badge"></span>
 </div>
 
@@ -460,14 +456,47 @@ a{color:var(--royal-lt);text-decoration:none;}
 
 <!-- FOOTER -->
 <div id="footer">
-  <div>LEXBRASIL · Sem fins lucrativos · Planalto · STF · STJ · TST · Consulte sempre um advogado habilitado</div>
-  <div id="footer-brand">Idealizado pelos acadêmicos GBSJÚNIOR e Rayane Biz Pramio (futura Doutora) · 2026</div>
+  <div>LEXBRASIL · Planalto · STF · STJ · TST · Consulte sempre um advogado habilitado</div>
+  <div id="footer-brand">Idealizado pelos acadêmicos Gércio B. S. Júnior e Rayane Biz Pramio · 2026 · Todos os direitos reservados</div>
   <a href="/admin.html" id="footer-admin">admin</a>
 </div>
 
 <script>
 function fecharAviso(){const el=document.getElementById("aviso-overlay");el.style.opacity="0";el.style.transition="opacity .4s";setTimeout(()=>el.style.display="none",400);}
-function irHome(){document.getElementById("srch-input").value="";document.getElementById("lista-srch-input").value="";secaoAtiva="todos";document.querySelectorAll(".fb").forEach((b,i)=>{b.classList.toggle("on",i===0)});renderLista();renderWelcome();}
+
+function setNav(btn){document.querySelectorAll(".fb").forEach(b=>b.classList.remove("on"));if(btn)btn.classList.add("on");}
+
+function irHome(){
+  document.getElementById("srch-input").value="";
+  document.getElementById("lista-srch-input").value="";
+  secaoAtiva="todos";busca="";listaBusca="";
+  setNav(document.querySelector("#filtros .fb"));
+  renderLista();renderWelcome();
+}
+
+// ACESSIBILIDADE — A+ / A-
+let fonteBase=14;
+function ajustarFonte(delta){
+  fonteBase=Math.max(11,Math.min(20,fonteBase+delta));
+  document.documentElement.style.fontSize=fonteBase+"px";
+  localStorage.setItem("lex_fonte",fonteBase);
+}
+
+// LOGIN — abre página do colaborador ou admin
+function abrirLogin(){
+  const modal=document.createElement("div");
+  modal.id="modal-login-wrap";
+  modal.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px";
+  modal.innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px 32px;max-width:360px;width:100%;text-align:center">
+    <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--accent);margin-bottom:6px">👤 Acessar o LEXBRASIL</div>
+    <div style="font-size:12px;color:var(--text-faint);margin-bottom:20px">Escolha seu tipo de acesso</div>
+    <a href="/colaborador.html" style="display:block;background:var(--royal);color:#fff;padding:11px;border-radius:8px;font-weight:700;font-size:13px;margin-bottom:10px;text-decoration:none">👥 Área do Colaborador</a>
+    <a href="/admin.html" style="display:block;background:transparent;border:1px solid var(--border2);color:var(--text-dim);padding:10px;border-radius:8px;font-size:12px;text-decoration:none">⚙️ Painel Administrativo</a>
+    <button onclick="document.getElementById('modal-login-wrap').remove()" style="margin-top:14px;background:transparent;border:none;color:var(--text-faint);cursor:pointer;font-size:12px">Fechar</button>
+  </div>`;
+  modal.addEventListener("click",e=>{if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
 function toggleMenuMobile(){document.getElementById("lista").classList.toggle("aberta");document.getElementById("lista-overlay").classList.toggle("visivel");}
 function fecharMenuMobile(){document.getElementById("lista").classList.remove("aberta");document.getElementById("lista-overlay").classList.remove("visivel");}
 
@@ -604,6 +633,9 @@ let secaoAtiva="todos", itemAtivo=null, novidades=[], colabs=[], busca="", lista
 const catAberta={};
 
 window.onload=async()=>{
+  // Restaurar tamanho de fonte salvo
+  const fonteSalva=localStorage.getItem("lex_fonte");
+  if(fonteSalva){fonteBase=parseInt(fonteSalva);document.documentElement.style.fontSize=fonteBase+"px";}
   renderLista();renderWelcome();
   await Promise.all([carregarNovidades(),carregarColabs(),registrarAcesso()]);
 };
@@ -709,13 +741,13 @@ function filtrarLista(q){
 
 function setSecao(id,btn){
   secaoAtiva=id;
-  document.querySelectorAll(".fb").forEach(b=>b.classList.remove("on"));
-  btn.classList.add("on");
+  setNav(btn);
   document.getElementById("srch-input").value="";
   busca="";listaBusca="";
   document.getElementById("lista-srch-input").value="";
   renderLista();
-  renderWelcome();
+  // Mostra welcome só se for Início, senão limpa painel para ver a lista
+  document.getElementById("painel").innerHTML=`<div style="padding:30px 24px;color:var(--text-faint);font-size:13px;font-family:'Playfair Display',serif">Selecione um item no menu lateral para ver os detalhes.</div>`;
 }
 
 function renderLista(){
@@ -726,7 +758,7 @@ function renderLista(){
     let itens=cat.dados.map(i=>({...i,categoria:cat.id}));
     if(listaBusca)itens=itens.filter(i=>[i.nome||"",i.sigla||"",i.texto||"",i.descricao||""].join(" ").toLowerCase().includes(listaBusca));
     if(!itens.length)return;
-    const aberto=catAberta[cat.id]!==false;
+    const aberto=catAberta[cat.id]===true;
     html+=`<div class="cat-grupo">
       <div class="cat-header${aberto?" aberto":""}" onclick="toggleCat('${cat.id}')">
         <div class="cat-header-left">
@@ -748,7 +780,7 @@ function renderLista(){
 }
 
 function toggleCat(id){
-  catAberta[id]=!(catAberta[id]!==false);
+  catAberta[id]=!(catAberta[id]===true);
   renderLista();
 }
 
@@ -797,13 +829,13 @@ function mostrarNovidades(){
 function mostrarSimplificando(buscarTermo=""){
   itemAtivo=null;renderLista();
   const cats=[...new Set(TERMOS.map(t=>t.cat))];
-  // inicia todas abertas
+  // todas fechadas por padrão
   if(!window.simplCatAberta)window.simplCatAberta={};
-  cats.forEach(c=>{if(window.simplCatAberta[c]===undefined)window.simplCatAberta[c]=true;});
-  let html='<div id="simpl-wrap"><div id="simpl-hdr"><h2>✦ Simplificando o Direito</h2><p>Entenda os termos jurídicos de forma clara e sem complicação. Clique nas categorias para expandir ou recolher.</p></div>';
+  cats.forEach(c=>{if(window.simplCatAberta[c]===undefined)window.simplCatAberta[c]=false;});
+  let html='<div id="simpl-wrap"><div id="simpl-hdr"><h2>✦ Simplificando o Direito</h2><p>Entenda os termos jurídicos de forma clara e sem complicação. Clique em uma categoria para expandir.</p></div>';
   html+=`<div id="simpl-srch"><span style="font-size:12px;color:var(--text-faint)">🔍</span><input type="text" id="simpl-srch-inp" placeholder="Buscar termo... ex: dolo, parágrafo, prescrição" oninput="filtrarTermos(this.value)" value="${buscarTermo||''}"></div>`;
   cats.forEach(cat=>{
-    const aberto=window.simplCatAberta[cat]!==false;
+    const aberto=window.simplCatAberta[cat]===true;
     const catId="sc_"+cat.replace(/[^a-z0-9]/gi,"_");
     html+=`<div class="simpl-cat">
       <div class="simpl-cat-header" onclick="toggleSimplCat('${catId}','${cat.replace(/'/g,"\\'")}')">
@@ -826,7 +858,7 @@ function mostrarSimplificando(buscarTermo=""){
 }
 function toggleSimplCat(catId,cat){
   if(!window.simplCatAberta)window.simplCatAberta={};
-  const aberto=window.simplCatAberta[cat]!==false;
+  const aberto=window.simplCatAberta[cat]===true;
   window.simplCatAberta[cat]=!aberto;
   const grid=document.getElementById(catId);
   const arr=document.getElementById("sarr_"+catId);
@@ -1206,7 +1238,7 @@ function mostrarModelos(){
   itemAtivo=null;renderLista();
   if(!window.modelosCatAberta)window.modelosCatAberta={};
   const cats=[...new Set(MODELOS.map(m=>m.cat))];
-  cats.forEach(c=>{if(window.modelosCatAberta[c]===undefined)window.modelosCatAberta[c]=true;});
+  cats.forEach(c=>{if(window.modelosCatAberta[c]===undefined)window.modelosCatAberta[c]=false;});
 
   let html=`<div id="det-wrap" style="max-width:780px">
     <div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:6px">📄 Modelos de Documentos Jurídicos</div>
@@ -1292,7 +1324,7 @@ function mostrarSobre(){
   itemAtivo=null;renderLista();
   document.getElementById("painel").innerHTML=`
   <div id="sobre-wrap">
-    <div class="sobre-balanca"><svg width="80" height="74" viewBox="0 0 60 56" fill="none"><rect x="28.5" y="4" width="3" height="44" rx="1.5" fill="#3a62cc"/><rect x="10" y="15" width="40" height="2.5" rx="1.25" fill="#c8d8ff"/><circle cx="30" cy="4" r="3.5" fill="#c8a020"/><line x1="15" y1="17.5" x2="10" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="17.5" x2="20" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><path d="M8 28 Q15 33 22 28" stroke="#c8d8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="45" y1="17.5" x2="40" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><line x1="45" y1="17.5" x2="50" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><path d="M38 28 Q45 33 52 28" stroke="#c8d8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="22" y="47" width="16" height="2.5" rx="1.25" fill="#3a62cc"/><rect x="18" y="49.5" width="24" height="3" rx="1.5" fill="#2a4fab"/></svg></div>
+    <div class="sobre-balanca"><svg width="60" height="56" viewBox="0 0 60 56" fill="none"><rect x="28.5" y="4" width="3" height="44" rx="1.5" fill="#3a62cc"/><rect x="10" y="15" width="40" height="2.5" rx="1.25" fill="#c8d8ff"/><circle cx="30" cy="4" r="3.5" fill="#c8a020"/><line x1="15" y1="17.5" x2="10" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="17.5" x2="20" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><path d="M8 28 Q15 33 22 28" stroke="#c8d8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="45" y1="17.5" x2="40" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><line x1="45" y1="17.5" x2="50" y2="28" stroke="#6878a0" stroke-width="1.5" stroke-linecap="round"/><path d="M38 28 Q45 33 52 28" stroke="#c8d8ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="22" y="47" width="16" height="2.5" rx="1.25" fill="#3a62cc"/><rect x="18" y="49.5" width="24" height="3" rx="1.5" fill="#2a4fab"/></svg></div>
     <div class="sobre-titulo">Sobre o LEXBRASIL</div>
     <div class="sobre-deus">
       <h3>✝ A Deus, primeiramente.</h3>
@@ -1301,13 +1333,18 @@ function mostrarSobre(){
     </div>
     <div class="sobre-bloco">
       <p>O LEXBRASIL nasceu de uma ideia simples e poderosa: <strong>tornar o Direito acessível a todos</strong>. Criado por dois acadêmicos que acreditam que compreender a lei não deve ser privilégio de poucos, este sistema reúne normas, súmulas e jurisprudência de forma organizada, clara e gratuita.</p>
-      <p>A inspiração principal veio do exemplo diário de <strong>Rayane Biz Pramio (futura Doutora)</strong> — sua empatia, senso de justiça e vontade genuína de ajudar o próximo foram o combustível para que este projeto fosse criado. Se ela faz isso com pessoas no seu dia a dia, por que não fazer o mesmo com o conhecimento jurídico?</p>
-      <p>Nosso objetivo é simples: que qualquer pessoa — estudante, servidor, cidadão ou curioso — encontre aqui uma <strong>porta de entrada para entender seus direitos e deveres</strong>, com linguagem acessível e fontes confiáveis.</p>
+    </div>
+    <div class="sobre-rayane">
+      <img class="rayane-foto" src="/rayane.png" alt="Rayane Biz Pramio" onerror="this.style.display='none'">
+      <div class="rayane-texto">
+        <p>A inspiração principal veio do exemplo diário da maravilhosa mulher que conheci, <strong>Rayane Biz Pramio</strong> — sua empatia, senso de justiça e vontade genuína de ajudar o próximo foram o combustível para que este projeto fosse criado. Se ela faz isso com pessoas no seu dia a dia, por que não fazer o mesmo com o conhecimento jurídico?</p>
+        <p>Nosso objetivo é simples: que qualquer pessoa — estudante, servidor, cidadão ou curioso — encontre aqui uma <strong>porta de entrada para entender seus direitos e deveres</strong>, com linguagem acessível e fontes confiáveis.</p>
+      </div>
     </div>
     <div class="sobre-citacao">"O Direito é de todos. Entendê-lo também deveria ser."</div>
     <div class="sobre-rodape">
-      <p>Idealizado pelos acadêmicos<br><strong>GBSJÚNIOR</strong> e <strong>Rayane Biz Pramio (futura Doutora)</strong> · 2026</p>
-      <p class="sobre-aviso">Este site é sem fins lucrativos. Sempre consulte um advogado habilitado para casos específicos.</p>
+      <p>Idealizado pelos acadêmicos<br><strong>Gércio B. S. Júnior</strong> e <strong>Rayane Biz Pramio</strong> · 2026 · Todos os direitos reservados</p>
+      <p class="sobre-aviso">Consulte sempre um advogado habilitado para casos específicos.</p>
     </div>
   </div>`;
 }
@@ -1478,17 +1515,10 @@ function mostrarTodosColabs(){
 }
 
 // ── MENU LINKS ÚTEIS ─────────────────────────────────────
-function toggleLinks(){
-  const el=document.getElementById("dropdown-links");
-  const aberto=el.classList.toggle("aberto");
-  if(aberto&&!el.innerHTML){renderMenuLinks();}
-  if(aberto){setTimeout(()=>document.addEventListener("click",fecharLinksFora,{once:true}),10);}
-  // fecha outros dropdowns
-  document.getElementById("dropdown-colabs").classList.remove("aberto");
-}
-function fecharLinksFora(e){
-  const wrap=document.getElementById("menu-links-wrap");
-  if(wrap&&!wrap.contains(e.target))document.getElementById("dropdown-links").classList.remove("aberto");
+// Links agora abre como página, não dropdown
+function mostrarLinksPage(){
+  itemAtivo=null;renderLista();
+  renderMenuLinksPage();
 }
 function toggleSubLista(id){
   const lista=document.getElementById(id);
@@ -1497,7 +1527,43 @@ function toggleSubLista(id){
   if(arrow)arrow.classList.toggle("open");
 }
 
-function renderMenuLinks(){
+// Colaboradores como página
+function mostrarColabsPage(){
+  itemAtivo=null;renderLista();
+  const p=document.getElementById("painel");
+  p.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-faint)">Carregando colaboradores...</div>';
+  carregarColabsLista().then(()=>{
+    if(!colabsLista.length){
+      p.innerHTML=`<div id="det-wrap" style="max-width:640px">
+        <div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:16px">👥 Colaboradores</div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:24px;text-align:center;color:var(--text-faint)">
+          <div style="font-size:36px;margin-bottom:12px">👥</div>
+          <div style="font-family:'Playfair Display',serif;font-size:15px;margin-bottom:8px">Nenhum colaborador ativo ainda</div>
+          <div style="font-size:12px">Quer contribuir com o LEXBRASIL? <a href="/colaborador.html" style="color:var(--royal-lt)">Solicite acesso →</a></div>
+        </div>
+      </div>`;
+      return;
+    }
+    let html=`<div id="det-wrap" style="max-width:720px">
+      <div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:6px">👥 Colaboradores</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Conheça quem contribui com conteúdo jurídico para o LEXBRASIL. <a href="/colaborador.html" style="color:var(--royal-lt)">Quero contribuir →</a></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">`;
+    html+=colabsLista.map(c=>{
+      const ini=c.nome?c.nome[0].toUpperCase():"C";
+      const foto=c.foto
+        ?`<img src="${c.foto}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)" onerror="this.outerHTML='<div style=width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--royal),var(--royal-lt));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0>${ini}</div>'">`
+        :`<div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--royal),var(--royal-lt));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">${ini}</div>`;
+      return`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:border-color .2s" onclick="verPerfilColab(${c.id})" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">${foto}<div><div style="font-family:'Playfair Display',serif;font-size:14px;color:var(--accent)">${c.nome}</div><div style="font-size:11px;color:var(--text-faint);margin-top:2px">${c.cargo||""}</div><div style="font-size:10px;color:var(--text-faint)">${c.instituicao||""}</div></div></div>
+        <div style="font-size:10px;color:var(--royal-lt);font-family:'JetBrains Mono',monospace">${c.total_pubs||0} publicação(ões) · Ver perfil →</div>
+      </div>`;
+    }).join("");
+    html+='</div></div>';
+    p.innerHTML=html;
+  });
+}
+
+function renderMenuLinksPage(){
   const TJS=[
     {s:"TJES",d:"Tribunal de Justiça do Espírito Santo",url:"https://www.tjes.jus.br",es:true},
     {s:"TJAC",d:"Acre",url:"https://www.tjac.jus.br"},
@@ -1598,16 +1664,16 @@ function renderMenuLinks(){
 
   const col2=`
     <div class="links-col">
-      <div class="links-col-titulo">💻 PJe — Processo Eletrônico</div>
-      ${linkItem("PJe","Portal Nacional PJe","https://www.pje.jus.br/pje")}
-      ${linkItem("PJe·ES","PJe Espírito Santo (TRT17)","https://pje.trt17.jus.br/pjekz/login.seam","destaque")}
-      ${linkItem("PJe·1G","1ª Grau — TJES","https://pje.tjes.jus.br/1g/login.seam")}
-      ${linkItem("PJe·2G","2ª Grau — TJES","https://pje.tjes.jus.br/2g/login.seam")}
-      ${linkItem("PJe·TRF1","TRF 1ª Região","https://pje1g.trf1.jus.br/pje")}
-      ${linkItem("PJe·TRF2","TRF 2ª Região (RJ/ES)","https://pje.trf2.jus.br/pje")}
-      ${linkItem("PJe·TRF3","TRF 3ª Região (SP/MS)","https://pje.trf3.jus.br/pje")}
-      ${linkItem("PJe·TRF4","TRF 4ª Região (Sul)","https://pje.trf4.jus.br/pje")}
-      ${linkItem("PJe·TRF5","TRF 5ª Região (NE)","https://pje.trf5.jus.br/pje")}
+      <div class="links-col-titulo">💻 PJe — Consulta de Processos</div>
+      ${linkItem("PJe","Consulta Nacional PJe","https://www.pje.jus.br/pje/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·ES","Consulta TRT17 (ES)","https://pje.trt17.jus.br/pjekz/ConsultaPublica/listView.seam","destaque")}
+      ${linkItem("PJe·1G","Consulta 1º Grau TJES","https://pje.tjes.jus.br/1g/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·2G","Consulta 2º Grau TJES","https://pje.tjes.jus.br/2g/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·TRF1","Consulta TRF 1ª Região","https://pje1g.trf1.jus.br/pje/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·TRF2","Consulta TRF 2ª Região (RJ/ES)","https://pje.trf2.jus.br/pje/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·TRF3","Consulta TRF 3ª Região (SP/MS)","https://pje.trf3.jus.br/pje/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·TRF4","Consulta TRF 4ª Região (Sul)","https://pje.trf4.jus.br/pje/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·TRF5","Consulta TRF 5ª Região (NE)","https://pje.trf5.jus.br/pje/ConsultaPublica/listView.seam")}
       <div style="height:10px"></div>
       <div class="links-col-titulo">📋 Certidões e Nada Consta</div>
       ${linkItem("NC·TJES","Nada Consta TJES","https://www.tjes.jus.br/certidao-negativa-de-debitos/","destaque")}
@@ -1646,9 +1712,8 @@ function renderMenuLinks(){
       ${linkItem("DPE·ES","Defensoria Pública ES","https://www.dpe.es.gov.br","destaque")}
     </div>`;
 
-  document.getElementById("dropdown-links").innerHTML=
-    `<div id="links-grid">${col1}${col2}${col3}</div>
-     <div id="links-footer">🔗 Links Úteis LEXBRASIL · Clique em qualquer link para abrir em nova aba</div>`;
+  document.getElementById("painel").innerHTML=
+    `<div style="max-width:900px"><div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">🔗 Links Úteis Jurídicos</div><div id="links-grid">${col1}${col2}${col3}</div><div id="links-footer">🔗 Links Úteis LEXBRASIL · Clique em qualquer link para abrir em nova aba</div></div>`;
 }
 </script>
 </body>
