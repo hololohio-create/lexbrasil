@@ -480,8 +480,8 @@ function irHome(){
   document.getElementById("srch-input").value="";
   document.getElementById("lista-srch-input").value="";
   secaoAtiva="todos";busca="";listaBusca="";
-  // Abre todas as categorias expandidas na tela inicial
-  CATS.forEach(c=>catAberta[c.id]=true);
+  // Início: tudo fechado
+  CATS.forEach(c=>catAberta[c.id]=false);
   setNav(document.querySelector("#filtros .fb"));
   renderLista();renderWelcome();
 }
@@ -645,11 +645,10 @@ let secaoAtiva="todos", itemAtivo=null, novidades=[], colabs=[], busca="", lista
 const catAberta={};
 
 window.onload=async()=>{
-  // Restaurar tamanho de fonte salvo
   const fonteSalva=localStorage.getItem("lex_fonte");
   if(fonteSalva){fonteBase=parseInt(fonteSalva);document.documentElement.style.fontSize=fonteBase+"px";}
-  // Abre todas as categorias expandidas na tela inicial
-  CATS.forEach(c=>catAberta[c.id]=true);
+  // Início: tudo fechado
+  CATS.forEach(c=>catAberta[c.id]=false);
   renderLista();renderWelcome();
   await Promise.all([carregarNovidades(),carregarColabs(),registrarAcesso()]);
 };
