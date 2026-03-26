@@ -344,16 +344,16 @@ a{color:var(--royal-lt);text-decoration:none;}
 .sobre-titulo{font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:10px;}
 .sobre-deus{background:linear-gradient(135deg,rgba(200,160,32,.1),rgba(200,160,32,.04));border:1px solid rgba(200,160,32,.3);border-radius:10px;padding:14px 20px;margin-bottom:10px;text-align:center;}
 .sobre-deus h3{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);margin-bottom:8px;}
-.sobre-deus p{font-size:12.5px;color:var(--text-dim);line-height:1.75;margin-bottom:8px;}
+.sobre-deus p{font-size:12.5px;color:var(--text-dim);line-height:1.75;margin-bottom:8px;text-align:justify;}
 .sobre-deus em{color:rgba(200,160,32,.85);font-style:italic;font-family:'Playfair Display',serif;font-size:12.5px;}
-.sobre-bloco{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;line-height:1.75;font-size:12.5px;color:var(--text-dim);text-align:left;}
+.sobre-bloco{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;line-height:1.75;font-size:12.5px;color:var(--text-dim);text-align:justify;}
 .sobre-bloco p{margin-bottom:10px;}
 .sobre-bloco p:last-child{margin-bottom:0;}
 .sobre-bloco strong{color:var(--accent);}
 /* BLOCO RAYANE — foto + texto lado a lado */
 .sobre-rayane{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;text-align:left;}
 .rayane-foto{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);flex-shrink:0;box-shadow:0 4px 16px rgba(42,79,171,.3);align-self:center;}
-.rayane-texto{flex:1;font-size:12.5px;color:var(--text-dim);line-height:1.75;}
+.rayane-texto{flex:1;font-size:12.5px;color:var(--text-dim);line-height:1.75;text-align:justify;}
 .rayane-texto strong{color:var(--accent);}
 .sobre-citacao{background:rgba(42,79,171,.08);border:1px solid rgba(65,105,200,.2);border-radius:8px;padding:11px 16px;margin:10px 0;font-family:'Playfair Display',serif;font-size:13.5px;color:var(--accent);font-style:italic;line-height:1.6;text-align:center;}
 .sobre-rodape{text-align:center;margin-top:10px;padding:12px 16px;background:var(--bg2);border:1px solid rgba(200,160,32,.2);border-radius:10px;}
@@ -441,13 +441,8 @@ a{color:var(--royal-lt);text-decoration:none;}
 <div id="filtros">
   <button class="fb on" onclick="irHome();setNav(this)">🏠 Início</button>
   <button class="fb" onclick="setSecao('norma',this)">📜 Normas</button>
-  <div class="fb-group" id="menu-sumulas-wrap">
-    <button class="fb" onclick="toggleSubSumulas(event)">⚖️ Súmulas ▾</button>
-    <div class="fb-submenu" id="submenu-sumulas">
-      <button onclick="setSecao('sumula',document.querySelector('#menu-sumulas-wrap .fb'));fecharSubSumulas()">⚖️ Súmulas STF/STJ</button>
-      <button onclick="setSecao('sumula_vinculante',document.querySelector('#menu-sumulas-wrap .fb'));fecharSubSumulas()">🔒 Vinculantes</button>
-    </div>
-  </div>
+  <button class="fb" onclick="setSecao('sumula',this)">⚖️ Súmulas</button>
+  <button class="fb" onclick="setSecao('sumula_vinculante',this)">🔒 Vinculantes</button>
   <button class="fb" onclick="setSecao('repercussao',this)">🏛️ Rep. Geral</button>
   <button class="fb" onclick="setSecao('dh',this)">🌍 Dir. Humanos</button>
   <button class="fb" onclick="mostrarModelos();setNav(this)">📄 Docs. Jurídicos</button>
@@ -455,7 +450,6 @@ a{color:var(--royal-lt);text-decoration:none;}
   <button class="fb fb-gold" onclick="mostrarSimplificando();setNav(this)">✦ Simplificando o Direito</button>
   <button class="fb" onclick="mostrarColabsPage();setNav(this)">👥 Colaboradores</button>
   <button class="fb fb-sobre" onclick="mostrarSobre();setNav(this)">💙 Sobre o Site</button>
-  <button class="fb" onclick="mostrarNovidades();setNav(this)">🔔 Novidades</button>
   <span id="cnt-badge"></span>
 </div>
 
