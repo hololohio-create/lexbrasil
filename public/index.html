@@ -69,6 +69,18 @@ a{color:var(--royal-lt);text-decoration:none;}
 .fb-sobre{border-color:rgba(100,140,220,.25);color:rgba(140,180,255,.65);}
 .fb-sobre:hover,.fb-sobre.on{background:rgba(42,79,171,.1);border-color:var(--border2);color:var(--accent);}
 #cnt-badge{margin-left:auto;font-size:10px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+/* SUBMENU SÚMULAS */
+.fb-group{position:relative;display:inline-flex;}
+.fb-group>.fb{border-radius:20px;}
+.fb-submenu{
+  display:none;position:absolute;top:calc(100% + 5px);left:0;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:9px;padding:5px;min-width:170px;z-index:150;
+  box-shadow:0 6px 24px rgba(0,0,0,.5);animation:fadeIn .18s ease;
+}
+.fb-submenu.aberto{display:block;}
+.fb-submenu button{display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-dim);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Lato',sans-serif;font-weight:600;transition:background .15s;}
+.fb-submenu button:hover{background:var(--royal-dim);color:var(--accent);}
 
 /* LAYOUT */
 #main{display:flex;flex:1;min-height:0;overflow:hidden;position:relative;}
@@ -339,8 +351,8 @@ a{color:var(--royal-lt);text-decoration:none;}
 .sobre-bloco p:last-child{margin-bottom:0;}
 .sobre-bloco strong{color:var(--accent);}
 /* BLOCO RAYANE — foto + texto lado a lado */
-.sobre-rayane{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:flex-start;gap:16px;text-align:left;}
-.rayane-foto{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);flex-shrink:0;box-shadow:0 4px 16px rgba(42,79,171,.3);}
+.sobre-rayane{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;text-align:left;}
+.rayane-foto{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);flex-shrink:0;box-shadow:0 4px 16px rgba(42,79,171,.3);align-self:center;}
 .rayane-texto{flex:1;font-size:12.5px;color:var(--text-dim);line-height:1.75;}
 .rayane-texto strong{color:var(--accent);}
 .sobre-citacao{background:rgba(42,79,171,.08);border:1px solid rgba(65,105,200,.2);border-radius:8px;padding:11px 16px;margin:10px 0;font-family:'Playfair Display',serif;font-size:13.5px;color:var(--accent);font-style:italic;line-height:1.6;text-align:center;}
@@ -429,15 +441,20 @@ a{color:var(--royal-lt);text-decoration:none;}
 <div id="filtros">
   <button class="fb on" onclick="irHome();setNav(this)">🏠 Início</button>
   <button class="fb" onclick="setSecao('norma',this)">📜 Normas</button>
-  <button class="fb" onclick="setSecao('sumula',this)">⚖️ Súmulas</button>
-  <button class="fb" onclick="setSecao('sumula_vinculante',this)">🔒 Vinculantes</button>
+  <div class="fb-group" id="menu-sumulas-wrap">
+    <button class="fb" onclick="toggleSubSumulas(event)">⚖️ Súmulas ▾</button>
+    <div class="fb-submenu" id="submenu-sumulas">
+      <button onclick="setSecao('sumula',document.querySelector('#menu-sumulas-wrap .fb'));fecharSubSumulas()">⚖️ Súmulas STF/STJ</button>
+      <button onclick="setSecao('sumula_vinculante',document.querySelector('#menu-sumulas-wrap .fb'));fecharSubSumulas()">🔒 Vinculantes</button>
+    </div>
+  </div>
   <button class="fb" onclick="setSecao('repercussao',this)">🏛️ Rep. Geral</button>
   <button class="fb" onclick="setSecao('dh',this)">🌍 Dir. Humanos</button>
   <button class="fb" onclick="mostrarModelos();setNav(this)">📄 Docs. Jurídicos</button>
   <button class="fb" onclick="mostrarLinksPage();setNav(this)">🔗 Links Úteis</button>
   <button class="fb fb-gold" onclick="mostrarSimplificando();setNav(this)">✦ Simplificando o Direito</button>
   <button class="fb" onclick="mostrarColabsPage();setNav(this)">👥 Colaboradores</button>
-  <button class="fb fb-sobre" onclick="mostrarSobre();setNav(this)">💙 Sobre</button>
+  <button class="fb fb-sobre" onclick="mostrarSobre();setNav(this)">💙 Sobre o Site</button>
   <button class="fb" onclick="mostrarNovidades();setNav(this)">🔔 Novidades</button>
   <span id="cnt-badge"></span>
 </div>
@@ -458,7 +475,6 @@ a{color:var(--royal-lt);text-decoration:none;}
 <div id="footer">
   <div>LEXBRASIL · Planalto · STF · STJ · TST · Consulte sempre um advogado habilitado</div>
   <div id="footer-brand">Idealizado pelos acadêmicos Gércio B. S. Júnior e Rayane Biz Pramio · 2026 · Todos os direitos reservados</div>
-  <a href="/admin.html" id="footer-admin">admin</a>
 </div>
 
 <script>
@@ -745,9 +761,20 @@ function setSecao(id,btn){
   document.getElementById("srch-input").value="";
   busca="";listaBusca="";
   document.getElementById("lista-srch-input").value="";
+  itemAtivo=null;
   renderLista();
-  // Mostra welcome só se for Início, senão limpa painel para ver a lista
   document.getElementById("painel").innerHTML=`<div style="padding:30px 24px;color:var(--text-faint);font-size:13px;font-family:'Playfair Display',serif">Selecione um item no menu lateral para ver os detalhes.</div>`;
+}
+
+// SUBMENU SÚMULAS
+function toggleSubSumulas(e){
+  e.stopPropagation();
+  const sub=document.getElementById("submenu-sumulas");
+  const aberto=sub.classList.toggle("aberto");
+  if(aberto)setTimeout(()=>document.addEventListener("click",fecharSubSumulas,{once:true}),10);
+}
+function fecharSubSumulas(){
+  document.getElementById("submenu-sumulas")?.classList.remove("aberto");
 }
 
 function renderLista(){
@@ -1028,6 +1055,175 @@ b) A notificação da autoridade coatora para prestar informações;
 c) No mérito, a concessão definitiva da segurança, confirmando a liminar.
 
 Dá-se à causa o valor de R$ [valor].
+Termos em que pede deferimento.
+
+[Cidade], [data]. [Advogado] — OAB/[Estado] nº [número]`
+  },
+  {
+    id:"mi",cat:"Remédios Constitucionais",
+    nome:"Mandado de Injunção (MI)",icone:"⚡",
+    quando:"Use quando um direito previsto na Constituição não pode ser exercido por falta de norma regulamentadora. Exige que o Poder Público crie a lei que está faltando. Julgado pelo STF (direitos constitucionais federais) ou TJs (direitos estaduais). Ex: direito de greve de servidores públicos.",
+    modelo:`EXCELENTÍSSIMO(A) SENHOR(A) MINISTRO(A) PRESIDENTE DO EGRÉGIO SUPREMO TRIBUNAL FEDERAL
+
+[NOME DO IMPETRANTE], [qualificação completa], vem impetrar
+
+MANDADO DE INJUNÇÃO
+
+com pedido de LIMINAR, com fundamento no art. 5º, LXXI, da Constituição Federal, em face da omissão do [Poder/Órgão omisso], pelos fundamentos a seguir:
+
+I — DA LEGITIMIDADE
+O impetrante é titular do direito constitucional previsto no art. [artigo] da CF/88, cujo exercício está inviabilizado pela ausência de norma regulamentadora.
+
+II — DA OMISSÃO INCONSTITUCIONAL
+Até a presente data, o [Poder Legislativo/Executivo] não editou a norma necessária para regulamentar o art. [artigo] da CF/88, tornando inviável o exercício do direito de [descreva o direito].
+
+III — DO CABIMENTO
+Presentes os requisitos do MI: (a) direito previsto na CF/88; (b) falta de norma regulamentadora; (c) impossibilidade de exercício do direito.
+
+IV — DA LIMINAR
+Presentes o fumus boni iuris e o periculum in mora, requer-se liminar para [medida urgente].
+
+V — DOS PEDIDOS
+a) Concessão da liminar;
+b) No mérito, a concessão da ordem para que o [órgão] supra a omissão, possibilitando o exercício do direito previsto no art. [artigo] da CF/88.
+
+Dá-se à causa o valor de R$ [valor].
+Termos em que pede deferimento.
+
+[Cidade], [data]. [Advogado] — OAB/[Estado] nº [número]`
+  },
+  {
+    id:"hd",cat:"Remédios Constitucionais",
+    nome:"Habeas Data (HD)",icone:"🗂️",
+    quando:"Use quando um órgão público (governo, INSS, Receita Federal, etc.) se recusa a fornecer informações sobre você mesmo que constam em seus registros, ou quando você quer retificar dados incorretos. É gratuito. Exige tentativa prévia administrativa frustrada.",
+    modelo:`EXCELENTÍSSIMO(A) SENHOR(A) JUIZ(A) FEDERAL DA [Nº] VARA FEDERAL DA SUBSEÇÃO JUDICIÁRIA DE [CIDADE]
+
+[NOME DO IMPETRANTE], [qualificação completa], vem impetrar
+
+HABEAS DATA
+
+com fundamento no art. 5º, LXXII, da CF/88 e Lei nº 9.507/97, contra ato do(a) [AUTORIDADE/ÓRGÃO COATOR], pelos fundamentos a seguir:
+
+I — DOS FATOS
+O impetrante formulou requerimento administrativo junto ao(à) [órgão] em [data], solicitando [acesso/retificação] de seus dados pessoais constantes nos registros daquele órgão (doc. anexo).
+O requerimento foi [negado / não respondido no prazo de 15 dias], configurando o indeferimento necessário ao cabimento da presente ação.
+
+II — DO DIREITO
+O art. 5º, LXXII, da CF/88 assegura o habeas data para:
+a) Assegurar o conhecimento de informações relativas à pessoa do impetrante;
+b) Retificação de dados quando não se prefira fazê-lo por processo sigiloso, judicial ou administrativo.
+
+III — DOS PEDIDOS
+Requer:
+a) A notificação da autoridade coatora;
+b) No mérito, a procedência do pedido, determinando ao(à) [órgão] que [forneça as informações / retifique os dados] do impetrante no prazo de [15/30] dias.
+
+Dá-se à causa o valor de R$ [valor]. Processo isento de custas (art. 21, Lei 9.507/97).
+Termos em que pede deferimento.
+
+[Cidade], [data]. [Advogado] — OAB/[Estado] nº [número]`
+  },
+  {
+    id:"acao_popular",cat:"Remédios Constitucionais",
+    nome:"Ação Popular",icone:"🏛️",
+    quando:"Use quando um cidadão quer anular ato lesivo ao patrimônio público, à moralidade administrativa, ao meio ambiente ou ao patrimônio histórico e cultural. Qualquer cidadão (com título de eleitor) pode propor. É gratuita salvo má-fé. Não precisa de advogado para propor, mas é recomendável.",
+    modelo:`EXCELENTÍSSIMO(A) SENHOR(A) JUIZ(A) DE DIREITO DA [Nº] VARA DA FAZENDA PÚBLICA DA COMARCA DE [CIDADE]
+
+[NOME DO AUTOR], cidadão brasileiro, portador do título de eleitor nº [xxx], Zona [xxx], Seção [xxx], [qualificação completa], vem propor
+
+AÇÃO POPULAR
+
+com pedido de LIMINAR, com fundamento no art. 5º, LXXIII, da CF/88 e Lei nº 4.717/65, em face de [NOME DO RÉU(S)], pelos fundamentos a seguir:
+
+I — DA LEGITIMIDADE ATIVA
+O autor é cidadão brasileiro no pleno exercício de seus direitos políticos, conforme comprova o título de eleitor em anexo.
+
+II — DOS FATOS
+[Descreva de forma clara o ato lesivo: quem praticou, quando, onde, como e qual o dano ao patrimônio público/moralidade/meio ambiente]
+
+III — DA ILEGALIDADE E LESIVIDADE
+O ato impugnado é ilegal porque: [fundamente com dispositivos legais violados]
+O ato causou/pode causar dano ao patrimônio público consistente em: [descreva o dano]
+
+IV — DA LIMINAR
+Presentes o fumus boni iuris e o periculum in mora, requer-se liminar para suspender os efeitos do ato impugnado.
+
+V — DOS PEDIDOS
+a) Concessão da liminar para suspender imediatamente o ato impugnado;
+b) A citação dos réus;
+c) No mérito, a declaração de nulidade do ato e condenação dos responsáveis ao ressarcimento dos danos causados ao erário.
+
+Dá-se à causa o valor de R$ [valor].
+Termos em que pede deferimento.
+
+[Cidade], [data]. [Autor / Advogado — OAB nº, se houver]`
+  },
+  {
+    id:"adpf",cat:"Remédios Constitucionais",
+    nome:"ADPF — Arguição de Descumprimento de Preceito Fundamental",icone:"⚖️",
+    quando:"Use quando um ato do poder público (lei, decreto, ato normativo — inclusive anteriores à CF/88) viola preceito fundamental da Constituição e não há outro meio eficaz para sanar a lesão. Julgada exclusivamente pelo STF. Legitimados: Presidente, Congresso, Governadores, OAB, partidos com representação, confederações sindicais.",
+    modelo:`EXCELENTÍSSIMO(A) SENHOR(A) MINISTRO(A) PRESIDENTE DO EGRÉGIO SUPREMO TRIBUNAL FEDERAL
+
+[LEGITIMADO — ex: Conselho Federal da OAB / Partido Político], representado pelo seu [cargo e nome do representante], vem propor
+
+ARGUIÇÃO DE DESCUMPRIMENTO DE PRECEITO FUNDAMENTAL — ADPF
+
+com pedido de MEDIDA CAUTELAR, com fundamento no art. 102, §1º, da CF/88 e Lei nº 9.882/99, pelos fundamentos a seguir:
+
+I — DA LEGITIMIDADE ATIVA
+O arguente é parte legítima para propor ADPF, nos termos do art. 2º, I, da Lei 9.882/99, c/c art. [artigo pertinente].
+
+II — DO ATO IMPUGNADO
+Impugna-se o(a) [lei/decreto/ato normativo nº xxx], de [data], do(a) [ente federativo], que [descreva o ato].
+
+III — DO PRECEITO FUNDAMENTAL VIOLADO
+O ato impugnado viola o preceito fundamental previsto no art. [artigo] da CF/88, que assegura [descreva o preceito — dignidade, liberdade, igualdade, etc.], porque: [fundamente detalhadamente]
+
+IV — DA SUBSIDIARIEDADE
+Não existe outro meio eficaz para sanar a lesividade, pois: [demonstre a ausência de outro instrumento processual adequado]
+
+V — DA MEDIDA CAUTELAR
+Presentes o fumus boni iuris e o periculum in mora, requer-se medida cautelar para suspender os efeitos do ato impugnado.
+
+VI — DOS PEDIDOS
+a) Concessão da medida cautelar;
+b) No mérito, o julgamento procedente para declarar a incompatibilidade do ato com a CF/88 e determinar as medidas necessárias.
+
+Termos em que pede deferimento.
+
+[Cidade], [data]. [Advogado] — OAB/[Estado] nº [número]`
+  },
+  {
+    id:"reclamacao",cat:"Remédios Constitucionais",
+    nome:"Reclamação Constitucional",icone:"📢",
+    quando:"Use quando uma decisão judicial ou ato administrativo desrespeita: (1) a competência do STF ou STJ; (2) uma decisão do STF ou STJ já proferida; ou (3) uma súmula vinculante. É um instrumento de preservação da autoridade dos tribunais superiores. Pode ser proposta pela parte prejudicada ou pelo MP.",
+    modelo:`EXCELENTÍSSIMO(A) SENHOR(A) MINISTRO(A) PRESIDENTE DO EGRÉGIO [SUPREMO TRIBUNAL FEDERAL / SUPERIOR TRIBUNAL DE JUSTIÇA]
+
+[NOME DO RECLAMANTE], [qualificação completa], vem propor
+
+RECLAMAÇÃO CONSTITUCIONAL
+
+com pedido de MEDIDA LIMINAR, com fundamento no art. 102, I, 'l' / art. 105, I, 'f', da CF/88 e art. 988 do CPC, pelos fundamentos a seguir:
+
+I — DA LEGITIMIDADE
+O reclamante é parte no processo nº [número], em trâmite perante [juízo/tribunal reclamado], tendo interesse direto na preservação da autoridade desta Corte.
+
+II — DO ATO RECLAMADO
+O(A) [juízo/autoridade reclamada] proferiu [decisão/ato] em [data], que [descreva o ato reclamado].
+
+III — DA VIOLAÇÃO
+O ato reclamado:
+[ ] Usurpa a competência deste Tribunal, pois [fundamente]
+[ ] Desrespeita a decisão proferida nos autos do [processo/RE/REsp nº xxx], que determinou [descreva o que foi decidido]
+[ ] Contraria a Súmula Vinculante nº [número], que estabelece: "[texto da súmula]"
+
+IV — DA LIMINAR
+Presentes o fumus boni iuris e o periculum in mora, requer-se liminar para suspender os efeitos do ato reclamado.
+
+V — DOS PEDIDOS
+a) Concessão da liminar;
+b) No mérito, a procedência da reclamação, cassando o ato reclamado e determinando que outro seja proferido em conformidade com [a decisão / a súmula vinculante] desta Corte.
+
 Termos em que pede deferimento.
 
 [Cidade], [data]. [Advogado] — OAB/[Estado] nº [número]`
@@ -1665,24 +1861,16 @@ function renderMenuLinksPage(){
   const col2=`
     <div class="links-col">
       <div class="links-col-titulo">💻 PJe — Consulta de Processos</div>
-      ${linkItem("PJe","Consulta Nacional PJe","https://www.pje.jus.br/pje/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·ES","Consulta TRT17 (ES)","https://pje.trt17.jus.br/pjekz/ConsultaPublica/listView.seam","destaque")}
-      ${linkItem("PJe·1G","Consulta 1º Grau TJES","https://pje.tjes.jus.br/1g/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·2G","Consulta 2º Grau TJES","https://pje.tjes.jus.br/2g/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·TRF1","Consulta TRF 1ª Região","https://pje1g.trf1.jus.br/pje/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·TRF2","Consulta TRF 2ª Região (RJ/ES)","https://pje.trf2.jus.br/pje/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·TRF3","Consulta TRF 3ª Região (SP/MS)","https://pje.trf3.jus.br/pje/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·TRF4","Consulta TRF 4ª Região (Sul)","https://pje.trf4.jus.br/pje/ConsultaPublica/listView.seam")}
-      ${linkItem("PJe·TRF5","Consulta TRF 5ª Região (NE)","https://pje.trf5.jus.br/pje/ConsultaPublica/listView.seam")}
+      ${linkItem("PJe·CNJ","Consulta Pública Geral (CNJ)","https://www.pje.jus.br/pje/ConsultaPublica/listView.seam")}
       <div style="height:10px"></div>
       <div class="links-col-titulo">📋 Certidões e Nada Consta</div>
       ${linkItem("NC·TJES","Nada Consta TJES","https://www.tjes.jus.br/certidao-negativa-de-debitos/","destaque")}
-      ${linkItem("NC·PCES","Nada Consta PCCES","https://servicos.es.gov.br/","destaque")}
+      ${linkItem("NC·PCES","Nada Consta PCES","https://ssp.sesp.es.gov.br/rgantecedentes/","destaque")}
       ${linkItem("NC·STF","Certidão STF","https://www.stf.jus.br/portal/cms/verTexto.asp?servico=processoAcompanhamento")}
       ${linkItem("NC·STJ","Certidão STJ","https://www.stj.jus.br/sites/portalp/Processos/Certidoes")}
       ${linkItem("NC·TST","Certidão TST","https://www.tst.jus.br/certidoes")}
       ${linkItem("NC·TRT17","Certidão TRT17","https://www.trt17.jus.br/certidoes")}
-      ${linkItem("CND·RF","Certidão Negativa Receita Federal","https://www.receita.fazenda.gov.br/aplicacoes/aviso/certidao")}
+      ${linkItem("CND·RF","Certidão Receita Federal","https://www.receita.fazenda.gov.br/aplicacoes/aviso/certidao")}
       ${linkItem("FGTS","Certidão FGTS — Caixa","https://www.caixa.gov.br/beneficios-trabalhador/fgts")}
     </div>`;
 
