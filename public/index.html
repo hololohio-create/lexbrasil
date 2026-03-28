@@ -37,9 +37,9 @@ a{color:var(--royal-lt);text-decoration:none;}
 .logo-icone{width:34px;height:34px;border-radius:8px;background:linear-gradient(145deg,#1a3896,#3a62cc);display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(42,79,171,.45);flex-shrink:0;}
 #logo-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:2px;}
 #logo-sub{font-size:8px;color:var(--text-faint);letter-spacing:2px;text-transform:uppercase;}
-#srch{flex:1;min-width:160px;max-width:460px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;padding:0 12px;gap:8px;transition:border-color .2s;}
+#srch{flex:1;min-width:0;max-width:460px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;padding:0 10px;gap:6px;transition:border-color .2s;overflow:hidden;}
 #srch:focus-within{border-color:var(--border2);}
-#srch input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Lato',sans-serif;font-size:13px;padding:8px 0;}
+#srch input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text);font-family:'Lato',sans-serif;font-size:13px;padding:8px 0;width:0;}
 #srch input::placeholder{color:var(--text-faint);}
 #hdr-right{display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0;flex-wrap:wrap;}
 #contador{display:flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:10px;color:var(--text-dim);}
@@ -53,7 +53,7 @@ a{color:var(--royal-lt);text-decoration:none;}
 #btn-login{background:var(--royal);border:none;color:#fff;padding:7px 13px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:background .2s;white-space:nowrap;}
 #btn-login:hover{background:var(--royal-lt);}
 /* botão mobile menu */
-#btn-menu-mobile{display:none;background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:6px 10px;border-radius:7px;cursor:pointer;font-size:16px;}
+#btn-menu-mobile{display:none;background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:7px 10px;border-radius:7px;cursor:pointer;font-size:20px;line-height:1;flex-shrink:0;}
 
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(58,154,92,.4);}50%{opacity:.5;box-shadow:0 0 0 4px rgba(58,154,92,0);}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -68,6 +68,44 @@ a{color:var(--royal-lt);text-decoration:none;}
 .fb-gold:hover,.fb-gold.on{background:rgba(200,160,32,.1);border-color:rgba(200,160,32,.7);color:var(--gold);}
 .fb-sobre{border-color:rgba(100,140,220,.25);color:rgba(140,180,255,.65);}
 .fb-sobre:hover,.fb-sobre.on{background:rgba(42,79,171,.1);border-color:var(--border2);color:var(--accent);}
+/* PROTEÇÃO À MULHER */
+.fb-mulher{border-color:rgba(180,80,200,.4);color:rgba(210,130,240,.9);}
+.fb-mulher:hover,.fb-mulher.on{background:rgba(160,60,200,.15);border-color:rgba(180,80,220,.7);color:#d090f0;}
+.nav-item-mulher .nav-item-txt{color:rgba(210,130,240,.9);}
+.nav-item-mulher:hover,.nav-item-mulher.on{background:rgba(160,60,200,.15);border-color:rgba(180,80,220,.5);}
+/* BANNER MULHER NA HOME */
+#banner-mulher-wrap{background:linear-gradient(135deg,rgba(100,20,140,.35),rgba(160,40,200,.2),rgba(100,20,140,.35));border-top:2px solid rgba(180,80,220,.5);border-bottom:2px solid rgba(180,80,220,.5);padding:14px 24px;cursor:pointer;transition:background .2s;width:100%;}
+#banner-mulher-wrap:hover{background:linear-gradient(135deg,rgba(100,20,140,.45),rgba(160,40,200,.3),rgba(100,20,140,.45));}
+#banner-mulher-inner{max-width:900px;margin:0 auto;}
+#banner-mulher{display:none;}
+#banner-mulher-topo{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+#banner-mulher-titulo{font-family:'Playfair Display',serif;font-size:16px;color:#d090f0;display:flex;align-items:center;gap:8px;}
+#banner-mulher-sos{display:flex;gap:7px;flex-wrap:wrap;}
+.btn-sos{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Lato',sans-serif;text-decoration:none;transition:all .2s;cursor:pointer;border:none;}
+.btn-sos-180{background:rgba(220,60,60,.2);border:1px solid rgba(220,60,60,.5);color:#f08080;}
+.btn-sos-180:hover{background:rgba(220,60,60,.35);}
+.btn-sos-190{background:rgba(60,120,220,.2);border:1px solid rgba(60,120,220,.5);color:#80b0f0;}
+.btn-sos-190:hover{background:rgba(60,120,220,.35);}
+.btn-sos-100{background:rgba(60,180,100,.2);border:1px solid rgba(60,180,100,.5);color:#80d0a0;}
+.btn-sos-100:hover{background:rgba(60,180,100,.35);}
+#banner-mulher-desc{font-size:12px;color:rgba(210,180,240,.75);line-height:1.6;margin-bottom:10px;}
+#banner-mulher-mais{font-size:11px;color:rgba(180,100,220,.8);display:flex;align-items:center;gap:4px;}
+/* PÁGINA MULHER */
+.mulher-secao-titulo{font-family:'Playfair Display',serif;font-size:16px;color:#d090f0;margin:20px 0 10px;display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px solid rgba(180,80,220,.2);}
+.mulher-lei-card{background:var(--bg2);border:1px solid rgba(160,60,200,.2);border-radius:9px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .18s;}
+.mulher-lei-card:hover{border-color:rgba(200,100,240,.5);}
+.mulher-lei-sigla{font-size:9px;color:#b070e0;font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+.mulher-lei-nome{font-size:13px;color:var(--text);font-weight:600;margin-bottom:4px;}
+.mulher-lei-desc{font-size:11px;color:var(--text-faint);line-height:1.5;}
+.mulher-contato-card{background:rgba(120,30,160,.12);border:1px solid rgba(180,80,220,.3);border-radius:9px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
+.mulher-contato-num{font-family:'Playfair Display',serif;font-size:22px;color:#d090f0;font-weight:700;flex-shrink:0;min-width:60px;}
+.mulher-contato-info{flex:1;}
+.mulher-contato-nome{font-size:13px;color:var(--text);font-weight:600;}
+.mulher-contato-desc{font-size:11px;color:var(--text-faint);margin-top:2px;}
+.mulher-contato-btn{background:rgba(180,80,220,.2);border:1px solid rgba(180,80,220,.4);color:#d090f0;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Lato',sans-serif;text-decoration:none;white-space:nowrap;transition:all .2s;}
+.mulher-contato-btn:hover{background:rgba(180,80,220,.35);}
+.mulher-alerta{background:rgba(220,60,60,.08);border:1px solid rgba(220,60,60,.25);border-radius:8px;padding:12px 16px;margin-bottom:8px;font-size:12px;color:rgba(240,160,160,.9);line-height:1.7;}
+.mulher-alerta strong{color:#f08080;}
 #cnt-badge{margin-left:auto;font-size:10px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
 /* SUBMENU SÚMULAS */
 .fb-group{position:relative;display:inline-flex;}
@@ -85,38 +123,6 @@ a{color:var(--royal-lt);text-decoration:none;}
 /* LAYOUT — sem menu lateral */
 #main{flex:1;overflow-y:auto;}
 #painel{max-width:900px;margin:0 auto;padding:24px 20px;}
-
-/* ── MOBILE ────────────────────────────────── */
-@media(max-width:768px){
-  #hdr{height:auto;padding:8px 12px;gap:6px;flex-wrap:nowrap;}
-  #logo{flex-shrink:0;}
-  #logo-sub{display:none;}
-  #srch{flex:1;min-width:0;max-width:none;}
-  #hdr-right{gap:5px;flex-shrink:0;}
-  #contador{display:none;}
-  #filtros{padding:5px 8px;gap:3px;top:var(--hdr-h,50px);}
-  .fb{padding:4px 9px;font-size:11px;}
-  #cnt-badge{display:none;}
-  #painel{padding:14px 12px;}
-  .stats{grid-template-columns:repeat(2,1fr);}
-  .termos-grid{grid-template-columns:1fr;}
-  .btns-row{flex-direction:column;}
-  .btns-row a,.btns-row button{width:100%;}
-  #simpl-wrap,#sobre-wrap{max-width:100%;}
-  .det-titulo{font-size:17px;}
-  #links-grid{grid-template-columns:1fr;}
-  .links-col{border-right:none;border-bottom:1px solid var(--border);padding:12px 10px;}
-  .links-col:last-child{border-bottom:none;}
-  .sobre-rayane{flex-direction:column;align-items:center;text-align:center;}
-  .rayane-texto{text-align:left;}
-}
-@media(max-width:480px){
-  #hdr{padding:7px 10px;}
-  .fb{font-size:10px;padding:3px 7px;}
-  #acessib button{font-size:10px;padding:3px 6px;}
-  #btn-login{font-size:10px;padding:6px 10px;}
-  #painel{padding:12px 10px;}
-}
 
 /* CATEGORIAS EXPANSÍVEIS */
 .cat-grupo{margin-bottom:4px;}
@@ -385,23 +391,64 @@ a{color:var(--royal-lt);text-decoration:none;}
 #footer-admin:hover{opacity:.6;}
 
 /* ── MOBILE ────────────────────────────────── */
+/* DRAWER — sempre presente, desliza da esquerda */
+#nav-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.65);z-index:998;
+}
+#nav-overlay.aberto{display:block;}
+#nav-drawer{
+  position:fixed;top:0;left:0;bottom:0;
+  width:82%;max-width:300px;
+  background:var(--bg1);border-right:1px solid var(--border2);
+  z-index:999;
+  transform:translateX(-110%);
+  transition:transform .3s ease;
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  box-shadow:4px 0 30px rgba(0,0,0,.6);
+}
+#nav-drawer.aberto{transform:translateX(0) !important;}
+#nav-drawer-hdr{
+  padding:20px 16px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:var(--bg2);
+}
+#nav-drawer-hdr span{font-family:'Playfair Display',serif;font-size:16px;color:var(--accent);letter-spacing:1px;}
+#nav-drawer-close{
+  background:transparent;border:1px solid var(--border);
+  color:var(--text-dim);width:32px;height:32px;
+  border-radius:8px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+}
+#nav-drawer-itens{padding:10px 8px;flex:1;}
+.nav-item{
+  display:flex !important;align-items:center;gap:14px;
+  padding:14px 16px;border-radius:10px;cursor:pointer;
+  transition:background .18s;border:1px solid transparent;
+  margin-bottom:4px;width:100%;text-align:left;
+  background:transparent;font-family:'Lato',sans-serif;
+}
+.nav-item:active,.nav-item:hover,.nav-item.on{
+  background:var(--royal-dim);border-color:var(--border2);
+}
+.nav-item-ico{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
+.nav-item-txt{font-size:15px;color:var(--text);font-weight:600;line-height:1.2;}
+.nav-item.on .nav-item-txt{color:var(--accent);}
+.nav-item-gold .nav-item-txt{color:rgba(200,160,32,.9);}
+.nav-item-gold:hover,.nav-item-gold.on{background:rgba(200,160,32,.1);border-color:rgba(200,160,32,.4);}
+.nav-item-sobre .nav-item-txt{color:rgba(140,180,255,.75);}
+.nav-divider{height:1px;background:var(--border);margin:8px 8px;}
+
 @media(max-width:768px){
-  #hdr{height:auto;padding:10px 12px;gap:7px;}
-  #srch{max-width:100%;order:3;width:100%;min-width:0;}
-  #logo{order:1;}
-  #hdr-right{order:2;gap:5px;}
-  #contador{display:none;}
+  #hdr{height:auto;padding:8px 12px;gap:8px;flex-wrap:nowrap;}
+  #logo{flex-shrink:0;}
   #logo-sub{display:none;}
-  #btn-menu-mobile{display:block;order:0;}
-  #filtros{padding:5px 8px;gap:3px;}
-  .fb{padding:4px 9px;font-size:11px;}
-  #cnt-badge{display:none;}
-  /* LISTA como drawer lateral no mobile */
-  #main{flex-direction:row;overflow:hidden;}
-  #lista{position:fixed;top:0;left:0;bottom:0;width:80%;max-width:300px;z-index:50;transform:translateX(-100%);transition:transform .3s ease;box-shadow:4px 0 24px rgba(0,0,0,.5);}
-  #lista.aberta{transform:translateX(0);}
-  #lista-overlay{display:block;}
-  #lista-overlay.visivel{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49;}
+  #srch{flex:1;min-width:0;max-width:none;}
+  #hdr-right{gap:5px;flex-shrink:0;}
+  #contador{display:none;}
+  #btn-menu-mobile{display:flex !important;align-items:center;justify-content:center;flex-shrink:0;}
+  #filtros{display:none !important;}
   #painel{padding:14px 12px;}
   .stats{grid-template-columns:repeat(2,1fr);}
   .termos-grid{grid-template-columns:1fr;}
@@ -412,10 +459,14 @@ a{color:var(--royal-lt);text-decoration:none;}
   #links-grid{grid-template-columns:1fr;}
   .links-col{border-right:none;border-bottom:1px solid var(--border);padding:12px 10px;}
   .links-col:last-child{border-bottom:none;}
+  .sobre-rayane{flex-direction:column;align-items:center;}
+  .rayane-texto{text-align:left;}
 }
 @media(max-width:480px){
-  .fb{font-size:10px;padding:3px 7px;}
+  #hdr{padding:7px 10px;}
   #acessib button{font-size:10px;padding:3px 6px;}
+  #btn-login{font-size:10px;padding:6px 10px;}
+  #painel{padding:12px 10px;}
 }
 </style>
 </head>
@@ -438,10 +489,9 @@ a{color:var(--royal-lt);text-decoration:none;}
     </div>
     <div><div id="logo-name">LEXBRASIL</div><div id="logo-sub">Sistema Jurídico Integrado</div></div>
   </div>
-  <button id="btn-menu-mobile" style="display:none" onclick="toggleMenuMobile()">☰</button>
+  <button id="btn-menu-mobile" onclick="abrirNavMobile()">☰</button>
   <div id="srch">
-    <span style="font-size:12px;color:var(--text-faint)">🔍</span>
-    <input type="text" id="srch-input" placeholder="Buscar em tudo... ex: dolo, progressão, § único" oninput="buscarGlobal(this.value)">
+    <input type="text" id="srch-input" placeholder="🔍 Buscar... ex: dolo, furto, CF/88" oninput="buscarGlobal(this.value)">
   </div>
   <div id="hdr-right">
     <div id="contador"><span class="green-dot"></span><span id="cnt-num">...</span><span>acessos</span></div>
@@ -464,9 +514,51 @@ a{color:var(--royal-lt);text-decoration:none;}
   <button class="fb" onclick="mostrarModelos();setNav(this)">📄 Docs. Jurídicos</button>
   <button class="fb" onclick="mostrarLinksPage();setNav(this)">🔗 Links Úteis</button>
   <button class="fb fb-gold" onclick="mostrarSimplificando();setNav(this)">✦ Simplificando o Direito</button>
+  <button class="fb fb-mulher" onclick="mostrarMulher();setNav(this)">🆘 Amparo à Mulher</button>
   <button class="fb" onclick="mostrarColabsPage();setNav(this)">👥 Colaboradores</button>
   <button class="fb fb-sobre" onclick="mostrarSobre();setNav(this)">💙 Sobre o Site</button>
   <span id="cnt-badge"></span>
+</div>
+
+<!-- NAV DRAWER MOBILE -->
+<div id="nav-overlay" onclick="fecharNavMobile()"></div>
+<div id="nav-drawer">
+  <div id="nav-drawer-hdr">
+    <span>⚖️ LEXBRASIL</span>
+    <button id="nav-drawer-close" onclick="fecharNavMobile()">✕</button>
+  </div>
+  <div id="nav-drawer-itens">
+    <button class="nav-item on" id="nd-inicio" onclick="irHome();fecharNavMobile()"><span class="nav-item-ico">🏠</span><span class="nav-item-txt">Início</span></button>
+    <button class="nav-item" id="nd-norma" onclick="setSecao('norma',null);fecharNavMobile()"><span class="nav-item-ico">📜</span><span class="nav-item-txt">Normas</span></button>
+    <button class="nav-item" id="nd-sumula" onclick="setSecao('sumula',null);fecharNavMobile()"><span class="nav-item-ico">⚖️</span><span class="nav-item-txt">Súmulas STF/STJ</span></button>
+    <button class="nav-item" id="nd-sv" onclick="setSecao('sumula_vinculante',null);fecharNavMobile()"><span class="nav-item-ico">🔒</span><span class="nav-item-txt">Súmulas Vinculantes</span></button>
+    <button class="nav-item" id="nd-rg" onclick="setSecao('repercussao',null);fecharNavMobile()"><span class="nav-item-ico">🏛️</span><span class="nav-item-txt">Repercussão Geral</span></button>
+    <button class="nav-item" id="nd-dh" onclick="setSecao('dh',null);fecharNavMobile()"><span class="nav-item-ico">🌍</span><span class="nav-item-txt">Direitos Humanos</span></button>
+    <div class="nav-divider"></div>
+    <button class="nav-item" id="nd-docs" onclick="mostrarModelos();setNavDrawer('nd-docs');fecharNavMobile()"><span class="nav-item-ico">📄</span><span class="nav-item-txt">Docs. Jurídicos</span></button>
+    <button class="nav-item" id="nd-links" onclick="mostrarLinksPage();setNavDrawer('nd-links');fecharNavMobile()"><span class="nav-item-ico">🔗</span><span class="nav-item-txt">Links Úteis</span></button>
+    <button class="nav-item nav-item-gold" id="nd-simpl" onclick="mostrarSimplificando();setNavDrawer('nd-simpl');fecharNavMobile()"><span class="nav-item-ico">✦</span><span class="nav-item-txt">Simplificando o Direito</span></button>
+    <button class="nav-item nav-item-mulher" id="nd-mulher" onclick="mostrarMulher();setNavDrawer('nd-mulher');fecharNavMobile()"><span class="nav-item-ico">💜</span><span class="nav-item-txt">Amparo à Mulher</span></button>
+    <button class="nav-item" id="nd-colab" onclick="mostrarColabsPage();setNavDrawer('nd-colab');fecharNavMobile()"><span class="nav-item-ico">👥</span><span class="nav-item-txt">Colaboradores</span></button>
+    <div class="nav-divider"></div>
+    <button class="nav-item nav-item-sobre" id="nd-sobre" onclick="mostrarSobre();setNavDrawer('nd-sobre');fecharNavMobile()"><span class="nav-item-ico">💙</span><span class="nav-item-txt">Sobre o Site</span></button>
+  </div>
+</div>
+
+<!-- BANNER AMPARO À MULHER — aparece só na home -->
+<div id="banner-mulher-wrap" style="display:none" onclick="mostrarMulher();setNav(document.querySelector('.fb-mulher'))">
+  <div id="banner-mulher-inner">
+    <div id="banner-mulher-topo">
+      <div id="banner-mulher-titulo">🆘 Amparo à Mulher — Conheça seus direitos</div>
+      <div id="banner-mulher-sos">
+        <a class="btn-sos btn-sos-180" href="tel:180" onclick="event.stopPropagation()">📞 180 — Ligue Mulher</a>
+        <a class="btn-sos btn-sos-190" href="tel:190" onclick="event.stopPropagation()">🚔 190 — Polícia</a>
+        <a class="btn-sos btn-sos-100" href="tel:100" onclick="event.stopPropagation()">📲 100 — Dir. Humanos</a>
+      </div>
+    </div>
+    <div id="banner-mulher-desc">Lei Maria da Penha · Feminicídio · Pensão Alimentícia · Amparo à Mãe Solo · Medidas Protetivas · Delegacia da Mulher · Orientações e alertas</div>
+    <div id="banner-mulher-mais">Clique para ver leis, direitos e contatos de emergência →</div>
+  </div>
 </div>
 
 <!-- MAIN -->
@@ -493,9 +585,9 @@ function irHome(){
 }
 
 // ACESSIBILIDADE — A+ / A-
-let fonteBase=14;
+let fonteBase=16;
 function ajustarFonte(delta){
-  fonteBase=Math.max(11,Math.min(20,fonteBase+delta));
+  fonteBase=Math.max(13,Math.min(22,fonteBase+delta));
   document.documentElement.style.fontSize=fonteBase+"px";
   localStorage.setItem("lex_fonte",fonteBase);
 }
@@ -515,6 +607,24 @@ function abrirLogin(){
   modal.addEventListener("click",e=>{if(e.target===modal)modal.remove();});
   document.body.appendChild(modal);
 }
+// ── DRAWER MOBILE ─────────────────────────────────────────
+function toggleMenuMobile(){abrirNavMobile();}
+function fecharMenuMobile(){}
+function abrirNavMobile(){
+  document.getElementById("nav-drawer").classList.add("aberto");
+  document.getElementById("nav-overlay").classList.add("aberto");
+  document.body.style.overflow="hidden";
+}
+function fecharNavMobile(){
+  document.getElementById("nav-drawer").classList.remove("aberto");
+  document.getElementById("nav-overlay").classList.remove("aberto");
+  document.body.style.overflow="";
+}
+function setNavDrawer(id){
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("on"));
+  document.getElementById(id)?.classList.add("on");
+}
+
 function compartilharVersiculo(){
   const texto=document.getElementById("versiculo-texto")?.textContent||"";
   const ref=document.getElementById("versiculo-ref")?.textContent||"";
@@ -547,6 +657,7 @@ const NORMAS=[
   {id:"lei9605",numero:"9605",nome:"Lei de Crimes Ambientais",sigla:"LCA",url:"https://www.planalto.gov.br/ccivil_03/leis/l9605.htm",analise:"A LCA pune pessoas físicas e jurídicas por danos ao meio ambiente. Crimes incluem desmatamento, poluição, maus-tratos a animais, tráfico de fauna e flora.",keywords:["crime ambiental","flora","fauna","poluicao","ibama","desmatamento"]},
   {id:"lei11101",numero:"11101",nome:"Lei de Falências e Recuperação Judicial",sigla:"LRF",url:"https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/lei/l11101.htm",analise:"A LRF regula a recuperação judicial e a falência de empresas. A recuperação visa preservar a empresa em crise e proteger empregos. A falência liquida o patrimônio para pagar credores.",keywords:["falencia","recuperacao judicial","insolvencia","credores"]},
   {id:"lei6015",numero:"6015",nome:"Lei de Registros Públicos",sigla:"LRP",url:"https://www.planalto.gov.br/ccivil_03/leis/l6015compilada.htm",analise:"A LRP regula os cartórios de registro: nascimento, casamento, óbito e imóveis. O registro de nascimento é gratuito e obrigatório. O registro de imóveis garante a propriedade perante terceiros.",keywords:["registro","nascimento","casamento","obito","imovel","cartorio"]},
+  {id:"lei15358",numero:"15358",nome:"Lei Antifacção — Marco Legal do Combate ao Crime Organizado",sigla:"Lei 15.358/2026",url:"https://www.planalto.gov.br/ccivil_03/_Ato2023-2026/2026/Lei/L15358.htm",analise:"Sancionada em 24/03/2026 e publicada no DOU em 25/03/2026, a Lei 15.358/2026 (Lei Raul Jungmann) institui o Marco Legal do Combate ao Crime Organizado no Brasil. Define facção criminosa como toda organização de 3 ou mais pessoas que use violência, grave ameaça ou coação para controlar territórios ou intimidar populações e autoridades. Tipifica o crime de 'domínio social estruturado': bloqueio de ruas, barricadas, imposição de regras a moradores, ataques a serviços públicos. Penas: reclusão de 20 a 40 anos para lideranças. Veda anistia, indulto, fiança e liberdade condicional aos líderes. Cria o Banco Nacional de Dados de Organizações Criminosas. Amplia bloqueio e apreensão de bens e ativos do crime organizado. Altera CP, CPP, Lei de Crimes Hediondos, LEP, Lei de Drogas e Estatuto do Desarmamento.\n\nPROGRESSÃO DE PENA — NOVAS FRAÇÕES (crimes hediondos e equiparados):\n• Hediondo primário: ANTES 40% → AGORA 70%\n• Hediondo com resultado morte (primário): ANTES 50% → AGORA 75%\n• Reincidente hediondo: ANTES 60% → AGORA 80%\n• Reincidente hediondo com resultado morte: ANTES 70% → AGORA 85%",keywords:["antifaccao","faccao","crime organizado","milicia","paramilitar","dominio social","territorio","marco legal","lei raul jungmann","violencia","orcrim","progressao","hediondo","reincidente"],notes:"⚠️ Lei nova — publicada em 25/03/2026. Verifique sempre no site oficial do Planalto para atualizações e regulamentações."},
 ];
 
 const SUMULAS=[
@@ -724,7 +835,8 @@ const catAberta={};
 
 window.onload=async()=>{
   const fonteSalva=localStorage.getItem("lex_fonte");
-  if(fonteSalva){fonteBase=parseInt(fonteSalva);document.documentElement.style.fontSize=fonteBase+"px";}
+  if(fonteSalva&&parseInt(fonteSalva)>=13){fonteBase=parseInt(fonteSalva);document.documentElement.style.fontSize=fonteBase+"px";}
+  else{localStorage.removeItem("lex_fonte");}
   renderWelcome();
   await Promise.all([carregarNovidades(),carregarColabs(),registrarAcesso()]);
 };
@@ -837,11 +949,15 @@ function renderLista(){}
 
 
 function setSecao(id,btn){
+  mostrarBannerMulher(false);
   secaoAtiva=id;
-  setNav(btn);
+  if(btn)setNav(btn);
   document.getElementById("srch-input").value="";
   busca="";listaBusca="";
   itemAtivo=null;
+  // Sincronizar drawer mobile
+  const mapa={"norma":"nd-norma","sumula":"nd-sumula","sumula_vinculante":"nd-sv","repercussao":"nd-rg","dh":"nd-dh"};
+  if(mapa[id])setNavDrawer(mapa[id]);
   mostrarListaSecao(id);
 }
 
@@ -959,6 +1075,7 @@ function mostrarDetalhe(){
 
 // ── MOSTRAR NOVIDADES ────────────────────────────────────
 function mostrarNovidades(){
+  mostrarBannerMulher(false);
   itemAtivo=null;
   const p=document.getElementById("painel");
   if(!novidades.length){p.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-faint)"><div style="font-size:36px;margin-bottom:12px">🔔</div><div style="font-family:Playfair Display,serif;font-size:15px">Nenhuma novidade publicada ainda</div></div>';return;}
@@ -968,6 +1085,7 @@ function mostrarNovidades(){
 
 // ── SIMPLIFICANDO ────────────────────────────────────────
 function mostrarSimplificando(buscarTermo=""){
+  mostrarBannerMulher(false);
   itemAtivo=null;
   const cats=[...new Set(TERMOS.map(t=>t.cat))];
   // todas fechadas por padrão
@@ -1545,6 +1663,7 @@ APÓS O BO:
 ];
 
 function mostrarModelos(){
+  mostrarBannerMulher(false);
   itemAtivo=null;
   if(!window.modelosCatAberta)window.modelosCatAberta={};
   const cats=[...new Set(MODELOS.map(m=>m.cat))];
@@ -1630,7 +1749,87 @@ function copiarModelo(id){
 }
 
 // ── SOBRE ────────────────────────────────────────────────
+// ── PROTEÇÃO À MULHER ────────────────────────────────────
+function mostrarMulher(){
+  mostrarBannerMulher(false);
+  itemAtivo=null;
+  document.getElementById("painel").innerHTML=`
+  <div id="det-wrap" style="max-width:780px">
+    <!-- CABEÇALHO -->
+    <div style="background:linear-gradient(135deg,rgba(120,30,160,.2),rgba(180,50,200,.08));border:1px solid rgba(180,80,220,.4);border-radius:12px;padding:20px 22px;margin-bottom:20px">
+      <div style="font-family:Playfair Display,serif;font-size:22px;color:#d090f0;margin-bottom:6px">🆘 Amparo à Mulher</div>
+      <div style="font-size:13px;color:rgba(210,180,240,.7);line-height:1.7">Seus direitos, leis de proteção, contatos de emergência e orientações. Você não está sozinha.</div>
+    </div>
+    <!-- EMERGÊNCIA -->
+    <div class="mulher-secao-titulo">🚨 Emergência — Ligue Agora</div>
+    <div class="mulher-alerta"><strong>Em situação de risco imediato: ligue 190 (Polícia Militar)</strong>. Se não puder falar, faça a ligação e não desligue — a PM rastreia a chamada.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:8px">
+      <div class="mulher-contato-card"><div class="mulher-contato-num">180</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Central de Atendimento à Mulher</div><div class="mulher-contato-desc">24h · gratuito · sigiloso · orienta e registra denúncias</div></div><a class="mulher-contato-btn" href="tel:180">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">190</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Polícia Militar</div><div class="mulher-contato-desc">Emergência imediata — 24h</div></div><a class="mulher-contato-btn" href="tel:190">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">100</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Disque Direitos Humanos</div><div class="mulher-contato-desc">Denúncias de violações de direitos — 24h · gratuito</div></div><a class="mulher-contato-btn" href="tel:100">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">192</div><div class="mulher-contato-info"><div class="mulher-contato-nome">SAMU</div><div class="mulher-contato-desc">Urgências médicas — lesões, agressões físicas</div></div><a class="mulher-contato-btn" href="tel:192">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">ES</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Delegacia da Mulher — Vitória/ES</div><div class="mulher-contato-desc">Rua Sete de Setembro, 46 — Centro, Vitória · (27) 3636-3631</div></div><a class="mulher-contato-btn" href="tel:2736363631">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">ES</div><div class="mulher-contato-info"><div class="mulher-contato-nome">CISP Mulher — Delegacia Online ES</div><div class="mulher-contato-desc">Registro online de B.O. — Polícia Civil do ES</div></div><a class="mulher-contato-btn" href="https://www.pc.es.gov.br" target="_blank">Acessar</a></div>
+    </div>
+    <!-- LEIS -->
+    <div class="mulher-secao-titulo">⚖️ Principais Leis de Proteção</div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('lmp')">
+      <div class="mulher-lei-sigla">Lei 11.340/2006</div>
+      <div class="mulher-lei-nome">Lei Maria da Penha</div>
+      <div class="mulher-lei-desc">Principal lei de proteção à mulher contra violência doméstica e familiar. Cria medidas protetivas de urgência, prisão em flagrante do agressor e afastamento do lar. Pena: 3 meses a 3 anos, sem substituição por multa.</div>
+    </div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('feminicidio')">
+      <div class="mulher-lei-sigla">Lei 13.104/2015</div>
+      <div class="mulher-lei-nome">Lei do Feminicídio</div>
+      <div class="mulher-lei-desc">Inclui o feminicídio como qualificadora do homicídio — crime hediondo. Pena: 12 a 30 anos. Agravantes quando a vítima é gestante, menor de 14 anos, maior de 60 anos ou portadora de deficiência.</div>
+    </div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('stalking')">
+      <div class="mulher-lei-sigla">Lei 14.132/2021</div>
+      <div class="mulher-lei-nome">Lei do Stalking (Perseguição)</div>
+      <div class="mulher-lei-desc">Tipifica o crime de perseguição — seguir, monitorar, contatar ou vigiar a vítima de forma reiterada. Pena: 6 meses a 2 anos. Agravada se praticada contra mulher por razões de gênero.</div>
+    </div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('importunacao')">
+      <div class="mulher-lei-sigla">Lei 13.718/2018 — Lei Mariana Ferrer</div>
+      <div class="mulher-lei-nome">Importunação Sexual e Divulgação de Cenas Íntimas</div>
+      <div class="mulher-lei-desc">Criminaliza importunação sexual (atos libidinosos sem consentimento) com pena de 1 a 5 anos. Proíbe uso de comportamento da vítima como argumento de defesa. Criminaliza divulgação de imagens íntimas sem consentimento.</div>
+    </div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('pensao_gravida')">
+      <div class="mulher-lei-sigla">Lei 11.804/2008</div>
+      <div class="mulher-lei-nome">Pensão Alimentícia Gravídica</div>
+      <div class="mulher-lei-desc">Garante à gestante o direito de pedir alimentos ao pai do bebê ainda durante a gravidez — mesmo antes do nascimento. Cobre despesas do pré-natal, parto, alimentação e psicológicas da gestante. O pedido é liminar e urgente.</div>
+    </div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('alimentos')">
+      <div class="mulher-lei-sigla">Lei 5.478/1968 + CC/2002</div>
+      <div class="mulher-lei-nome">Lei de Alimentos</div>
+      <div class="mulher-lei-desc">Garante pensão alimentícia aos filhos até os 18 anos (ou 24 se estudante universitário). O descumprimento permite prisão civil do devedor (1 a 3 meses). A mãe solo pode pedir alimentos sem advogado no Juizado Especial.</div>
+    </div>
+    <div class="mulher-lei-card" onclick="selecionarItemMulher('mae_solo')">
+      <div class="mulher-lei-sigla">CF/88 + CDC + CLT + Lei 14.457/2022</div>
+      <div class="mulher-lei-nome">Direitos da Mãe Solo</div>
+      <div class="mulher-lei-desc">Mães solo têm direito a: estabilidade no emprego durante gestação e 5 meses após; creche ou auxílio-creche; prioridade em programas sociais (BPC, Bolsa Família); guarda unilateral com responsabilidade compartilhada do pai; e isenção de IR para mãe solo em alguns casos.</div>
+    </div>
+    <!-- ORIENTAÇÕES -->
+    <div class="mulher-secao-titulo">📋 Orientações Práticas</div>
+    <div class="mulher-alerta"><strong>Se você sofreu violência:</strong> procure atendimento médico imediatamente — o laudo médico é prova fundamental. Não tome banho antes de ser atendida se houve agressão sexual. Fotografe as lesões. Guarde prints de mensagens de ameaça.</div>
+    <div class="mulher-alerta"><strong>Medida Protetiva de Urgência:</strong> qualquer mulher pode pedir ao juiz, 24h por dia, mesmo sem advogado, pelo delegado ou diretamente ao plantão judiciário. O agressor pode ser afastado do lar em horas.</div>
+    <div class="mulher-alerta"><strong>CREAS — Centro de Referência Especializado de Assistência Social:</strong> oferece apoio psicológico, social e jurídico gratuito a mulheres em situação de violência. Procure o CREAS mais próximo na sua cidade.</div>
+    <div class="mulher-alerta"><strong>Não minimize a violência:</strong> xingamento, humilhação, controle de dinheiro, isolamento de família e amigos são formas de violência psicológica e moral — tipificadas pela Lei Maria da Penha.</div>
+    <!-- LINKS ÚTEIS -->
+    <div class="mulher-secao-titulo">🔗 Links e Recursos</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">
+      <a href="https://www.gov.br/mdh/pt-br/navegue-por-temas/politicas-para-mulheres" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Ministério das Mulheres — Gov.br</div><div class="mulher-lei-desc">Políticas públicas, programas e serviços federais</div></a>
+      <a href="https://www.mpes.mp.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">MP-ES — Ministério Público</div><div class="mulher-lei-desc">Proteção da mulher e denúncias no Espírito Santo</div></a>
+      <a href="https://www.dpe.es.gov.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Defensoria Pública do ES</div><div class="mulher-lei-desc">Atendimento jurídico gratuito — sem advogado</div></a>
+      <a href="https://www.pc.es.gov.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Polícia Civil ES — Delegacia Online</div><div class="mulher-lei-desc">Registro de B.O. e denúncias online</div></a>
+    </div>
+    <div style="margin-top:16px;padding:14px 16px;background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:8px;font-size:11px;color:rgba(210,180,240,.7);line-height:1.7;text-align:center">
+      💜 Você tem direito a uma vida sem violência. Busque ajuda — há pessoas prontas para te apoiar.
+    </div>
+  </div>`;
+}
+
 function mostrarSobre(){
+  mostrarBannerMulher(false);
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
   <div id="sobre-wrap">
@@ -1660,7 +1859,13 @@ function mostrarSobre(){
 }
 
 // ── WELCOME ──────────────────────────────────────────────
+function mostrarBannerMulher(visivel){
+  const b=document.getElementById("banner-mulher-wrap");
+  if(b)b.style.display=visivel?"block":"none";
+}
+
 function renderWelcome(){
+  mostrarBannerMulher(true);
   const totalDH=DH.length;
   document.getElementById("painel").innerHTML=`
     <div id="welcome">
@@ -1673,6 +1878,7 @@ function renderWelcome(){
         <div class="stat" onclick="setSecao('dh',document.querySelectorAll('#filtros .fb')[5])"><div class="stat-ico">🌍</div><div class="stat-n">${totalDH}</div><div class="stat-l">Dir. Humanos</div></div>
       </div>
       <div class="w-hint">💡 Use o menu de navegação acima · <span style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px" onclick="mostrarSimplificando();setNav(document.querySelector('.fb-gold'))">✦ Simplificando o Direito</span> para entender termos jurídicos</div>
+      <div id="bm-inject"></div>
       <div id="versiculo-wrap"><div class="v-label">✝ Versículo do Dia</div><div id="versiculo-texto"></div><div id="versiculo-ref"></div><div id="versiculo-bencao">Deus abençoe sua leitura e seu dia! 🙏</div><button onclick="compartilharVersiculo()" style="margin-top:12px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);color:#25d366;padding:7px 16px;border-radius:20px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:all .2s;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='rgba(37,211,102,.25)'" onmouseout="this.style.background='rgba(37,211,102,.15)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Compartilhar no WhatsApp</button></div>
       ${colabs.length?`<div id="colab-section"><h3>💼 Contribuições dos Colaboradores <span class="colab-ver-todos" onclick="mostrarTodosColabs()">Ver todos →</span></h3><div id="carousel-wrap"><div id="carousel-track">${colabs.slice(0,5).map(c=>{const ini=c.autor?c.autor[0].toUpperCase():"C";const foto=c.foto?`<img class="colab-avatar" src="${c.foto}" onerror="this.outerHTML='<div class=colab-avatar-ini>${ini}</div>'">`:`<div class="colab-avatar-ini">${ini}</div>`;const data=c.criado_em?new Date(c.criado_em).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"";return`<div class="carousel-slide"><div class="colab-card${c.fixada?" fixada":""}"><div class="colab-card-top">${foto}<div class="colab-info-top"><div class="colab-autor">${c.autor}</div><div class="colab-cargo-tag">${c.cargo||""}</div></div><span class="colab-tipo-badge">${c.tipo||"Artigo"}</span></div><div class="colab-titulo">${c.titulo}</div><div class="colab-texto">${c.texto}</div><div class="colab-data-rodape">📅 ${data}</div></div></div>`;}).join("")}</div></div><div id="carousel-dots">${colabs.slice(0,5).map((_,i)=>`<button class="carousel-dot${i===0?" ativo":""}" onclick="irSlide(${i})"></button>`).join("")}</div></div>`:""}
       <div id="noticias-wrap"><h3>📰 Notícias Jurídicas do Dia <span>automático</span></h3><div id="noticias-lista"></div></div>
@@ -1791,6 +1997,7 @@ function mostrarTodosColabs(){
 // ── MENU LINKS ÚTEIS ─────────────────────────────────────
 // Links agora abre como página, não dropdown
 function mostrarLinksPage(){
+  mostrarBannerMulher(false);
   itemAtivo=null;
   renderMenuLinksPage();
 }
@@ -1803,6 +2010,7 @@ function toggleSubLista(id){
 
 // Colaboradores como página
 function mostrarColabsPage(){
+  mostrarBannerMulher(false);
   itemAtivo=null;
   const p=document.getElementById("painel");
   p.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-faint)">Carregando colaboradores...</div>';
