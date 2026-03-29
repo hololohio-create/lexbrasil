@@ -180,11 +180,19 @@ a{color:var(--royal-lt);text-decoration:none;}
 #versiculo-bencao{font-size:12px;color:rgba(200,160,32,.8);margin-top:9px;font-weight:700;}
 /* NOTÍCIAS */
 #noticias-wrap{margin-top:16px;}
-#noticias-wrap h3{font-family:'Playfair Display',serif;font-size:14px;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+#noticias-wrap h3{font-family:'Playfair Display',serif;font-size:14px;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 #noticias-wrap h3 span{font-size:9px;color:var(--text-faint);font-family:'Lato',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:1px;}
+/* ABAS DE FONTES */
+#noticias-abas{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.noticias-aba{background:transparent;border:1px solid var(--border);color:var(--text-faint);padding:3px 10px;border-radius:20px;cursor:pointer;font-size:10px;font-family:'Lato',sans-serif;font-weight:700;transition:all .18s;white-space:nowrap;}
+.noticias-aba:hover,.noticias-aba.on{background:var(--royal-dim);border-color:var(--border2);color:var(--accent);}
+.noticias-aba-loading{opacity:.5;pointer-events:none;}
+.noticias-aba-ok::after{content:' ✓';color:var(--green);font-size:8px;}
+.noticias-aba-err::after{content:' ✗';color:#a04040;font-size:8px;}
+/* CARDS */
 .noticia-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:7px;transition:border-color .2s;display:flex;gap:10px;align-items:flex-start;}
 .noticia-card:hover{border-color:var(--border2);}
-.noticia-fonte{font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--royal-lt);letter-spacing:.8px;text-transform:uppercase;flex-shrink:0;margin-top:3px;max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.noticia-fonte{font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--royal-lt);letter-spacing:.8px;text-transform:uppercase;flex-shrink:0;margin-top:3px;width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .noticia-titulo a{color:var(--text);font-size:12px;line-height:1.4;transition:color .18s;}
 .noticia-titulo a:hover{color:var(--accent);}
 .noticia-data{font-size:10px;color:var(--text-faint);margin-top:3px;}
@@ -862,23 +870,109 @@ async function carregarColabs(){
 }
 
 // ── NOTÍCIAS DO DIA ──────────────────────────────────────
+// ── NOTÍCIAS DOS ÓRGÃOS OFICIAIS ─────────────────────────
+const FONTES_NOTICIAS=[
+  {id:"stf",   label:"STF",    cor:"#4a8adc", feed:"https://portal.stf.jus.br/rss/noticia.asp"},
+  {id:"stj",   label:"STJ",    cor:"#3a7a6a", feed:"https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias/rss.aspx"},
+  {id:"camara",label:"Câmara", cor:"#6a3a8a", feed:"https://www.camara.leg.br/noticias/rss/ultimas-noticias"},
+  {id:"senado",label:"Senado", cor:"#8a4a3a", feed:"https://www12.senado.leg.br/noticias/feeds/ultimas"},
+  {id:"mpf",   label:"MPF",    cor:"#3a6a4a", feed:"https://www.mpf.mp.br/sala-de-imprensa/noticias-do-mpf/rss"},
+  {id:"mpes",  label:"MP-ES",  cor:"#7a5a2a", feed:"https://www.mpes.mp.br/Arquivos/RSS/Noticias.xml"},
+];
+
+// Cache de notícias por fonte
+const _notCache={};
+let _notFonteAtiva="stf";
+
 async function carregarNoticias(){
-  const el=document.getElementById("noticias-lista");if(!el)return;
-  el.innerHTML='<div style="font-size:11px;color:var(--text-faint);padding:6px 0">Carregando notícias...</div>';
-  const q=encodeURIComponent("STF OR STJ direito Brasil");
-  const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent("https://news.google.com/rss/search?q="+q+"&hl=pt-BR&gl=BR&ceid=BR:pt-419")}&count=5`;
-  try{
-    const r=await fetch(api);const d=await r.json();
-    if(!d.items?.length)throw new Error();
-    el.innerHTML=d.items.map(item=>{
-      const data=new Date(item.pubDate).toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});
-      let fonte="";try{fonte=new URL(item.link).hostname.replace("www.","").split(".")[0];}catch(e){}
-      return`<div class="noticia-card"><div class="noticia-fonte">${fonte.slice(0,10)}</div><div><div class="noticia-titulo"><a href="${item.link}" target="_blank">${item.title}</a></div><div class="noticia-data">${data}</div></div></div>`;
-    }).join("");
-  }catch(e){
-    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:6px 0">Notícias indisponíveis. <a href="https://news.google.com/search?q=STF+direito&hl=pt-BR" target="_blank">Ver no Google Notícias →</a></div>`;
+  const el=document.getElementById("noticias-lista");
+  if(!el)return;
+
+  // Renderizar abas
+  const wrap=document.getElementById("noticias-wrap");
+  if(wrap&&!document.getElementById("noticias-abas")){
+    const abas=document.createElement("div");
+    abas.id="noticias-abas";
+    abas.innerHTML=FONTES_NOTICIAS.map(f=>
+      `<button class="noticias-aba noticias-aba-loading${f.id===_notFonteAtiva?" on":""}" id="aba-${f.id}" onclick="trocarFonteNoticia('${f.id}')">${f.label}</button>`
+    ).join("");
+    el.parentNode.insertBefore(abas,el);
   }
+
+  // Carregar todas as fontes em paralelo (sem bloquear a UI)
+  FONTES_NOTICIAS.forEach(f=>buscarFeed(f));
+  // Mostrar a fonte ativa
+  mostrarNoticiasAtivas();
 }
+
+async function buscarFeed(fonte){
+  if(_notCache[fonte.id])return; // já carregou
+  _notCache[fonte.id]={status:"loading",items:[]};
+  const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.feed)}&count=6&api_key=`;
+  try{
+    const r=await fetch(api,{signal:AbortSignal.timeout(8000)});
+    const d=await r.json();
+    if(d.status==="ok"&&d.items?.length){
+      _notCache[fonte.id]={status:"ok",items:d.items};
+    } else {
+      // Fallback: Google News filtrado pela fonte
+      const q=encodeURIComponent(`site:${new URL(fonte.feed).hostname}`);
+      const r2=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(`https://news.google.com/rss/search?q=${fonte.label}+direito+site:${new URL(fonte.feed).hostname}&hl=pt-BR&gl=BR`)}&count=5`);
+      const d2=await r2.json();
+      if(d2.status==="ok"&&d2.items?.length){
+        _notCache[fonte.id]={status:"ok",items:d2.items};
+      } else {
+        _notCache[fonte.id]={status:"err",items:[]};
+      }
+    }
+  }catch(e){
+    _notCache[fonte.id]={status:"err",items:[]};
+  }
+  // Atualizar aba
+  const aba=document.getElementById(`aba-${fonte.id}`);
+  if(aba){
+    aba.classList.remove("noticias-aba-loading");
+    aba.classList.add(_notCache[fonte.id].status==="ok"?"noticias-aba-ok":"noticias-aba-err");
+  }
+  // Atualizar exibição se for a fonte ativa
+  if(fonte.id===_notFonteAtiva)mostrarNoticiasAtivas();
+}
+
+function trocarFonteNoticia(id){
+  _notFonteAtiva=id;
+  document.querySelectorAll(".noticias-aba").forEach(b=>b.classList.remove("on"));
+  document.getElementById(`aba-${id}`)?.classList.add("on");
+  mostrarNoticiasAtivas();
+}
+
+function mostrarNoticiasAtivas(){
+  const el=document.getElementById("noticias-lista");
+  if(!el)return;
+  const fonte=FONTES_NOTICIAS.find(f=>f.id===_notFonteAtiva);
+  const cache=_notCache[_notFonteAtiva];
+
+  if(!cache||cache.status==="loading"){
+    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0;display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:10px;height:10px;border:2px solid var(--royal-lt);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite"></span> Carregando ${fonte?.label||""}...</div>`;
+    return;
+  }
+  if(cache.status==="err"||!cache.items.length){
+    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0">Feed do ${fonte?.label} indisponível no momento. <a href="${fonte?.feed}" target="_blank" style="color:var(--royal-lt)">Acessar site →</a></div>`;
+    return;
+  }
+  el.innerHTML=cache.items.slice(0,5).map(item=>{
+    const data=new Date(item.pubDate).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"2-digit"});
+    return`<div class="noticia-card">
+      <div class="noticia-fonte" style="color:${fonte.cor||"var(--royal-lt)"}">${fonte.label}</div>
+      <div style="flex:1">
+        <div class="noticia-titulo"><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></div>
+        <div class="noticia-data">📅 ${data}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// CSS spin para loading
+(()=>{if(!document.getElementById("spin-css")){const s=document.createElement("style");s.id="spin-css";s.textContent="@keyframes spin{to{transform:rotate(360deg)}}";document.head.appendChild(s);}})();
 
 // ── VERSÍCULO ────────────────────────────────────────────
 function renderVersiculo(){
@@ -1754,78 +1848,115 @@ function mostrarMulher(){
   mostrarBannerMulher(false);
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
-  <div id="det-wrap" style="max-width:780px">
+  <div id="det-wrap" style="max-width:800px">
+
     <!-- CABEÇALHO -->
-    <div style="background:linear-gradient(135deg,rgba(120,30,160,.2),rgba(180,50,200,.08));border:1px solid rgba(180,80,220,.4);border-radius:12px;padding:20px 22px;margin-bottom:20px">
-      <div style="font-family:Playfair Display,serif;font-size:22px;color:#d090f0;margin-bottom:6px">🆘 Amparo à Mulher</div>
-      <div style="font-size:13px;color:rgba(210,180,240,.7);line-height:1.7">Seus direitos, leis de proteção, contatos de emergência e orientações. Você não está sozinha.</div>
+    <div style="background:linear-gradient(135deg,rgba(120,30,160,.22),rgba(180,50,200,.08));border:1px solid rgba(180,80,220,.4);border-radius:12px;padding:18px 22px;margin-bottom:16px">
+      <div style="font-family:Playfair Display,serif;font-size:21px;color:#d090f0;margin-bottom:5px">🆘 Amparo à Mulher</div>
+      <div style="font-size:12.5px;color:rgba(210,180,240,.75);line-height:1.7">Seus direitos, proteção legal, orientações práticas e contatos de emergência. <strong style="color:#d090f0">Você não está sozinha.</strong></div>
     </div>
+
     <!-- EMERGÊNCIA -->
     <div class="mulher-secao-titulo">🚨 Emergência — Ligue Agora</div>
-    <div class="mulher-alerta"><strong>Em situação de risco imediato: ligue 190 (Polícia Militar)</strong>. Se não puder falar, faça a ligação e não desligue — a PM rastreia a chamada.</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:8px">
+    <div class="mulher-alerta"><strong>Em risco imediato: ligue 190.</strong> Se não puder falar, ligue e não desligue — a PM rastreia a chamada. Se estiver com o agressor, pode fingir ligar para outra pessoa.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:4px">
       <div class="mulher-contato-card"><div class="mulher-contato-num">180</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Central de Atendimento à Mulher</div><div class="mulher-contato-desc">24h · gratuito · sigiloso · orienta e registra denúncias</div></div><a class="mulher-contato-btn" href="tel:180">Ligar</a></div>
-      <div class="mulher-contato-card"><div class="mulher-contato-num">190</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Polícia Militar</div><div class="mulher-contato-desc">Emergência imediata — 24h</div></div><a class="mulher-contato-btn" href="tel:190">Ligar</a></div>
-      <div class="mulher-contato-card"><div class="mulher-contato-num">100</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Disque Direitos Humanos</div><div class="mulher-contato-desc">Denúncias de violações de direitos — 24h · gratuito</div></div><a class="mulher-contato-btn" href="tel:100">Ligar</a></div>
-      <div class="mulher-contato-card"><div class="mulher-contato-num">192</div><div class="mulher-contato-info"><div class="mulher-contato-nome">SAMU</div><div class="mulher-contato-desc">Urgências médicas — lesões, agressões físicas</div></div><a class="mulher-contato-btn" href="tel:192">Ligar</a></div>
-      <div class="mulher-contato-card"><div class="mulher-contato-num">ES</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Delegacia da Mulher — Vitória/ES</div><div class="mulher-contato-desc">Rua Sete de Setembro, 46 — Centro, Vitória · (27) 3636-3631</div></div><a class="mulher-contato-btn" href="tel:2736363631">Ligar</a></div>
-      <div class="mulher-contato-card"><div class="mulher-contato-num">ES</div><div class="mulher-contato-info"><div class="mulher-contato-nome">CISP Mulher — Delegacia Online ES</div><div class="mulher-contato-desc">Registro online de B.O. — Polícia Civil do ES</div></div><a class="mulher-contato-btn" href="https://www.pc.es.gov.br" target="_blank">Acessar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">190</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Polícia Militar</div><div class="mulher-contato-desc">Emergência imediata — 24 horas</div></div><a class="mulher-contato-btn" href="tel:190">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">197</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Polícia Civil</div><div class="mulher-contato-desc">Denúncias e crimes — Polícia Civil ES</div></div><a class="mulher-contato-btn" href="tel:197">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">192</div><div class="mulher-contato-info"><div class="mulher-contato-nome">SAMU</div><div class="mulher-contato-desc">Urgência médica — lesões e agressões físicas</div></div><a class="mulher-contato-btn" href="tel:192">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num">100</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Disque Direitos Humanos</div><div class="mulher-contato-desc">Denúncias de violações — 24h · gratuito</div></div><a class="mulher-contato-btn" href="tel:100">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num" style="font-size:14px">DEL·ES</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Delegacia da Mulher — Vitória/ES</div><div class="mulher-contato-desc">R. Sete de Setembro, 46 — Centro · (27) 3636-3631</div></div><a class="mulher-contato-btn" href="tel:2736363631">Ligar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num" style="font-size:14px">ONLINE</div><div class="mulher-contato-info"><div class="mulher-contato-nome">Delegacia Online — PC-ES</div><div class="mulher-contato-desc">Registro de B.O. online — Polícia Civil do ES</div></div><a class="mulher-contato-btn" href="https://www.pc.es.gov.br" target="_blank">Acessar</a></div>
+      <div class="mulher-contato-card"><div class="mulher-contato-num" style="font-size:14px">CREAS</div><div class="mulher-contato-info"><div class="mulher-contato-nome">CREAS — Assistência Social</div><div class="mulher-contato-desc">Apoio psicológico, social e jurídico gratuito no seu município</div></div><a class="mulher-contato-btn" href="https://www.gov.br/pt-br/servicos/encontrar-o-creas-do-seu-municipio" target="_blank">Localizar</a></div>
     </div>
-    <!-- LEIS -->
+
+    <!-- ORIENTAÇÕES PRIMEIRO -->
+    <div class="mulher-secao-titulo">📋 O que Fazer — Orientações Práticas</div>
+    <div class="mulher-alerta"><strong>Após sofrer violência física ou sexual:</strong> procure atendimento médico imediatamente — o laudo é prova fundamental. Não tome banho antes de ser examinada se houve agressão sexual. Fotografe as lesões. Guarde roupas sem lavar em saco plástico.</div>
+    <div class="mulher-alerta"><strong>Guarde evidências digitais:</strong> faça prints de mensagens de ameaça, áudios, fotos enviadas, perfis de redes sociais. Salve tudo em nuvem (Google Drive, WhatsApp Web). Essas provas podem ser decisivas no processo.</div>
+    <div class="mulher-alerta"><strong>Medida Protetiva de Urgência:</strong> qualquer mulher pode pedir ao juiz, 24h por dia, mesmo sem advogado — pelo delegado, pelo MP ou diretamente ao plantão judiciário. O agressor pode ser afastado do lar em horas. É gratuita.</div>
+    <div class="mulher-alerta"><strong>Não minimize a violência:</strong> xingamento, humilhação, controle de dinheiro, isolamento de família e amigos, ciúme excessivo e monitoramento são violência psicológica e moral — criminalizados pela Lei Maria da Penha.</div>
+
+    <!-- SEGURANÇA DELA E DOS FILHOS -->
+    <div class="mulher-secao-titulo">🔒 Segurança — Cuidados para Você e seus Filhos</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:8px">
+      <div style="background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:9px;padding:13px 15px">
+        <div style="font-size:12px;color:#d090f0;font-weight:700;margin-bottom:6px">📱 No celular</div>
+        <div style="font-size:11.5px;color:var(--text-dim);line-height:1.7">Ative o modo de emergência SOS do celular (pressionar o botão liga/desliga 5x). Salve os números de emergência com nomes inocentes na agenda. Ative localização com pessoa de confiança. Desative localização do agressor no seu aparelho.</div>
+      </div>
+      <div style="background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:9px;padding:13px 15px">
+        <div style="font-size:12px;color:#d090f0;font-weight:700;margin-bottom:6px">🏠 Em casa</div>
+        <div style="font-size:11.5px;color:var(--text-dim);line-height:1.7">Tenha um plano de saída: documentos, dinheiro e roupas essenciais em local de fácil acesso. Combine um sinal com vizinhos de confiança (ex: bater na parede). Memorize o endereço da casa abrigo e delegacia mais próxima.</div>
+      </div>
+      <div style="background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:9px;padding:13px 15px">
+        <div style="font-size:12px;color:#d090f0;font-weight:700;margin-bottom:6px">👶 Com os filhos</div>
+        <div style="font-size:11.5px;color:var(--text-dim);line-height:1.7">Oriente as crianças a sair e chamar ajuda se houver agressão — nunca intervir. Avise a escola sobre a situação para controlar quem busca as crianças. O agressor não pode levar os filhos sem autorização judicial se houver medida protetiva ativa.</div>
+      </div>
+      <div style="background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:9px;padding:13px 15px">
+        <div style="font-size:12px;color:#d090f0;font-weight:700;margin-bottom:6px">📄 Documentos</div>
+        <div style="font-size:11.5px;color:var(--text-dim);line-height:1.7">Guarde cópias em local seguro (casa de familiar ou nuvem): RG, CPF, certidão de nascimento dos filhos, comprovante de residência, documentos do imóvel ou contrato de aluguel, cartão do plano de saúde e cartão de vacina dos filhos.</div>
+      </div>
+      <div style="background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:9px;padding:13px 15px">
+        <div style="font-size:12px;color:#d090f0;font-weight:700;margin-bottom:6px">💰 Financeiro</div>
+        <div style="font-size:11.5px;color:var(--text-dim);line-height:1.7">Abra uma conta bancária individual em banco diferente do agressor. Guarde um valor de emergência em local seguro. O controle financeiro (impedir de trabalhar, controlar gastos) é crime — violência econômica prevista na Lei Maria da Penha.</div>
+      </div>
+      <div style="background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:9px;padding:13px 15px">
+        <div style="font-size:12px;color:#d090f0;font-weight:700;margin-bottom:6px">🤝 Rede de apoio</div>
+        <div style="font-size:11.5px;color:var(--text-dim);line-height:1.7">Avise alguém de confiança sobre sua situação — familiar, amigo, vizinho, colega de trabalho. Não enfrente sozinha. A Casa Abrigo oferece moradia protegida e sigilosa para mulheres e filhos em risco de morte. Acesse pelo CREAS ou delegacia.</div>
+      </div>
+    </div>
+
+    <!-- LEIS — LISTA SUSPENSA -->
     <div class="mulher-secao-titulo">⚖️ Principais Leis de Proteção</div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('lmp')">
-      <div class="mulher-lei-sigla">Lei 11.340/2006</div>
-      <div class="mulher-lei-nome">Lei Maria da Penha</div>
-      <div class="mulher-lei-desc">Principal lei de proteção à mulher contra violência doméstica e familiar. Cria medidas protetivas de urgência, prisão em flagrante do agressor e afastamento do lar. Pena: 3 meses a 3 anos, sem substituição por multa.</div>
+    <div id="mulher-leis-lista">
+      ${[
+        {sigla:'Lei 11.340/2006',nome:'Lei Maria da Penha',desc:'Principal lei de proteção à mulher. Cria medidas protetivas de urgência, determina prisão em flagrante do agressor e afastamento do lar. Define 5 formas de violência: física, psicológica, sexual, patrimonial e moral. Pena: 3 meses a 3 anos, sem substituição por multa.'},
+        {sigla:'Lei 13.104/2015',nome:'Lei do Feminicídio',desc:'Inclui o feminicídio como qualificadora do homicídio — crime hediondo. Pena: 12 a 30 anos. Agravantes: vítima gestante, menor de 14 anos, maior de 60 anos, portadora de deficiência ou na presença dos filhos.'},
+        {sigla:'Lei 14.132/2021',nome:'Lei do Stalking — Perseguição',desc:'Criminaliza perseguição reiterada: seguir, monitorar, contatar ou vigiar a vítima. Pena: 6 meses a 2 anos. Agravada se praticada contra mulher por razões de gênero ou se resultar em restrição da liberdade.'},
+        {sigla:'Lei 13.718/2018 — Lei Mariana Ferrer',nome:'Importunação Sexual e Divulgação de Cenas Íntimas',desc:'Criminaliza importunação sexual (atos libidinosos sem consentimento) — pena de 1 a 5 anos. Proíbe uso do comportamento da vítima como argumento de defesa. Criminaliza divulgação de imagens íntimas sem consentimento.'},
+        {sigla:'Lei 14.188/2021',nome:'Sinal Vermelho contra a Violência Doméstica',desc:'A mulher pode mostrar o "X" vermelho desenhado na mão em farmácias e estabelecimentos cadastrados para acionar socorro em silêncio, sem que o agressor perceba. O estabelecimento aciona a polícia discretamente.'},
+        {sigla:'Lei 11.804/2008',nome:'Pensão Alimentícia Gravídica',desc:'Garante à gestante alimentos do pai do bebê ainda durante a gravidez. Cobre pré-natal, parto, alimentação, psicólogo e preparação do enxoval. O pedido é liminar — pode ser deferido em horas pelo juiz.'},
+        {sigla:'Lei 5.478/1968 + CC/2002',nome:'Lei de Alimentos',desc:'Garante pensão alimentícia aos filhos até os 18 anos (ou 24 se universitário). O descumprimento permite prisão civil do devedor de 1 a 3 meses. É possível pedir sem advogado no Juizado Especial de Família.'},
+        {sigla:'CF/88 + CLT + Lei 14.457/2022',nome:'Direitos da Mãe Solo',desc:'Mães solo têm direito a: estabilidade no emprego durante gestação e 5 meses após; creche ou auxílio-creche; prioridade em programas sociais (BPC, Bolsa Família); guarda unilateral com responsabilidade do pai; jornada reduzida para amamentação.'},
+        {sigla:'Lei 13.505/2017',nome:'Lei do Depoimento Especial',desc:'Garante que crianças e adolescentes vítimas de violência sejam ouvidos por profissional especializado em ambiente adequado — sem contato direto com o agressor. Evita revitimização e preserva o relato.'},
+        {sigla:'Lei 13.715/2018',nome:'Perda do Poder Familiar por Violência',desc:'Amplia as hipóteses de perda do poder familiar. O pai ou a mãe perde o poder familiar quando condenado(a) criminalmente por: homicídio doloso ou lesão corporal grave contra o filho; estupro ou crimes sexuais contra o filho; homicídio doloso ou lesão corporal grave contra o cônjuge ou companheiro — mesmo que não seja o pai/mãe biológico. Lei fundamental para proteger crianças cujo genitor agrediu ou matou o outro parceiro, situação comum em casos de feminicídio.'},
+      ].map((l,i)=>`
+        <div style="border:1px solid rgba(180,80,220,.2);border-radius:8px;margin-bottom:6px;overflow:hidden">
+          <div onclick="toggleMulherLei('ml${i}')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:rgba(120,30,160,.08);transition:background .18s" onmouseover="this.style.background='rgba(120,30,160,.16)'" onmouseout="this.style.background='rgba(120,30,160,.08)'">
+            <div>
+              <div style="font-size:9px;color:#b070e0;font-family:JetBrains Mono,monospace">${l.sigla}</div>
+              <div style="font-size:13px;color:var(--text);font-weight:600">${l.nome}</div>
+            </div>
+            <span id="ml${i}-arr" style="font-size:11px;color:#b070e0;transition:transform .2s">▼</span>
+          </div>
+          <div id="ml${i}" style="display:none;padding:12px 14px;background:var(--bg2);font-size:12px;color:var(--text-dim);line-height:1.75;border-top:1px solid rgba(180,80,220,.15)">${l.desc}</div>
+        </div>`).join('')}
     </div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('feminicidio')">
-      <div class="mulher-lei-sigla">Lei 13.104/2015</div>
-      <div class="mulher-lei-nome">Lei do Feminicídio</div>
-      <div class="mulher-lei-desc">Inclui o feminicídio como qualificadora do homicídio — crime hediondo. Pena: 12 a 30 anos. Agravantes quando a vítima é gestante, menor de 14 anos, maior de 60 anos ou portadora de deficiência.</div>
+
+    <!-- LINKS -->
+    <div class="mulher-secao-titulo">🔗 Recursos e Suporte</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px">
+      <a href="https://www.gov.br/mdh/pt-br/navegue-por-temas/politicas-para-mulheres" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Ministério das Mulheres</div><div class="mulher-lei-desc">Programas e serviços federais</div></a>
+      <a href="https://www.mpes.mp.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">MP-ES — Ministério Público</div><div class="mulher-lei-desc">Proteção e denúncias no ES</div></a>
+      <a href="https://www.dpe.es.gov.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Defensoria Pública ES</div><div class="mulher-lei-desc">Atendimento jurídico gratuito</div></a>
+      <a href="https://www.pc.es.gov.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Delegacia Online — PC-ES</div><div class="mulher-lei-desc">B.O. e denúncias online</div></a>
+      <a href="https://www.gov.br/pt-br/servicos/encontrar-o-creas-do-seu-municipio" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Localizar CREAS</div><div class="mulher-lei-desc">Apoio social gratuito no seu município</div></a>
+      <a href="https://www.gov.br/mdh/pt-br/navegue-por-temas/politicas-para-mulheres/casa-da-mulher-brasileira" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Casa da Mulher Brasileira</div><div class="mulher-lei-desc">Atendimento integrado em local único</div></a>
     </div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('stalking')">
-      <div class="mulher-lei-sigla">Lei 14.132/2021</div>
-      <div class="mulher-lei-nome">Lei do Stalking (Perseguição)</div>
-      <div class="mulher-lei-desc">Tipifica o crime de perseguição — seguir, monitorar, contatar ou vigiar a vítima de forma reiterada. Pena: 6 meses a 2 anos. Agravada se praticada contra mulher por razões de gênero.</div>
-    </div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('importunacao')">
-      <div class="mulher-lei-sigla">Lei 13.718/2018 — Lei Mariana Ferrer</div>
-      <div class="mulher-lei-nome">Importunação Sexual e Divulgação de Cenas Íntimas</div>
-      <div class="mulher-lei-desc">Criminaliza importunação sexual (atos libidinosos sem consentimento) com pena de 1 a 5 anos. Proíbe uso de comportamento da vítima como argumento de defesa. Criminaliza divulgação de imagens íntimas sem consentimento.</div>
-    </div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('pensao_gravida')">
-      <div class="mulher-lei-sigla">Lei 11.804/2008</div>
-      <div class="mulher-lei-nome">Pensão Alimentícia Gravídica</div>
-      <div class="mulher-lei-desc">Garante à gestante o direito de pedir alimentos ao pai do bebê ainda durante a gravidez — mesmo antes do nascimento. Cobre despesas do pré-natal, parto, alimentação e psicológicas da gestante. O pedido é liminar e urgente.</div>
-    </div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('alimentos')">
-      <div class="mulher-lei-sigla">Lei 5.478/1968 + CC/2002</div>
-      <div class="mulher-lei-nome">Lei de Alimentos</div>
-      <div class="mulher-lei-desc">Garante pensão alimentícia aos filhos até os 18 anos (ou 24 se estudante universitário). O descumprimento permite prisão civil do devedor (1 a 3 meses). A mãe solo pode pedir alimentos sem advogado no Juizado Especial.</div>
-    </div>
-    <div class="mulher-lei-card" onclick="selecionarItemMulher('mae_solo')">
-      <div class="mulher-lei-sigla">CF/88 + CDC + CLT + Lei 14.457/2022</div>
-      <div class="mulher-lei-nome">Direitos da Mãe Solo</div>
-      <div class="mulher-lei-desc">Mães solo têm direito a: estabilidade no emprego durante gestação e 5 meses após; creche ou auxílio-creche; prioridade em programas sociais (BPC, Bolsa Família); guarda unilateral com responsabilidade compartilhada do pai; e isenção de IR para mãe solo em alguns casos.</div>
-    </div>
-    <!-- ORIENTAÇÕES -->
-    <div class="mulher-secao-titulo">📋 Orientações Práticas</div>
-    <div class="mulher-alerta"><strong>Se você sofreu violência:</strong> procure atendimento médico imediatamente — o laudo médico é prova fundamental. Não tome banho antes de ser atendida se houve agressão sexual. Fotografe as lesões. Guarde prints de mensagens de ameaça.</div>
-    <div class="mulher-alerta"><strong>Medida Protetiva de Urgência:</strong> qualquer mulher pode pedir ao juiz, 24h por dia, mesmo sem advogado, pelo delegado ou diretamente ao plantão judiciário. O agressor pode ser afastado do lar em horas.</div>
-    <div class="mulher-alerta"><strong>CREAS — Centro de Referência Especializado de Assistência Social:</strong> oferece apoio psicológico, social e jurídico gratuito a mulheres em situação de violência. Procure o CREAS mais próximo na sua cidade.</div>
-    <div class="mulher-alerta"><strong>Não minimize a violência:</strong> xingamento, humilhação, controle de dinheiro, isolamento de família e amigos são formas de violência psicológica e moral — tipificadas pela Lei Maria da Penha.</div>
-    <!-- LINKS ÚTEIS -->
-    <div class="mulher-secao-titulo">🔗 Links e Recursos</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">
-      <a href="https://www.gov.br/mdh/pt-br/navegue-por-temas/politicas-para-mulheres" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Ministério das Mulheres — Gov.br</div><div class="mulher-lei-desc">Políticas públicas, programas e serviços federais</div></a>
-      <a href="https://www.mpes.mp.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">MP-ES — Ministério Público</div><div class="mulher-lei-desc">Proteção da mulher e denúncias no Espírito Santo</div></a>
-      <a href="https://www.dpe.es.gov.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Defensoria Pública do ES</div><div class="mulher-lei-desc">Atendimento jurídico gratuito — sem advogado</div></a>
-      <a href="https://www.pc.es.gov.br" target="_blank" class="mulher-lei-card" style="text-decoration:none"><div class="mulher-lei-nome">Polícia Civil ES — Delegacia Online</div><div class="mulher-lei-desc">Registro de B.O. e denúncias online</div></a>
-    </div>
-    <div style="margin-top:16px;padding:14px 16px;background:rgba(120,30,160,.1);border:1px solid rgba(180,80,220,.2);border-radius:8px;font-size:11px;color:rgba(210,180,240,.7);line-height:1.7;text-align:center">
-      💜 Você tem direito a uma vida sem violência. Busque ajuda — há pessoas prontas para te apoiar.
+
+    <div style="margin-top:16px;padding:14px 18px;background:rgba(120,30,160,.12);border:1px solid rgba(180,80,220,.25);border-radius:10px;font-size:12.5px;color:rgba(220,190,255,.85);line-height:1.8;text-align:center">
+      💜 <strong>Você tem direito a uma vida sem violência.</strong><br>Busque ajuda — existem pessoas e instituições prontas para te apoiar e proteger.
     </div>
   </div>`;
+}
+
+function toggleMulherLei(id){
+  const el=document.getElementById(id);
+  const arr=document.getElementById(id+"-arr");
+  if(!el)return;
+  const aberto=el.style.display!=="none";
+  el.style.display=aberto?"none":"block";
+  if(arr)arr.style.transform=aberto?"":"rotate(180deg)";
 }
 
 function mostrarSobre(){
@@ -1881,7 +2012,7 @@ function renderWelcome(){
       <div id="bm-inject"></div>
       <div id="versiculo-wrap"><div class="v-label">✝ Versículo do Dia</div><div id="versiculo-texto"></div><div id="versiculo-ref"></div><div id="versiculo-bencao">Deus abençoe sua leitura e seu dia! 🙏</div><button onclick="compartilharVersiculo()" style="margin-top:12px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);color:#25d366;padding:7px 16px;border-radius:20px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:all .2s;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='rgba(37,211,102,.25)'" onmouseout="this.style.background='rgba(37,211,102,.15)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Compartilhar no WhatsApp</button></div>
       ${colabs.length?`<div id="colab-section"><h3>💼 Contribuições dos Colaboradores <span class="colab-ver-todos" onclick="mostrarTodosColabs()">Ver todos →</span></h3><div id="carousel-wrap"><div id="carousel-track">${colabs.slice(0,5).map(c=>{const ini=c.autor?c.autor[0].toUpperCase():"C";const foto=c.foto?`<img class="colab-avatar" src="${c.foto}" onerror="this.outerHTML='<div class=colab-avatar-ini>${ini}</div>'">`:`<div class="colab-avatar-ini">${ini}</div>`;const data=c.criado_em?new Date(c.criado_em).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"";return`<div class="carousel-slide"><div class="colab-card${c.fixada?" fixada":""}"><div class="colab-card-top">${foto}<div class="colab-info-top"><div class="colab-autor">${c.autor}</div><div class="colab-cargo-tag">${c.cargo||""}</div></div><span class="colab-tipo-badge">${c.tipo||"Artigo"}</span></div><div class="colab-titulo">${c.titulo}</div><div class="colab-texto">${c.texto}</div><div class="colab-data-rodape">📅 ${data}</div></div></div>`;}).join("")}</div></div><div id="carousel-dots">${colabs.slice(0,5).map((_,i)=>`<button class="carousel-dot${i===0?" ativo":""}" onclick="irSlide(${i})"></button>`).join("")}</div></div>`:""}
-      <div id="noticias-wrap"><h3>📰 Notícias Jurídicas do Dia <span>automático</span></h3><div id="noticias-lista"></div></div>
+      <div id="noticias-wrap"><h3>📰 Notícias Jurídicas <span>feeds oficiais — ao vivo</span></h3><div id="noticias-lista"></div></div>
     </div>`;
   document.getElementById("cnt-badge").textContent=TODOS.length+" itens";
   renderVersiculo();
