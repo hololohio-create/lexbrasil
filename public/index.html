@@ -553,22 +553,6 @@ a{color:var(--royal-lt);text-decoration:none;}
   </div>
 </div>
 
-<!-- BANNER AMPARO À MULHER — aparece só na home -->
-<div id="banner-mulher-wrap" style="display:none" onclick="mostrarMulher();setNav(document.querySelector('.fb-mulher'))">
-  <div id="banner-mulher-inner">
-    <div id="banner-mulher-topo">
-      <div id="banner-mulher-titulo">🆘 Amparo à Mulher — Conheça seus direitos</div>
-      <div id="banner-mulher-sos">
-        <a class="btn-sos btn-sos-180" href="tel:180" onclick="event.stopPropagation()">📞 180 — Ligue Mulher</a>
-        <a class="btn-sos btn-sos-190" href="tel:190" onclick="event.stopPropagation()">🚔 190 — Polícia</a>
-        <a class="btn-sos btn-sos-100" href="tel:100" onclick="event.stopPropagation()">📲 100 — Dir. Humanos</a>
-      </div>
-    </div>
-    <div id="banner-mulher-desc">Lei Maria da Penha · Feminicídio · Pensão Alimentícia · Amparo à Mãe Solo · Medidas Protetivas · Delegacia da Mulher · Orientações e alertas</div>
-    <div id="banner-mulher-mais">Clique para ver leis, direitos e contatos de emergência →</div>
-  </div>
-</div>
-
 <!-- MAIN -->
 <div id="main">
   <div id="painel"></div>
@@ -1043,7 +1027,6 @@ function renderLista(){}
 
 
 function setSecao(id,btn){
-  mostrarBannerMulher(false);
   secaoAtiva=id;
   if(btn)setNav(btn);
   document.getElementById("srch-input").value="";
@@ -1169,7 +1152,6 @@ function mostrarDetalhe(){
 
 // ── MOSTRAR NOVIDADES ────────────────────────────────────
 function mostrarNovidades(){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   const p=document.getElementById("painel");
   if(!novidades.length){p.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-faint)"><div style="font-size:36px;margin-bottom:12px">🔔</div><div style="font-family:Playfair Display,serif;font-size:15px">Nenhuma novidade publicada ainda</div></div>';return;}
@@ -1179,7 +1161,6 @@ function mostrarNovidades(){
 
 // ── SIMPLIFICANDO ────────────────────────────────────────
 function mostrarSimplificando(buscarTermo=""){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   const cats=[...new Set(TERMOS.map(t=>t.cat))];
   // todas fechadas por padrão
@@ -1757,7 +1738,6 @@ APÓS O BO:
 ];
 
 function mostrarModelos(){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   if(!window.modelosCatAberta)window.modelosCatAberta={};
   const cats=[...new Set(MODELOS.map(m=>m.cat))];
@@ -1845,7 +1825,6 @@ function copiarModelo(id){
 // ── SOBRE ────────────────────────────────────────────────
 // ── PROTEÇÃO À MULHER ────────────────────────────────────
 function mostrarMulher(){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
   <div id="det-wrap" style="max-width:800px">
@@ -1960,7 +1939,6 @@ function toggleMulherLei(id){
 }
 
 function mostrarSobre(){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
   <div id="sobre-wrap">
@@ -1990,13 +1968,7 @@ function mostrarSobre(){
 }
 
 // ── WELCOME ──────────────────────────────────────────────
-function mostrarBannerMulher(visivel){
-  const b=document.getElementById("banner-mulher-wrap");
-  if(b)b.style.display=visivel?"block":"none";
-}
-
 function renderWelcome(){
-  mostrarBannerMulher(true);
   const totalDH=DH.length;
   document.getElementById("painel").innerHTML=`
     <div id="welcome">
@@ -2009,7 +1981,6 @@ function renderWelcome(){
         <div class="stat" onclick="setSecao('dh',document.querySelectorAll('#filtros .fb')[5])"><div class="stat-ico">🌍</div><div class="stat-n">${totalDH}</div><div class="stat-l">Dir. Humanos</div></div>
       </div>
       <div class="w-hint">💡 Use o menu de navegação acima · <span style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px" onclick="mostrarSimplificando();setNav(document.querySelector('.fb-gold'))">✦ Simplificando o Direito</span> para entender termos jurídicos</div>
-      <div id="bm-inject"></div>
       <div id="versiculo-wrap"><div class="v-label">✝ Versículo do Dia</div><div id="versiculo-texto"></div><div id="versiculo-ref"></div><div id="versiculo-bencao">Deus abençoe sua leitura e seu dia! 🙏</div><button onclick="compartilharVersiculo()" style="margin-top:12px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);color:#25d366;padding:7px 16px;border-radius:20px;cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;font-weight:700;transition:all .2s;display:inline-flex;align-items:center;gap:6px" onmouseover="this.style.background='rgba(37,211,102,.25)'" onmouseout="this.style.background='rgba(37,211,102,.15)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Compartilhar no WhatsApp</button></div>
       ${colabs.length?`<div id="colab-section"><h3>💼 Contribuições dos Colaboradores <span class="colab-ver-todos" onclick="mostrarTodosColabs()">Ver todos →</span></h3><div id="carousel-wrap"><div id="carousel-track">${colabs.slice(0,5).map(c=>{const ini=c.autor?c.autor[0].toUpperCase():"C";const foto=c.foto?`<img class="colab-avatar" src="${c.foto}" onerror="this.outerHTML='<div class=colab-avatar-ini>${ini}</div>'">`:`<div class="colab-avatar-ini">${ini}</div>`;const data=c.criado_em?new Date(c.criado_em).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"";return`<div class="carousel-slide"><div class="colab-card${c.fixada?" fixada":""}"><div class="colab-card-top">${foto}<div class="colab-info-top"><div class="colab-autor">${c.autor}</div><div class="colab-cargo-tag">${c.cargo||""}</div></div><span class="colab-tipo-badge">${c.tipo||"Artigo"}</span></div><div class="colab-titulo">${c.titulo}</div><div class="colab-texto">${c.texto}</div><div class="colab-data-rodape">📅 ${data}</div></div></div>`;}).join("")}</div></div><div id="carousel-dots">${colabs.slice(0,5).map((_,i)=>`<button class="carousel-dot${i===0?" ativo":""}" onclick="irSlide(${i})"></button>`).join("")}</div></div>`:""}
       <div id="noticias-wrap"><h3>📰 Notícias Jurídicas <span>feeds oficiais — ao vivo</span></h3><div id="noticias-lista"></div></div>
@@ -2128,7 +2099,6 @@ function mostrarTodosColabs(){
 // ── MENU LINKS ÚTEIS ─────────────────────────────────────
 // Links agora abre como página, não dropdown
 function mostrarLinksPage(){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   renderMenuLinksPage();
 }
@@ -2141,7 +2111,6 @@ function toggleSubLista(id){
 
 // Colaboradores como página
 function mostrarColabsPage(){
-  mostrarBannerMulher(false);
   itemAtivo=null;
   const p=document.getElementById("painel");
   p.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-faint)">Carregando colaboradores...</div>';
