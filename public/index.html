@@ -499,7 +499,8 @@ a{color:var(--royal-lt);text-decoration:none;}
   </div>
   <button id="btn-menu-mobile" onclick="abrirNavMobile()">☰</button>
   <div id="srch">
-    <input type="text" id="srch-input" placeholder="🔍 Buscar... ex: dolo, furto, CF/88" oninput="buscarGlobal(this.value)">
+    <input type="text" id="srch-input" placeholder="Buscar... ex: dolo, furto, CF/88" onkeyup="buscarGlobal(this.value)" onkeydown="if(event.key==='Enter')buscarGlobal(this.value)">
+    <button onclick="buscarGlobal(document.getElementById('srch-input').value)" style="background:transparent;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:0 2px;line-height:1" title="Pesquisar">🔍</button>
   </div>
   <div id="hdr-right">
     <div id="contador"><span class="green-dot"></span><span id="cnt-num">...</span><span>acessos</span></div>
@@ -577,10 +578,10 @@ function irHome(){
 }
 
 // ACESSIBILIDADE — A+ / A-
-let fonteBase=16;
+let fonteBase=100;
 function ajustarFonte(delta){
-  fonteBase=Math.max(13,Math.min(22,fonteBase+delta));
-  document.documentElement.style.fontSize=fonteBase+"px";
+  fonteBase=Math.max(80,Math.min(130,fonteBase+(delta*10)));
+  document.body.style.zoom=fonteBase+"%";
   localStorage.setItem("lex_fonte",fonteBase);
 }
 
@@ -827,7 +828,7 @@ const catAberta={};
 
 window.onload=async()=>{
   const fonteSalva=localStorage.getItem("lex_fonte");
-  if(fonteSalva&&parseInt(fonteSalva)>=13){fonteBase=parseInt(fonteSalva);document.documentElement.style.fontSize=fonteBase+"px";}
+  if(fonteSalva&&parseInt(fonteSalva)>=80){fonteBase=parseInt(fonteSalva);document.body.style.zoom=fonteBase+"%";}
   else{localStorage.removeItem("lex_fonte");}
   renderWelcome();
   await Promise.all([carregarNovidades(),carregarColabs(),registrarAcesso()]);
@@ -856,15 +857,14 @@ async function carregarColabs(){
 // ── NOTÍCIAS DO DIA ──────────────────────────────────────
 // ── NOTÍCIAS DOS ÓRGÃOS OFICIAIS ─────────────────────────
 const FONTES_NOTICIAS=[
-  {id:"stf",   label:"STF",    cor:"#4a8adc", feed:"https://portal.stf.jus.br/rss/noticia.asp"},
-  {id:"stj",   label:"STJ",    cor:"#3a7a6a", feed:"https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias/rss.aspx"},
-  {id:"camara",label:"Câmara", cor:"#6a3a8a", feed:"https://www.camara.leg.br/noticias/rss/ultimas-noticias"},
-  {id:"senado",label:"Senado", cor:"#8a4a3a", feed:"https://www12.senado.leg.br/noticias/feeds/ultimas"},
-  {id:"mpf",   label:"MPF",    cor:"#3a6a4a", feed:"https://www.mpf.mp.br/sala-de-imprensa/noticias-do-mpf/rss"},
-  {id:"mpes",  label:"MP-ES",  cor:"#7a5a2a", feed:"https://www.mpes.mp.br/Arquivos/RSS/Noticias.xml"},
+  {id:"stf",   label:"STF",    cor:"#4a8adc", q:"STF \"Supremo Tribunal Federal\""},
+  {id:"stj",   label:"STJ",    cor:"#3a9a7a", q:"STJ \"Superior Tribunal de Justiça\""},
+  {id:"camara",label:"Câmara", cor:"#8a5aaa", q:"Câmara dos Deputados legislação votação"},
+  {id:"senado",label:"Senado", cor:"#aa6a4a", q:"Senado Federal lei projeto aprovação"},
+  {id:"mpf",   label:"MPF",    cor:"#4a8a5a", q:"MPF \"Ministério Público Federal\""},
+  {id:"mpes",  label:"MP-ES",  cor:"#8a7a3a", q:"MPES \"Ministério Público Espírito Santo\""},
 ];
 
-// Cache de notícias por fonte
 const _notCache={};
 let _notFonteAtiva="stf";
 
@@ -872,53 +872,47 @@ async function carregarNoticias(){
   const el=document.getElementById("noticias-lista");
   if(!el)return;
 
-  // Renderizar abas
-  const wrap=document.getElementById("noticias-wrap");
-  if(wrap&&!document.getElementById("noticias-abas")){
+  // Criar abas se não existem
+  if(!document.getElementById("noticias-abas")){
     const abas=document.createElement("div");
     abas.id="noticias-abas";
     abas.innerHTML=FONTES_NOTICIAS.map(f=>
-      `<button class="noticias-aba noticias-aba-loading${f.id===_notFonteAtiva?" on":""}" id="aba-${f.id}" onclick="trocarFonteNoticia('${f.id}')">${f.label}</button>`
+      `<button class="noticias-aba${f.id===_notFonteAtiva?" on":""}" id="aba-${f.id}" onclick="trocarFonteNoticia('${f.id}')" style="border-color:${f.cor}20;color:${f.cor}">${f.label}</button>`
     ).join("");
     el.parentNode.insertBefore(abas,el);
   }
 
-  // Carregar todas as fontes em paralelo (sem bloquear a UI)
+  // Carregar todas em paralelo
   FONTES_NOTICIAS.forEach(f=>buscarFeed(f));
-  // Mostrar a fonte ativa
   mostrarNoticiasAtivas();
 }
 
 async function buscarFeed(fonte){
-  if(_notCache[fonte.id])return; // já carregou
+  if(_notCache[fonte.id])return;
   _notCache[fonte.id]={status:"loading",items:[]};
-  const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.feed)}&count=6&api_key=`;
+  mostrarNoticiasAtivas();
+
+  const rssUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(fonte.q)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
+  const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=6`;
+
   try{
-    const r=await fetch(api,{signal:AbortSignal.timeout(8000)});
+    const r=await fetch(api);
     const d=await r.json();
     if(d.status==="ok"&&d.items?.length){
       _notCache[fonte.id]={status:"ok",items:d.items};
     } else {
-      // Fallback: Google News filtrado pela fonte
-      const q=encodeURIComponent(`site:${new URL(fonte.feed).hostname}`);
-      const r2=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(`https://news.google.com/rss/search?q=${fonte.label}+direito+site:${new URL(fonte.feed).hostname}&hl=pt-BR&gl=BR`)}&count=5`);
-      const d2=await r2.json();
-      if(d2.status==="ok"&&d2.items?.length){
-        _notCache[fonte.id]={status:"ok",items:d2.items};
-      } else {
-        _notCache[fonte.id]={status:"err",items:[]};
-      }
+      _notCache[fonte.id]={status:"err",items:[]};
     }
   }catch(e){
     _notCache[fonte.id]={status:"err",items:[]};
   }
+
   // Atualizar aba
   const aba=document.getElementById(`aba-${fonte.id}`);
   if(aba){
-    aba.classList.remove("noticias-aba-loading");
-    aba.classList.add(_notCache[fonte.id].status==="ok"?"noticias-aba-ok":"noticias-aba-err");
+    const s=_notCache[fonte.id].status;
+    aba.textContent=fonte.label+(s==="ok"?" ✓":s==="err"?" ✗":"");
   }
-  // Atualizar exibição se for a fonte ativa
   if(fonte.id===_notFonteAtiva)mostrarNoticiasAtivas();
 }
 
@@ -926,6 +920,7 @@ function trocarFonteNoticia(id){
   _notFonteAtiva=id;
   document.querySelectorAll(".noticias-aba").forEach(b=>b.classList.remove("on"));
   document.getElementById(`aba-${id}`)?.classList.add("on");
+  if(!_notCache[id])buscarFeed(FONTES_NOTICIAS.find(f=>f.id===id));
   mostrarNoticiasAtivas();
 }
 
@@ -936,17 +931,17 @@ function mostrarNoticiasAtivas(){
   const cache=_notCache[_notFonteAtiva];
 
   if(!cache||cache.status==="loading"){
-    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0;display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:10px;height:10px;border:2px solid var(--royal-lt);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite"></span> Carregando ${fonte?.label||""}...</div>`;
+    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0;display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border:2px solid ${fonte?.cor||"var(--royal-lt)"};border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin 1s linear infinite"></span> Carregando ${fonte?.label||""}...</div>`;
     return;
   }
   if(cache.status==="err"||!cache.items.length){
-    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0">Feed do ${fonte?.label} indisponível no momento. <a href="${fonte?.feed}" target="_blank" style="color:var(--royal-lt)">Acessar site →</a></div>`;
+    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0">Sem notícias disponíveis para ${fonte?.label} no momento.</div>`;
     return;
   }
   el.innerHTML=cache.items.slice(0,5).map(item=>{
-    const data=new Date(item.pubDate).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"2-digit"});
+    const data=item.pubDate?new Date(item.pubDate).toLocaleDateString("pt-BR",{day:"2-digit",month:"short"}):"";
     return`<div class="noticia-card">
-      <div class="noticia-fonte" style="color:${fonte.cor||"var(--royal-lt)"}">${fonte.label}</div>
+      <div class="noticia-fonte" style="color:${fonte.cor}">${fonte.label}</div>
       <div style="flex:1">
         <div class="noticia-titulo"><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></div>
         <div class="noticia-data">📅 ${data}</div>
@@ -955,8 +950,12 @@ function mostrarNoticiasAtivas(){
   }).join("");
 }
 
-// CSS spin para loading
-(()=>{if(!document.getElementById("spin-css")){const s=document.createElement("style");s.id="spin-css";s.textContent="@keyframes spin{to{transform:rotate(360deg)}}";document.head.appendChild(s);}})();
+if(!document.getElementById("spin-css")){
+  const s=document.createElement("style");
+  s.id="spin-css";
+  s.textContent="@keyframes spin{to{transform:rotate(360deg)}}";
+  document.head.appendChild(s);
+}
 
 // ── VERSÍCULO ────────────────────────────────────────────
 function renderVersiculo(){
