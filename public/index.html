@@ -857,12 +857,12 @@ async function carregarColabs(){
 // ── NOTÍCIAS DO DIA ──────────────────────────────────────
 // ── NOTÍCIAS DOS ÓRGÃOS OFICIAIS ─────────────────────────
 const FONTES_NOTICIAS=[
-  {id:"stf",   label:"STF",    cor:"#4a8adc", q:"STF \"Supremo Tribunal Federal\""},
-  {id:"stj",   label:"STJ",    cor:"#3a9a7a", q:"STJ \"Superior Tribunal de Justiça\""},
-  {id:"camara",label:"Câmara", cor:"#8a5aaa", q:"Câmara dos Deputados legislação votação"},
-  {id:"senado",label:"Senado", cor:"#aa6a4a", q:"Senado Federal lei projeto aprovação"},
-  {id:"mpf",   label:"MPF",    cor:"#4a8a5a", q:"MPF \"Ministério Público Federal\""},
-  {id:"mpes",  label:"MP-ES",  cor:"#8a7a3a", q:"MPES \"Ministério Público Espírito Santo\""},
+  {id:"stf",   label:"STF",    cor:"#4a8adc", feed:"https://portal.stf.jus.br/rss/noticia.asp",            site:"portal.stf.jus.br"},
+  {id:"stj",   label:"STJ",    cor:"#3a9a7a", feed:"https://res.stj.jus.br/hrestp-c-portalp/RSS.xml",      site:"stj.jus.br"},
+  {id:"camara",label:"Câmara", cor:"#8a5aaa", feed:"https://www.camara.leg.br/noticias/rss/ultimas-noticias",site:"camara.leg.br"},
+  {id:"senado",label:"Senado", cor:"#aa6a4a", feed:"https://www12.senado.leg.br/noticias/feeds/ultimas",    site:"senado.leg.br"},
+  {id:"mpf",   label:"MPF",    cor:"#4a8a5a", feed:"https://www.mpf.mp.br/sala-de-imprensa/noticias-do-mpf/rss",site:"mpf.mp.br"},
+  {id:"mpes",  label:"MP-ES",  cor:"#8a7a3a", feed:"https://www.mpes.mp.br/Arquivos/RSS/Noticias.xml",     site:"mpes.mp.br"},
 ];
 
 const _notCache={};
@@ -872,17 +872,15 @@ async function carregarNoticias(){
   const el=document.getElementById("noticias-lista");
   if(!el)return;
 
-  // Criar abas se não existem
   if(!document.getElementById("noticias-abas")){
     const abas=document.createElement("div");
     abas.id="noticias-abas";
     abas.innerHTML=FONTES_NOTICIAS.map(f=>
-      `<button class="noticias-aba${f.id===_notFonteAtiva?" on":""}" id="aba-${f.id}" onclick="trocarFonteNoticia('${f.id}')" style="border-color:${f.cor}20;color:${f.cor}">${f.label}</button>`
+      `<button class="noticias-aba${f.id===_notFonteAtiva?" on":""}" id="aba-${f.id}" onclick="trocarFonteNoticia('${f.id}')" style="border-color:${f.cor}40;color:${f.cor}">${f.label}</button>`
     ).join("");
     el.parentNode.insertBefore(abas,el);
   }
 
-  // Carregar todas em paralelo
   FONTES_NOTICIAS.forEach(f=>buscarFeed(f));
   mostrarNoticiasAtivas();
 }
@@ -890,30 +888,62 @@ async function carregarNoticias(){
 async function buscarFeed(fonte){
   if(_notCache[fonte.id])return;
   _notCache[fonte.id]={status:"loading",items:[]};
-  mostrarNoticiasAtivas();
-
-  const rssUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(fonte.q)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
-  const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=6`;
-
-  try{
-    const r=await fetch(api);
-    const d=await r.json();
-    if(d.status==="ok"&&d.items?.length){
-      _notCache[fonte.id]={status:"ok",items:d.items};
-    } else {
-      _notCache[fonte.id]={status:"err",items:[]};
-    }
-  }catch(e){
-    _notCache[fonte.id]={status:"err",items:[]};
-  }
-
-  // Atualizar aba
-  const aba=document.getElementById(`aba-${fonte.id}`);
-  if(aba){
-    const s=_notCache[fonte.id].status;
-    aba.textContent=fonte.label+(s==="ok"?" ✓":s==="err"?" ✗":"");
-  }
   if(fonte.id===_notFonteAtiva)mostrarNoticiasAtivas();
+
+  let items=[];
+
+  // Tentativa 1: allorigins.win como proxy CORS → parse XML nativo
+  try{
+    const proxy=`https://api.allorigins.win/get?url=${encodeURIComponent(fonte.feed)}`;
+    const r=await fetch(proxy,{signal:AbortSignal.timeout(7000)});
+    const d=await r.json();
+    if(d.contents){
+      items=parseRSS(d.contents);
+    }
+  }catch(e){}
+
+  // Tentativa 2: rss2json com o feed direto
+  if(!items.length){
+    try{
+      const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.feed)}&count=6`;
+      const r=await fetch(api,{signal:AbortSignal.timeout(7000)});
+      const d=await r.json();
+      if(d.status==="ok"&&d.items?.length){
+        items=d.items.map(i=>({title:i.title,link:i.link,pubDate:i.pubDate}));
+      }
+    }catch(e){}
+  }
+
+  // Tentativa 3: Google News filtrado pelo site
+  if(!items.length){
+    try{
+      const gUrl=`https://news.google.com/rss/search?q=site:${fonte.site}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
+      const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(gUrl)}&count=6`;
+      const r=await fetch(api,{signal:AbortSignal.timeout(7000)});
+      const d=await r.json();
+      if(d.status==="ok"&&d.items?.length){
+        items=d.items.map(i=>({title:i.title,link:i.link,pubDate:i.pubDate}));
+      }
+    }catch(e){}
+  }
+
+  _notCache[fonte.id]={status:items.length?"ok":"err",items};
+  const aba=document.getElementById(`aba-${fonte.id}`);
+  if(aba) aba.textContent=fonte.label+(items.length?" ✓":" ✗");
+  if(fonte.id===_notFonteAtiva)mostrarNoticiasAtivas();
+}
+
+function parseRSS(xml){
+  try{
+    const parser=new DOMParser();
+    const doc=parser.parseFromString(xml,"text/xml");
+    const items=[...doc.querySelectorAll("item")].slice(0,6);
+    return items.map(item=>({
+      title:(item.querySelector("title")?.textContent||"").replace(/<!\[CDATA\[|\]\]>/g,"").trim(),
+      link:(item.querySelector("link")?.textContent||item.querySelector("guid")?.textContent||"").trim(),
+      pubDate:item.querySelector("pubDate")?.textContent||"",
+    })).filter(i=>i.title&&i.link);
+  }catch(e){return[];}
 }
 
 function trocarFonteNoticia(id){
@@ -931,28 +961,34 @@ function mostrarNoticiasAtivas(){
   const cache=_notCache[_notFonteAtiva];
 
   if(!cache||cache.status==="loading"){
-    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0;display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border:2px solid ${fonte?.cor||"var(--royal-lt)"};border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin 1s linear infinite"></span> Carregando ${fonte?.label||""}...</div>`;
+    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0;display:flex;align-items:center;gap:8px">
+      <span style="width:10px;height:10px;border:2px solid ${fonte?.cor||"var(--royal-lt)"};border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin 1s linear infinite"></span>
+      Carregando ${fonte?.label||""}...
+    </div>`;
     return;
   }
   if(cache.status==="err"||!cache.items.length){
-    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0">Sem notícias disponíveis para ${fonte?.label} no momento.</div>`;
+    el.innerHTML=`<div style="font-size:11px;color:var(--text-faint);padding:8px 0">
+      Notícias de ${fonte?.label} indisponíveis no momento.
+      <a href="https://${fonte?.site}" target="_blank" style="color:${fonte?.cor}">Acessar site →</a>
+    </div>`;
     return;
   }
   el.innerHTML=cache.items.slice(0,5).map(item=>{
-    const data=item.pubDate?new Date(item.pubDate).toLocaleDateString("pt-BR",{day:"2-digit",month:"short"}):"";
+    let data="";
+    try{data=new Date(item.pubDate).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"2-digit"});}catch(e){}
     return`<div class="noticia-card">
       <div class="noticia-fonte" style="color:${fonte.cor}">${fonte.label}</div>
       <div style="flex:1">
         <div class="noticia-titulo"><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></div>
-        <div class="noticia-data">📅 ${data}</div>
+        ${data?`<div class="noticia-data">📅 ${data}</div>`:""}
       </div>
     </div>`;
   }).join("");
 }
 
 if(!document.getElementById("spin-css")){
-  const s=document.createElement("style");
-  s.id="spin-css";
+  const s=document.createElement("style");s.id="spin-css";
   s.textContent="@keyframes spin{to{transform:rotate(360deg)}}";
   document.head.appendChild(s);
 }
