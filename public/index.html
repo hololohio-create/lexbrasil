@@ -574,6 +574,7 @@ function irHome(){
   document.getElementById("srch-input").value="";
   secaoAtiva="todos";busca="";listaBusca="";
   setNav(document.querySelector("#filtros .fb"));
+  pushNav({tipo:"home"});
   renderWelcome();
 }
 
@@ -826,7 +827,81 @@ const TODOS=[
 let secaoAtiva="todos", itemAtivo=null, novidades=[], colabs=[], busca="", listaBusca="";
 const catAberta={};
 
+// ── HISTÓRICO DE NAVEGAÇÃO (botão Voltar do navegador) ───
+let _isPop=false;
+function _sem_push(fn){_isPop=true;try{fn();}finally{_isPop=false;}}
+function pushNav(state){
+  if(_isPop)return; // navegação por popstate não empurra novo estado
+  // state = {tipo, id, cat, busca} — descreve onde o usuário está
+  history.pushState(state, "", window.location.pathname);
+}
+
+window.addEventListener("popstate", function(e){
+  const s=e.state;
+  if(!s){irHomeSilent();return;}
+  switch(s.tipo){
+    case "home":    irHomeSilent(); break;
+    case "secao":   setSecaoSilent(s.id); break;
+    case "detalhe": setSecaoSilent(s.cat); selecionarItemSilent(s.id,s.cat); break;
+    case "busca":   document.getElementById("srch-input").value=s.busca||""; buscarGlobal(s.busca); break;
+    case "simpl":   mostrarSimplificandoSilent(s.busca||""); break;
+    case "modelos": mostrarModelosSilent(); break;
+    case "links":   mostrarLinksPageSilent(); break;
+    case "colabs":  mostrarColabsPageSilent(); break;
+    case "mulher":  mostrarMulherSilent(); break;
+    case "sobre":   mostrarSobreSilent(); break;
+    default: irHomeSilent();
+  }
+});
+
+// Versões "silent" — navegam sem empurrar novo estado (evita loop)
+function irHomeSilent(){
+  document.getElementById("srch-input").value="";
+  secaoAtiva="todos";busca="";listaBusca="";
+  setNav(document.querySelector("#filtros .fb"));
+  renderWelcome();
+}
+function setSecaoSilent(id){
+  secaoAtiva=id;busca="";listaBusca="";itemAtivo=null;
+  const btn=document.querySelector(`#filtros .fb[onclick*="'${id}'"]`);
+  if(btn)setNav(btn);
+  mostrarListaSecao(id);
+}
+function selecionarItemSilent(id,cat){
+  const lista=cat==="norma"?NORMAS:cat==="sumula"?SUMULAS:cat==="sumula_vinculante"?SUMULAS_VIN:cat==="repercussao"?TEMAS:DH;
+  itemAtivo={...lista.find(i=>i.id===id),categoria:cat};
+  mostrarDetalhe();
+}
+function mostrarSimplificandoSilent(t){
+  itemAtivo=null;
+  const btn=document.querySelector(".fb-gold");
+  if(btn)setNav(btn);
+  // chama render interno sem pushNav
+  _mostrarSimplificandoRender(t);
+}
+function mostrarModelosSilent(){itemAtivo=null;_mostrarModelosRender();}
+function mostrarLinksPageSilent(){itemAtivo=null;_mostrarLinksRender();}
+function mostrarColabsPageSilent(){itemAtivo=null;_mostrarColabsRender();}
+function mostrarMulherSilent(){itemAtivo=null;_mostrarMulherRender();}
+function mostrarSobreSilent(){itemAtivo=null;_mostrarSobreRender();}
+
+
 window.onload=async()=>{
+  // Aliases para popstate (evitam loop de pushNav)
+  const _fnMap={
+    mostrarSimplificando, mostrarModelos, mostrarLinksPage,
+    mostrarColabsPage, mostrarMulher, mostrarSobre
+  };
+  window._mostrarSimplificandoRender=(t)=>{_sem_push(()=>mostrarSimplificando(t));};
+  window._mostrarModelosRender=()=>{_sem_push(mostrarModelos);};
+  window._mostrarLinksRender=()=>{_sem_push(mostrarLinksPage);};
+  window._mostrarColabsRender=()=>{_sem_push(mostrarColabsPage);};
+  window._mostrarMulherRender=()=>{_sem_push(mostrarMulher);};
+  window._mostrarSobreRender=()=>{_sem_push(mostrarSobre);};
+
+  // Estado inicial no histórico
+  history.replaceState({tipo:"home"}, "", window.location.pathname);
+
   const fonteSalva=localStorage.getItem("lex_fonte");
   if(fonteSalva&&parseInt(fonteSalva)>=80){fonteBase=parseInt(fonteSalva);document.body.style.zoom=fonteBase+"%";}
   else{localStorage.removeItem("lex_fonte");}
@@ -1024,6 +1099,7 @@ function renderVersiculo(){
 function buscarGlobal(q){
   busca=(q||"").toLowerCase().trim();
   if(!busca){renderWelcome();document.getElementById("cnt-badge").textContent=TODOS.length+" itens";return;}
+  pushNav({tipo:"busca",busca:q});
   const resNormas=TODOS.filter(i=>{
     if(!i||!i.nome)return false;
     const campos=[i.nome||"",i.sigla||"",i.texto||"",i.descricao||"",i.analise||"",
@@ -1067,9 +1143,9 @@ function setSecao(id,btn){
   document.getElementById("srch-input").value="";
   busca="";listaBusca="";
   itemAtivo=null;
-  // Sincronizar drawer mobile
   const mapa={"norma":"nd-norma","sumula":"nd-sumula","sumula_vinculante":"nd-sv","repercussao":"nd-rg","dh":"nd-dh"};
   if(mapa[id])setNavDrawer(mapa[id]);
+  pushNav({tipo:"secao",id});
   mostrarListaSecao(id);
 }
 
@@ -1160,6 +1236,7 @@ function mostrarListaSecao(id){
 function selecionarItem(id,cat){
   const lista=cat==="norma"?NORMAS:cat==="sumula"?SUMULAS:cat==="sumula_vinculante"?SUMULAS_VIN:cat==="repercussao"?TEMAS:DH;
   itemAtivo={...lista.find(i=>i.id===id),categoria:cat};
+  pushNav({tipo:"detalhe",id,cat});
   mostrarDetalhe();
 }
 
@@ -1196,6 +1273,7 @@ function mostrarNovidades(){
 
 // ── SIMPLIFICANDO ────────────────────────────────────────
 function mostrarSimplificando(buscarTermo=""){
+  pushNav({tipo:"simpl",busca:buscarTermo});
   itemAtivo=null;
   const cats=[...new Set(TERMOS.map(t=>t.cat))];
   // todas fechadas por padrão
@@ -1773,6 +1851,7 @@ APÓS O BO:
 ];
 
 function mostrarModelos(){
+  pushNav({tipo:"modelos"});
   itemAtivo=null;
   if(!window.modelosCatAberta)window.modelosCatAberta={};
   const cats=[...new Set(MODELOS.map(m=>m.cat))];
@@ -1860,6 +1939,7 @@ function copiarModelo(id){
 // ── SOBRE ────────────────────────────────────────────────
 // ── PROTEÇÃO À MULHER ────────────────────────────────────
 function mostrarMulher(){
+  pushNav({tipo:"mulher"});
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
   <div id="det-wrap" style="max-width:800px">
@@ -1974,6 +2054,7 @@ function toggleMulherLei(id){
 }
 
 function mostrarSobre(){
+  pushNav({tipo:"sobre"});
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
   <div id="sobre-wrap">
@@ -2134,6 +2215,7 @@ function mostrarTodosColabs(){
 // ── MENU LINKS ÚTEIS ─────────────────────────────────────
 // Links agora abre como página, não dropdown
 function mostrarLinksPage(){
+  pushNav({tipo:"links"});
   itemAtivo=null;
   renderMenuLinksPage();
 }
@@ -2146,6 +2228,7 @@ function toggleSubLista(id){
 
 // Colaboradores como página
 function mostrarColabsPage(){
+  pushNav({tipo:"colabs"});
   itemAtivo=null;
   const p=document.getElementById("painel");
   p.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-faint)">Carregando colaboradores...</div>';
