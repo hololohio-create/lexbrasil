@@ -654,45 +654,26 @@ const NORMAS=[
   {id:"lei15358",numero:"15358",nome:"Lei Antifacção — Marco Legal do Combate ao Crime Organizado",sigla:"Lei 15.358/2026",url:"https://www.planalto.gov.br/ccivil_03/_Ato2023-2026/2026/Lei/L15358.htm",analise:"Sancionada em 24/03/2026 e publicada no DOU em 25/03/2026, a Lei 15.358/2026 (Lei Raul Jungmann) institui o Marco Legal do Combate ao Crime Organizado no Brasil. Define facção criminosa como toda organização de 3 ou mais pessoas que use violência, grave ameaça ou coação para controlar territórios ou intimidar populações e autoridades. Tipifica o crime de 'domínio social estruturado': bloqueio de ruas, barricadas, imposição de regras a moradores, ataques a serviços públicos. Penas: reclusão de 20 a 40 anos para lideranças. Veda anistia, indulto, fiança e liberdade condicional aos líderes. Cria o Banco Nacional de Dados de Organizações Criminosas. Amplia bloqueio e apreensão de bens e ativos do crime organizado. Altera CP, CPP, Lei de Crimes Hediondos, LEP, Lei de Drogas e Estatuto do Desarmamento.\n\nPROGRESSÃO DE PENA — NOVAS FRAÇÕES (crimes hediondos e equiparados):\n• Hediondo primário: ANTES 40% → AGORA 70%\n• Hediondo com resultado morte (primário): ANTES 50% → AGORA 75%\n• Reincidente hediondo: ANTES 60% → AGORA 80%\n• Reincidente hediondo com resultado morte: ANTES 70% → AGORA 85%",keywords:["antifaccao","faccao","crime organizado","milicia","paramilitar","dominio social","territorio","marco legal","lei raul jungmann","violencia","orcrim","progressao","hediondo","reincidente"],notes:"⚠️ Lei nova — publicada em 25/03/2026. Verifique sempre no site oficial do Planalto para atualizações e regulamentações."},
 ];
 
-// ── CONFIGURAÇÃO SUPABASE ────────────────────────────────
-const _SUPA_URL="https://wyoagpcitsaijuetvzja.supabase.co";
-const _SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0";
-
-// Súmulas carregadas do Supabase (direto, sem API Vercel)
-let SUMULAS=[];
-let _sumulasCarregadas=false;
-
-async function carregarSumulasBD(){
-  if(_sumulasCarregadas)return;
-  try{
-    const r=await fetch(
-      `${_SUPA_URL}/rest/v1/sumulas?select=sid,numero,tribunal,tipo,nome,texto,analise,area,url&order=tribunal.asc,numero.asc&limit=300`,
-      {headers:{"apikey":_SUPA_KEY,"Authorization":"Bearer "+_SUPA_KEY}}
-    );
-    if(!r.ok)throw new Error("Supabase: "+r.status);
-    const data=await r.json();
-    SUMULAS=(data||[]).map(s=>({
-      id:s.sid,
-      area:s.area||"",
-      numero:s.numero,
-      nome:s.nome,
-      texto:s.texto,
-      analise:s.analise||"",
-      url:s.url||"",
-      tribunal:s.tribunal,
-      tipo:s.tipo||"normal",
-      temas:[s.area||""].filter(Boolean)
-    }));
-    _sumulasCarregadas=true;
-    // Atualizar contador
-    const badge=document.getElementById("cnt-badge");
-    if(badge)badge.textContent=(NORMAS.length+SUMULAS.length+TEMAS.length+DH.length)+" itens";
-  }catch(e){
-    console.warn("Supabase indisponível:",e);
-    _sumulasCarregadas=true; // evitar loop
-  }
-}
-
+const SUMULAS=[
+  {id:"s145",area:"Direito Penal",numero:145,nome:"Súmula 145 STF",texto:"Não há crime, quando a preparação do flagrante pela polícia torna impossível a sua consumação.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=2251",tribunal:"STF",analise:"Trata do flagrante preparado: quando a própria polícia induz o agente a praticar o crime para prender em flagrante, não há crime — pois a consumação era impossível desde o início.",temas:["Flagrante Preparado","Flagrante Provocado"]},
+  {id:"s231",area:"Direito Penal",numero:231,nome:"Súmula 231 STF",texto:"O réu reincidente não tem direito à suspensão condicional da pena.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=2434",tribunal:"STF",analise:"O sursis (suspensão condicional da pena) é benefício que substitui a pena privativa de liberdade por período de prova. Esta súmula veda esse benefício ao reincidente.",temas:["Reincidência","Sursis","Execução Penal"]},
+  {id:"s444",area:"Direito Penal",numero:444,nome:"Súmula 444 STJ",texto:"É vedada a utilização de inquéritos policiais e ações penais em curso para agravar a pena-base.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=444",tribunal:"STJ",analise:"Só condenações com trânsito em julgado podem ser usadas como antecedentes criminais para aumentar a pena-base. Decorre da presunção de inocência.",temas:["Dosimetria","Pena-base","Antecedentes"]},
+  {id:"s545",area:"Direito Penal",numero:545,nome:"Súmula 545 STJ",texto:"Quando a confissão for utilizada para a formação do convencimento do julgador, o réu fará jus à atenuante prevista no artigo 65, III, d, do Código Penal.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=545",tribunal:"STJ",analise:"Se o juiz usar a confissão do réu para condenar, obrigatoriamente deve aplicar a atenuante de confissão na dosimetria. Não pode se beneficiar da confissão e ignorar o benefício que ela gera ao réu.",temas:["Confissão","Atenuante","Dosimetria"]},
+  {id:"s611",area:"Direito Penal",numero:611,nome:"Súmula 611 STF",texto:"Transitada em julgado a sentença condenatória, compete ao juízo das execuções a aplicação de lei mais benigna.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1645",tribunal:"STF",analise:"Após o trânsito em julgado, se nova lei beneficiar o condenado, cabe ao Juiz da Vara de Execuções Penais aplicá-la. A lei penal mais benéfica retroage sempre.",temas:["Execução Penal","Lei mais benigna","LEP"]},
+  {id:"s680",area:"Direito Previdenciário",numero:680,nome:"Súmula 680 STF",texto:"O direito ao auxílio-reclusão é assegurado ao preso em regime fechado.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1706",tribunal:"STF",analise:"O auxílio-reclusão é pago pelo INSS aos dependentes do segurado preso em regime fechado com baixa renda. Proteção previdenciária à família do preso.",temas:["Previdência","Auxílio-reclusão"]},
+  {id:"s718",area:"Direito Penal",numero:718,nome:"Súmula 718 STF",texto:"A opinião do julgador sobre a gravidade em abstrato do crime não constitui motivação idônea para a imposição de regime mais severo.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1743",tribunal:"STF",analise:"O juiz não pode impor regime mais severo apenas por considerar o crime grave em abstrato. Para regime mais gravoso, é preciso fundamentação concreta baseada no caso específico.",temas:["Regime de Pena","Dosimetria","Motivação"]},
+  {id:"s309",area:"Direito de Família",numero:309,nome:"Súmula 309 STJ",texto:"O débito alimentar que autoriza a prisão civil compreende as três prestações anteriores ao ajuizamento e as que vencerem no curso do processo.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=309",tribunal:"STJ",analise:"A prisão civil do devedor de alimentos só é cabível pela dívida recente (últimas 3 parcelas). Parcelas mais antigas devem ser cobradas por execução comum, sem possibilidade de prisão.",temas:["Alimentos","Prisão Civil","Família"]},
+  {id:"s11stj",area:"Direito Administrativo",numero:11,nome:"Súmula 11 STJ",texto:"A presença de advogado é obrigatória nos processos administrativos disciplinares.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=11",tribunal:"STJ",analise:"Diferencia-se da SV 5 do STF: enquanto a SV 5 dispensa advogado no PAD, a Súmula 11 do STJ exige quando a penalidade puder ser demissão. O STJ e o STF divergem neste ponto específico.",temas:["PAD","Advogado","Processo Administrativo"]},
+  {id:"s47stf",area:"Direito Administrativo",numero:47,nome:"Súmula 47 STF",texto:"Restrições a direitos de funcionário público fundadas em razões de segurança nacional são aplicáveis a servidor de empresa estatal.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1564",tribunal:"STF",analise:"Servidores de empresas estatais (como Petrobras e Caixa) podem ter restrições de direitos por razões de segurança nacional, assim como servidores públicos diretos.",temas:["Empresa Estatal","Servidor","Segurança Nacional"]},
+  {id:"s340stj",area:"Direito Previdenciário",numero:340,nome:"Súmula 340 STJ",texto:"A lei aplicável à concessão de pensão previdenciária por morte é aquela vigente na data do óbito do segurado.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=340",tribunal:"STJ",analise:"O benefício de pensão por morte segue a lei vigente no momento do óbito do segurado, não a lei posterior. Garante segurança jurídica e impede que mudanças legislativas prejudiquem dependentes.",temas:["Previdência","Pensão por Morte","INSS"]},
+  {id:"s347stf",area:"Direito Administrativo",numero:347,nome:"Súmula 347 STF",texto:"O Tribunal de Contas, no exercício de suas atribuições, pode apreciar a constitucionalidade das leis e dos atos do poder público.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1530",tribunal:"STF",analise:"O TCU tem competência para deixar de aplicar lei que considere inconstitucional, no âmbito de sua fiscalização. Amplamente debatido e com aplicação controversa na prática.",temas:["TCU","Controle de Constitucionalidade","Tribunal de Contas"]},
+  {id:"s378stj",area:"Direito de Família",numero:378,nome:"Súmula 378 STJ",texto:"Reconhecida a continência, devem ser reunidas para julgamento conjunto as ações de alimentos e de investigação de paternidade.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=378",tribunal:"STJ",analise:"Quando há ação de alimentos e investigação de paternidade conexas, devem ser julgadas juntas pelo mesmo juízo por continência — evitando decisões contraditórias.",temas:["Alimentos","Paternidade","Família","Conexão"]},
+  {id:"s419stj",area:"Direito Civil",numero:419,nome:"Súmula 419 STJ",texto:"Descabe a prisão civil do depositário judicial infiel.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=419",tribunal:"STJ",analise:"Mesmo o depositário judicial — nomeado pelo juízo — não pode ser preso civilmente. Aplica o mesmo raciocínio da SV 25 do STF ao depositário judicial específico.",temas:["Depositário Judicial","Prisão Civil","Execução"]},
+  {id:"s500stj",area:"Direito Penal",numero:500,nome:"Súmula 500 STJ",texto:"A configuração do crime do art. 244-B do ECA independe da prova da efetiva corrupção do menor, por se tratar de delito formal.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=500",tribunal:"STJ",analise:"Corrupção de menor é crime formal — basta a participação do menor no crime com adulto, independentemente de prova que o menor foi corrompido ou já praticava atos infracionais antes.",temas:["ECA","Corrupção de Menor","Crime Formal"]},
+  {id:"s568stj",area:"Direito Processual",numero:568,nome:"Súmula 568 STJ",texto:"O relator, monocraticamente e no Superior Tribunal de Justiça, poderá dar ou negar provimento ao recurso quando houver entendimento dominante acerca do tema.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=568",tribunal:"STJ",analise:"O relator pode decidir sozinho (monocraticamente) quando o tema tem jurisprudência dominante no STJ, sem precisar submeter ao colegiado. Agiliza a prestação jurisdicional.",temas:["Recurso","Decisão Monocrática","STJ"]},
+  {id:"s623stf",area:"Direito Processual",numero:623,nome:"Súmula 623 STF",texto:"Não gera nulidade a intimação do Ministério Público realizada pessoalmente pelo escrivão, em cartório, com hora certa.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1651",tribunal:"STF",analise:"A intimação do MP feita diretamente no cartório, com hora certa, é válida. Diferente da regra geral que exige vista dos autos na Procuradoria.",temas:["Ministério Público","Intimação","Nulidade"]},
+  {id:"s643stf",area:"Direito do Consumidor",numero:643,nome:"Súmula 643 STF",texto:"O Ministério Público tem legitimidade para promover ação civil pública cujo fundamento seja a ilegalidade de reajuste de mensalidades escolares.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1663",tribunal:"STF",analise:"O MP pode ajuizar ACP para combater reajustes abusivos de mensalidades escolares, pois envolve interesses coletivos de consumidores (pais e alunos). Decorre de sua função de defesa de interesses difusos.",temas:["Ministério Público","ACP","Mensalidade Escolar","Consumidor"]}
+];
 
 const SUMULAS_VIN=[
   {id:"sv3",area:"Direito Administrativo",numero:3,nome:"Súmula Vinculante 3",texto:"Nos processos perante o TCU asseguram-se o contraditório e a ampla defesa quando da decisão puder resultar anulação de ato que beneficie o interessado.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1229",tribunal:"STF",analise:"O TCU, ao rever aposentadorias e outros atos, deve garantir contraditório e ampla defesa ao interessado — desde que já tenham decorrido 5 anos do ato.",temas:["TCU","Contraditório","Ampla Defesa"]},
@@ -1117,12 +1098,8 @@ function renderVersiculo(){
 // ── BUSCA GLOBAL ─────────────────────────────────────────
 function buscarGlobal(q){
   busca=(q||"").toLowerCase().trim();
-  if(!busca){renderWelcome();document.getElementById("cnt-badge").textContent=(NORMAS.length+SUMULAS.length+TEMAS.length+DH.length)+" itens";return;}
+  if(!busca){renderWelcome();document.getElementById("cnt-badge").textContent=TODOS.length+" itens";return;}
   pushNav({tipo:"busca",busca:q});
-  if(!_sumulasCarregadas){
-    carregarSumulasBD().then(()=>buscarGlobal(q));
-    return;
-  }
   const resNormas=TODOS.filter(i=>{
     if(!i||!i.nome)return false;
     const campos=[i.nome||"",i.sigla||"",i.texto||"",i.descricao||"",i.analise||"",
@@ -1166,14 +1143,9 @@ function setSecao(id,btn){
   document.getElementById("srch-input").value="";
   busca="";listaBusca="";
   itemAtivo=null;
-  const mapa={"norma":"nd-norma","sumula":"nd-sumula","repercussao":"nd-rg","dh":"nd-dh"};
+  const mapa={"norma":"nd-norma","sumula":"nd-sumula","sumula_vinculante":"nd-sv","repercussao":"nd-rg","dh":"nd-dh"};
   if(mapa[id])setNavDrawer(mapa[id]);
   pushNav({tipo:"secao",id});
-  if(id==="sumula"&&!_sumulasCarregadas){
-    document.getElementById("painel").innerHTML='<div style="text-align:center;padding:60px;color:var(--text-faint)"><div style="font-size:24px;margin-bottom:10px">⚖️</div>Carregando súmulas do banco...</div>';
-    carregarSumulasBD().then(()=>mostrarListaSecao(id));
-    return;
-  }
   mostrarListaSecao(id);
 }
 
@@ -2120,7 +2092,7 @@ function renderWelcome(){
       <div class="w-sub">Normas, súmulas, jurisprudência e direitos humanos reunidos em um só lugar.</div>
       <div class="stats">
         <div class="stat" onclick="setSecao('norma',document.querySelectorAll('#filtros .fb')[1])"><div class="stat-ico">📜</div><div class="stat-n">${NORMAS.length}</div><div class="stat-l">Normas</div></div>
-        <div class="stat" onclick="setSecao('sumula',document.querySelectorAll('#filtros .fb')[2])"><div class="stat-ico">⚖️</div><div class="stat-n">${_sumulasCarregadas?SUMULAS.length:"..."}</div><div class="stat-l">Súmulas</div></div>
+        <div class="stat" onclick="setSecao('sumula',document.querySelectorAll('#filtros .fb')[2])"><div class="stat-ico">⚖️</div><div class="stat-n">${SUMULAS.length+SUMULAS_VIN.length}</div><div class="stat-l">Súmulas</div></div>
         <div class="stat" onclick="setSecao('repercussao',document.querySelectorAll('#filtros .fb')[4])"><div class="stat-ico">🏛️</div><div class="stat-n">${TEMAS.length}</div><div class="stat-l">Rep. Geral</div></div>
         <div class="stat" onclick="setSecao('dh',document.querySelectorAll('#filtros .fb')[5])"><div class="stat-ico">🌍</div><div class="stat-n">${totalDH}</div><div class="stat-l">Dir. Humanos</div></div>
       </div>
