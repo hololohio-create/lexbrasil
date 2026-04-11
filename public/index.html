@@ -517,7 +517,6 @@ a{color:var(--royal-lt);text-decoration:none;}
   <button class="fb on" onclick="irHome();setNav(this)">🏠 Início</button>
   <button class="fb" onclick="setSecao('norma',this)">📜 Normas</button>
   <button class="fb" onclick="setSecao('sumula',this)">⚖️ Súmulas</button>
-  <button class="fb" onclick="setSecao('sumula_vinculante',this)">🔒 Vinculantes</button>
   <button class="fb" onclick="setSecao('repercussao',this)">🏛️ Rep. Geral</button>
   <button class="fb" onclick="setSecao('dh',this)">🌍 Dir. Humanos</button>
   <button class="fb" onclick="mostrarModelos();setNav(this)">📄 Docs. Jurídicos</button>
@@ -539,8 +538,7 @@ a{color:var(--royal-lt);text-decoration:none;}
   <div id="nav-drawer-itens">
     <button class="nav-item on" id="nd-inicio" onclick="irHome();fecharNavMobile()"><span class="nav-item-ico">🏠</span><span class="nav-item-txt">Início</span></button>
     <button class="nav-item" id="nd-norma" onclick="setSecao('norma',null);fecharNavMobile()"><span class="nav-item-ico">📜</span><span class="nav-item-txt">Normas</span></button>
-    <button class="nav-item" id="nd-sumula" onclick="setSecao('sumula',null);fecharNavMobile()"><span class="nav-item-ico">⚖️</span><span class="nav-item-txt">Súmulas STF/STJ</span></button>
-    <button class="nav-item" id="nd-sv" onclick="setSecao('sumula_vinculante',null);fecharNavMobile()"><span class="nav-item-ico">🔒</span><span class="nav-item-txt">Súmulas Vinculantes</span></button>
+    <button class="nav-item" id="nd-sumula" onclick="setSecao('sumula',null);fecharNavMobile()"><span class="nav-item-ico">⚖️</span><span class="nav-item-txt">Súmulas + Vinculantes</span></button>
     <button class="nav-item" id="nd-rg" onclick="setSecao('repercussao',null);fecharNavMobile()"><span class="nav-item-ico">🏛️</span><span class="nav-item-txt">Repercussão Geral</span></button>
     <button class="nav-item" id="nd-dh" onclick="setSecao('dh',null);fecharNavMobile()"><span class="nav-item-ico">🌍</span><span class="nav-item-txt">Direitos Humanos</span></button>
     <div class="nav-divider"></div>
@@ -654,47 +652,45 @@ const NORMAS=[
   {id:"lei15358",numero:"15358",nome:"Lei Antifacção — Marco Legal do Combate ao Crime Organizado",sigla:"Lei 15.358/2026",url:"https://www.planalto.gov.br/ccivil_03/_Ato2023-2026/2026/Lei/L15358.htm",analise:"Sancionada em 24/03/2026 e publicada no DOU em 25/03/2026, a Lei 15.358/2026 (Lei Raul Jungmann) institui o Marco Legal do Combate ao Crime Organizado no Brasil. Define facção criminosa como toda organização de 3 ou mais pessoas que use violência, grave ameaça ou coação para controlar territórios ou intimidar populações e autoridades. Tipifica o crime de 'domínio social estruturado': bloqueio de ruas, barricadas, imposição de regras a moradores, ataques a serviços públicos. Penas: reclusão de 20 a 40 anos para lideranças. Veda anistia, indulto, fiança e liberdade condicional aos líderes. Cria o Banco Nacional de Dados de Organizações Criminosas. Amplia bloqueio e apreensão de bens e ativos do crime organizado. Altera CP, CPP, Lei de Crimes Hediondos, LEP, Lei de Drogas e Estatuto do Desarmamento.\n\nPROGRESSÃO DE PENA — NOVAS FRAÇÕES (crimes hediondos e equiparados):\n• Hediondo primário: ANTES 40% → AGORA 70%\n• Hediondo com resultado morte (primário): ANTES 50% → AGORA 75%\n• Reincidente hediondo: ANTES 60% → AGORA 80%\n• Reincidente hediondo com resultado morte: ANTES 70% → AGORA 85%",keywords:["antifaccao","faccao","crime organizado","milicia","paramilitar","dominio social","territorio","marco legal","lei raul jungmann","violencia","orcrim","progressao","hediondo","reincidente"],notes:"⚠️ Lei nova — publicada em 25/03/2026. Verifique sempre no site oficial do Planalto para atualizações e regulamentações."},
 ];
 
-const SUMULAS=[
-  {id:"s145",area:"Direito Penal",numero:145,nome:"Súmula 145 STF",texto:"Não há crime, quando a preparação do flagrante pela polícia torna impossível a sua consumação.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=2251",tribunal:"STF",analise:"Trata do flagrante preparado: quando a própria polícia induz o agente a praticar o crime para prender em flagrante, não há crime — pois a consumação era impossível desde o início.",temas:["Flagrante Preparado","Flagrante Provocado"]},
-  {id:"s231",area:"Direito Penal",numero:231,nome:"Súmula 231 STF",texto:"O réu reincidente não tem direito à suspensão condicional da pena.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=2434",tribunal:"STF",analise:"O sursis (suspensão condicional da pena) é benefício que substitui a pena privativa de liberdade por período de prova. Esta súmula veda esse benefício ao reincidente.",temas:["Reincidência","Sursis","Execução Penal"]},
-  {id:"s444",area:"Direito Penal",numero:444,nome:"Súmula 444 STJ",texto:"É vedada a utilização de inquéritos policiais e ações penais em curso para agravar a pena-base.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=444",tribunal:"STJ",analise:"Só condenações com trânsito em julgado podem ser usadas como antecedentes criminais para aumentar a pena-base. Decorre da presunção de inocência.",temas:["Dosimetria","Pena-base","Antecedentes"]},
-  {id:"s545",area:"Direito Penal",numero:545,nome:"Súmula 545 STJ",texto:"Quando a confissão for utilizada para a formação do convencimento do julgador, o réu fará jus à atenuante prevista no artigo 65, III, d, do Código Penal.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=545",tribunal:"STJ",analise:"Se o juiz usar a confissão do réu para condenar, obrigatoriamente deve aplicar a atenuante de confissão na dosimetria. Não pode se beneficiar da confissão e ignorar o benefício que ela gera ao réu.",temas:["Confissão","Atenuante","Dosimetria"]},
-  {id:"s611",area:"Direito Penal",numero:611,nome:"Súmula 611 STF",texto:"Transitada em julgado a sentença condenatória, compete ao juízo das execuções a aplicação de lei mais benigna.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1645",tribunal:"STF",analise:"Após o trânsito em julgado, se nova lei beneficiar o condenado, cabe ao Juiz da Vara de Execuções Penais aplicá-la. A lei penal mais benéfica retroage sempre.",temas:["Execução Penal","Lei mais benigna","LEP"]},
-  {id:"s680",area:"Direito Previdenciário",numero:680,nome:"Súmula 680 STF",texto:"O direito ao auxílio-reclusão é assegurado ao preso em regime fechado.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1706",tribunal:"STF",analise:"O auxílio-reclusão é pago pelo INSS aos dependentes do segurado preso em regime fechado com baixa renda. Proteção previdenciária à família do preso.",temas:["Previdência","Auxílio-reclusão"]},
-  {id:"s718",area:"Direito Penal",numero:718,nome:"Súmula 718 STF",texto:"A opinião do julgador sobre a gravidade em abstrato do crime não constitui motivação idônea para a imposição de regime mais severo.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1743",tribunal:"STF",analise:"O juiz não pode impor regime mais severo apenas por considerar o crime grave em abstrato. Para regime mais gravoso, é preciso fundamentação concreta baseada no caso específico.",temas:["Regime de Pena","Dosimetria","Motivação"]},
-  {id:"s309",area:"Direito de Família",numero:309,nome:"Súmula 309 STJ",texto:"O débito alimentar que autoriza a prisão civil compreende as três prestações anteriores ao ajuizamento e as que vencerem no curso do processo.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=309",tribunal:"STJ",analise:"A prisão civil do devedor de alimentos só é cabível pela dívida recente (últimas 3 parcelas). Parcelas mais antigas devem ser cobradas por execução comum, sem possibilidade de prisão.",temas:["Alimentos","Prisão Civil","Família"]},
-  {id:"s11stj",area:"Direito Administrativo",numero:11,nome:"Súmula 11 STJ",texto:"A presença de advogado é obrigatória nos processos administrativos disciplinares.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=11",tribunal:"STJ",analise:"Diferencia-se da SV 5 do STF: enquanto a SV 5 dispensa advogado no PAD, a Súmula 11 do STJ exige quando a penalidade puder ser demissão. O STJ e o STF divergem neste ponto específico.",temas:["PAD","Advogado","Processo Administrativo"]},
-  {id:"s47stf",area:"Direito Administrativo",numero:47,nome:"Súmula 47 STF",texto:"Restrições a direitos de funcionário público fundadas em razões de segurança nacional são aplicáveis a servidor de empresa estatal.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1564",tribunal:"STF",analise:"Servidores de empresas estatais (como Petrobras e Caixa) podem ter restrições de direitos por razões de segurança nacional, assim como servidores públicos diretos.",temas:["Empresa Estatal","Servidor","Segurança Nacional"]},
-  {id:"s340stj",area:"Direito Previdenciário",numero:340,nome:"Súmula 340 STJ",texto:"A lei aplicável à concessão de pensão previdenciária por morte é aquela vigente na data do óbito do segurado.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=340",tribunal:"STJ",analise:"O benefício de pensão por morte segue a lei vigente no momento do óbito do segurado, não a lei posterior. Garante segurança jurídica e impede que mudanças legislativas prejudiquem dependentes.",temas:["Previdência","Pensão por Morte","INSS"]},
-  {id:"s347stf",area:"Direito Administrativo",numero:347,nome:"Súmula 347 STF",texto:"O Tribunal de Contas, no exercício de suas atribuições, pode apreciar a constitucionalidade das leis e dos atos do poder público.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1530",tribunal:"STF",analise:"O TCU tem competência para deixar de aplicar lei que considere inconstitucional, no âmbito de sua fiscalização. Amplamente debatido e com aplicação controversa na prática.",temas:["TCU","Controle de Constitucionalidade","Tribunal de Contas"]},
-  {id:"s378stj",area:"Direito de Família",numero:378,nome:"Súmula 378 STJ",texto:"Reconhecida a continência, devem ser reunidas para julgamento conjunto as ações de alimentos e de investigação de paternidade.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=378",tribunal:"STJ",analise:"Quando há ação de alimentos e investigação de paternidade conexas, devem ser julgadas juntas pelo mesmo juízo por continência — evitando decisões contraditórias.",temas:["Alimentos","Paternidade","Família","Conexão"]},
-  {id:"s419stj",area:"Direito Civil",numero:419,nome:"Súmula 419 STJ",texto:"Descabe a prisão civil do depositário judicial infiel.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=419",tribunal:"STJ",analise:"Mesmo o depositário judicial — nomeado pelo juízo — não pode ser preso civilmente. Aplica o mesmo raciocínio da SV 25 do STF ao depositário judicial específico.",temas:["Depositário Judicial","Prisão Civil","Execução"]},
-  {id:"s500stj",area:"Direito Penal",numero:500,nome:"Súmula 500 STJ",texto:"A configuração do crime do art. 244-B do ECA independe da prova da efetiva corrupção do menor, por se tratar de delito formal.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=500",tribunal:"STJ",analise:"Corrupção de menor é crime formal — basta a participação do menor no crime com adulto, independentemente de prova que o menor foi corrompido ou já praticava atos infracionais antes.",temas:["ECA","Corrupção de Menor","Crime Formal"]},
-  {id:"s568stj",area:"Direito Processual",numero:568,nome:"Súmula 568 STJ",texto:"O relator, monocraticamente e no Superior Tribunal de Justiça, poderá dar ou negar provimento ao recurso quando houver entendimento dominante acerca do tema.",url:"https://scon.stj.jus.br/SCON/sumstj/doc.jsp?livre=%40DocDT&&b=SUMU&p=true&t=JURIDICO&l=10&i=1&operador=e&numero=568",tribunal:"STJ",analise:"O relator pode decidir sozinho (monocraticamente) quando o tema tem jurisprudência dominante no STJ, sem precisar submeter ao colegiado. Agiliza a prestação jurisdicional.",temas:["Recurso","Decisão Monocrática","STJ"]},
-  {id:"s623stf",area:"Direito Processual",numero:623,nome:"Súmula 623 STF",texto:"Não gera nulidade a intimação do Ministério Público realizada pessoalmente pelo escrivão, em cartório, com hora certa.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1651",tribunal:"STF",analise:"A intimação do MP feita diretamente no cartório, com hora certa, é válida. Diferente da regra geral que exige vista dos autos na Procuradoria.",temas:["Ministério Público","Intimação","Nulidade"]},
-  {id:"s643stf",area:"Direito do Consumidor",numero:643,nome:"Súmula 643 STF",texto:"O Ministério Público tem legitimidade para promover ação civil pública cujo fundamento seja a ilegalidade de reajuste de mensalidades escolares.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=30&sumula=1663",tribunal:"STF",analise:"O MP pode ajuizar ACP para combater reajustes abusivos de mensalidades escolares, pois envolve interesses coletivos de consumidores (pais e alunos). Decorre de sua função de defesa de interesses difusos.",temas:["Ministério Público","ACP","Mensalidade Escolar","Consumidor"]}
-];
+// Súmulas — carregadas do Supabase ao clicar na aba
+let SUMULAS=[];
+let _sumulasCarregadas=false;
 
-const SUMULAS_VIN=[
-  {id:"sv3",area:"Direito Administrativo",numero:3,nome:"Súmula Vinculante 3",texto:"Nos processos perante o TCU asseguram-se o contraditório e a ampla defesa quando da decisão puder resultar anulação de ato que beneficie o interessado.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1229",tribunal:"STF",analise:"O TCU, ao rever aposentadorias e outros atos, deve garantir contraditório e ampla defesa ao interessado — desde que já tenham decorrido 5 anos do ato.",temas:["TCU","Contraditório","Ampla Defesa"]},
-  {id:"sv5",area:"Direito Administrativo",numero:5,nome:"Súmula Vinculante 5",texto:"A falta de defesa técnica por advogado no processo administrativo disciplinar não ofende a Constituição.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1231",tribunal:"STF",analise:"No PAD não é obrigatório ter advogado para a defesa ser válida. O servidor pode se defender pessoalmente.",temas:["PAD","Defesa Técnica","Processo Administrativo"]},
-  {id:"sv11",area:"Direito Penal",numero:11,nome:"Súmula Vinculante 11",texto:"Só é lícito o uso de algemas em casos de resistência e de fundado receio de fuga ou de perigo à integridade física própria ou alheia.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1237",tribunal:"STF",analise:"O uso de algemas é medida excepcional. Usar algemas desnecessariamente viola a dignidade humana e pode anular o ato processual.",temas:["Algemas","Preso","Dignidade"]},
-  {id:"sv13",area:"Direito Administrativo",numero:13,nome:"Súmula Vinculante 13",texto:"A nomeação de cônjuge, companheiro ou parente até terceiro grau de autoridade nomeante para cargo em comissão viola a Constituição.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1239",tribunal:"STF",analise:"O nepotismo é inconstitucional por violar a moralidade e impessoalidade administrativas. Abrange cônjuge, companheiro e parentes até o 3º grau.",temas:["Nepotismo","Cargo em Comissão","Moralidade"]},
-  {id:"sv14",area:"Direito Penal",numero:14,nome:"Súmula Vinculante 14",texto:"É direito do defensor ter acesso amplo aos elementos de prova já documentados em procedimento investigatório.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1240",tribunal:"STF",analise:"O advogado tem direito de acessar os autos do inquérito mesmo em investigações em curso. A negativa viola a ampla defesa e pode anular o processo.",temas:["Defesa","Inquérito","Acesso aos Autos"]},
-  {id:"sv25",area:"Direito Civil",numero:25,nome:"Súmula Vinculante 25",texto:"É ilícita a prisão civil de depositário infiel, qualquer que seja a modalidade do depósito.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1251",tribunal:"STF",analise:"Com o Pacto de San José da Costa Rica, o STF extinguiu a prisão do depositário infiel. Apenas a prisão por dívida alimentar permanece lícita.",temas:["Prisão Civil","Depositário Infiel"]},
-  {id:"sv26",area:"Direito Penal",numero:26,nome:"Súmula Vinculante 26",texto:"Para progressão de regime em crime hediondo, o juízo da execução observará a inconstitucionalidade do art. 2º da Lei 8.072/90.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1252",tribunal:"STF",analise:"A vedação absoluta de progressão de regime para crimes hediondos é inconstitucional. Há progressão com prazos diferenciados: 40% para primários e 60% para reincidentes.",temas:["Progressão de Regime","Crime Hediondo","LEP"]},
-  {id:"sv56",area:"Direito Penal",numero:56,nome:"Súmula Vinculante 56",texto:"A falta de estabelecimento penal adequado não autoriza a manutenção do condenado em regime prisional mais gravoso.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1282",tribunal:"STF",analise:"Se o Estado não tem vaga no regime adequado, deve colocar o preso em regime menos grave ou conceder prisão domiciliar. O Estado não pode punir o preso pela própria omissão.",temas:["Estabelecimento Penal","Regime Prisional","LEP"]},
-  {id:"sv1",area:"Direito Administrativo",numero:1,nome:"Súmula Vinculante 1",texto:"Ofende a garantia constitucional do ato jurídico perfeito a decisão que, sem ponderar as circunstâncias do caso concreto, desconsidera a validez e a eficácia de acordo constante de termo de adesão instituído pela Lei Complementar nº 110/2001.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1227",tribunal:"STF",analise:"Protege acordos firmados no âmbito do FGTS. Decisões judiciais não podem ignorar os termos de adesão sem analisar as circunstâncias concretas do caso, sob pena de violar o ato jurídico perfeito.",temas:["FGTS","Ato Jurídico Perfeito","Segurança Jurídica"]},
-  {id:"sv10",area:"Direito Constitucional",numero:10,nome:"Súmula Vinculante 10",texto:"Viola a cláusula de reserva de plenário a decisão de órgão fracionário de tribunal que, embora não declare expressamente a inconstitucionalidade de lei, afasta sua incidência no todo ou em parte.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1236",tribunal:"STF",analise:"A cláusula de reserva de plenário exige maioria absoluta do tribunal pleno para afastar uma lei por inconstitucionalidade. Um órgão fracionário (câmara, turma) não pode fazer isso sozinho, mesmo sem usar a palavra 'inconstitucional'.",temas:["Reserva de Plenário","Inconstitucionalidade","Controle Difuso"]},
-  {id:"sv16",area:"Direito Administrativo",numero:16,nome:"Súmula Vinculante 16",texto:"Os artigos 7º, IV, e 39, § 3º (redação da EC 19/98), da Constituição Federal, referem-se ao salário mínimo previsto em lei nacional, não fixado por lei estadual.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1242",tribunal:"STF",analise:"O salário mínimo que serve de base para vencimentos de servidores e trabalhadores é o nacional, fixado em lei federal. Estados não podem fixar outro salário mínimo como parâmetro constitucional.",temas:["Salário Mínimo","Servidor Público","Federalismo"]},
-  {id:"sv27",area:"Direito Processual",numero:27,nome:"Súmula Vinculante 27",texto:"Compete à Justiça Estadual julgar causas entre consumidor e concessionária de serviço público de telefonia, quando a ANATEL não seja litisconsorte passiva necessária.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1253",tribunal:"STF",analise:"Conflito entre consumidor e operadora de telefonia deve ser julgado pela Justiça Estadual comum, e não pela Justiça Federal — a menos que a ANATEL seja parte necessária no processo.",temas:["Competência","Telefonia","Consumidor","Justiça Estadual"]},
-  {id:"sv28",area:"Direito Tributário",numero:28,nome:"Súmula Vinculante 28",texto:"É inconstitucional a exigência de depósito prévio como requisito de admissibilidade de ação judicial na qual se pretenda discutir a exigibilidade de crédito tributário.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1254",tribunal:"STF",analise:"Nenhuma lei pode exigir que o contribuinte deposite o valor do tributo antes de poder questionar judicialmente sua cobrança. Viola o acesso à justiça e o devido processo legal.",temas:["Tributo","Depósito Prévio","Acesso à Justiça","Direito Tributário"]},
-  {id:"sv37",area:"Direito Administrativo",numero:37,nome:"Súmula Vinculante 37",texto:"Não cabe ao Poder Judiciário, que não tem função legislativa, aumentar vencimentos de servidores públicos sob o fundamento de isonomia.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1263",tribunal:"STF",analise:"O Judiciário não pode equiparar salários de servidores por isonomia, pois isso significaria criar despesa pública sem lei — função exclusiva do Legislativo. O servidor deve buscar esse direito pelas vias administrativas e legislativas.",temas:["Isonomia","Servidor Público","Separação dos Poderes","Vencimentos"]},
-  {id:"sv45",area:"Direito Penal",numero:45,nome:"Súmula Vinculante 45",texto:"A competência constitucional do Tribunal do Júri prevalece sobre o foro por prerrogativa de função estabelecido exclusivamente pela Constituição estadual.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1271",tribunal:"STF",analise:"Se a Constituição Estadual criar foro privilegiado para alguma autoridade, ele não prevalece sobre o Tribunal do Júri — competência constitucionalmente garantida. Apenas foros criados pela CF/88 prevalecem.",temas:["Tribunal do Júri","Foro Privilegiado","Competência","Constituição Estadual"]},
-  {id:"sv54",area:"Direito Constitucional",numero:54,nome:"Súmula Vinculante 54",texto:"A medida provisória não apreciada pelo Congresso Nacional podia, até a Emenda Constitucional 32/2001, ser reeditada dentro do seu prazo de eficácia sem ofensa à Constituição.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1280",tribunal:"STF",analise:"Antes da EC 32/2001, medidas provisórias podiam ser reeditadas indefinidamente se não apreciadas pelo Congresso. A EC 32 acabou com isso, fixando prazo de 60 dias + prorrogação única.",temas:["Medida Provisória","Congresso Nacional","EC 32/2001"]},
-  {id:"sv58",area:"Direito Trabalhista",numero:58,nome:"Súmula Vinculante 58",texto:"Inexiste direito a novo FGTS ou indenização compensatória para trabalhador não optante pelo FGTS contratado antes de 1988.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1284",tribunal:"STF",analise:"Trabalhadores contratados antes de 1988 que não optaram pelo FGTS não têm direito a reclamá-lo retroativamente. O FGTS obrigatório para todos só veio com a CF/88.",temas:["FGTS","Trabalhador","Direitos Trabalhistas"]},
-  {id:"sv59",area:"Direito Civil",numero:59,nome:"Súmula Vinculante 59",texto:"É válida a penhora de bem de família pertencente a fiador de contrato de locação.",url:"https://portal.stf.jus.br/jurisprudencia/sumariosumulas.asp?base=99&sumula=1285",tribunal:"STF",analise:"Embora a Lei 8.009/90 proteja o bem de família contra penhora, o STF decidiu que o fiador de contrato de locação pode ter seu imóvel penhorado, mesmo sendo bem de família. Decisão polêmica mas consolidada.",temas:["Bem de Família","Fiador","Locação","Penhora"]}
-];
+async function carregarSumulasBD(){
+  if(_sumulasCarregadas)return;
+  try{
+    const r=await fetch('/api/sumulas?limite=300');
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    SUMULAS=(d.sumulas||[]).map(s=>({
+      id:s.sid,
+      area:s.area,
+      numero:s.numero,
+      nome:s.nome,
+      texto:s.texto,
+      analise:s.analise,
+      url:s.url,
+      tribunal:s.tribunal,
+      tipo:s.tipo||'normal',
+      temas:[s.area||''].filter(Boolean)
+    }));
+    _sumulasCarregadas=true;
+    // Atualizar contador na home
+    const badge=document.getElementById('cnt-badge');
+    if(badge)badge.textContent=TODOS_COUNT()+' itens';
+    const statEl=document.querySelector('.stat-n');
+  }catch(e){
+    console.warn('Súmulas BD indisponível, usando dados locais',e);
+  }
+}
+
+function TODOS_COUNT(){
+  return NORMAS.length+SUMULAS.length+TEMAS.length+DH.length;
+}
+
+
+const SUMULAS_VIN=[...SUMULAS.filter(s=>s.tipo==="vinculante")];
+
 
 const TEMAS=[
   {id:"rg143",area:"Direito Penal",numero:143,nome:"Tema 143 — Repercussão Geral",descricao:"Exigência de recolhimento à prisão para apelar no Tribunal do Júri.",resultado:"Inconstitucional. Viola a presunção de inocência.",url:"https://portal.stf.jus.br/jurisprudencia/listarJurisprudenciaDetalhe.asp?s1=000143&base=repercussao",tribunal:"STF",analise:"O CPP exigia que o condenado pelo Júri se recolhesse à prisão para poder apelar. O STF declarou inconstitucional: ninguém pode ser obrigado a se prender para exercer o direito recursal.",normasRelacionadas:["CF/88","CPP"],temas:["Prisão","Recurso","Tribunal do Júri"]},
@@ -810,8 +806,8 @@ const TERMOS=[
 // ── ESTRUTURA ────────────────────────────────────────────
 const CATS=[
   {id:"norma",       icon:"📜", nome:"Normas",                   dados:NORMAS,         cor:"#1a4a9a"},
-  {id:"sumula",      icon:"⚖️", nome:"Súmulas STF/STJ",          dados:SUMULAS,        cor:"#1a3a8a"},
-  {id:"sumula_vinculante",icon:"🔒",nome:"Súmulas Vinculantes",  dados:SUMULAS_VIN,    cor:"#5a1a7a"},
+  {id:"sumula",      icon:"⚖️", nome:"Súmulas STF/STJ + Vinculantes", dados:SUMULAS,   cor:"#1a3a8a"},
+  // removido — vinculantes agora dentro de SUMULAS
   {id:"repercussao", icon:"🏛️", nome:"Repercussão Geral",        dados:TEMAS,          cor:"#1a5a7a"},
   {id:"dh",          icon:"🌍", nome:"Direitos Humanos",          dados:DH,             cor:"#1a6a4a"},
 ];
@@ -819,7 +815,6 @@ const CATS=[
 const TODOS=[
   ...NORMAS.map(n=>n?({...n,categoria:"norma"}):null),
   ...SUMULAS.map(s=>s?({...s,categoria:"sumula"}):null),
-  ...SUMULAS_VIN.map(s=>s?({...s,categoria:"sumula_vinculante"}):null),
   ...TEMAS.map(t=>t?({...t,categoria:"repercussao"}):null),
   ...DH.map(d=>d?({...d,categoria:"dh"}):null),
 ].filter(Boolean);
@@ -868,7 +863,7 @@ function setSecaoSilent(id){
   mostrarListaSecao(id);
 }
 function selecionarItemSilent(id,cat){
-  const lista=cat==="norma"?NORMAS:cat==="sumula"?SUMULAS:cat==="sumula_vinculante"?SUMULAS_VIN:cat==="repercussao"?TEMAS:DH;
+  const lista=cat==="norma"?NORMAS:cat==="sumula"?SUMULAS:cat==="repercussao"?TEMAS:DH;
   itemAtivo={...lista.find(i=>i.id===id),categoria:cat};
   mostrarDetalhe();
 }
@@ -1098,8 +1093,16 @@ function renderVersiculo(){
 // ── BUSCA GLOBAL ─────────────────────────────────────────
 function buscarGlobal(q){
   busca=(q||"").toLowerCase().trim();
-  if(!busca){renderWelcome();document.getElementById("cnt-badge").textContent=TODOS.length+" itens";return;}
+  if(!busca){renderWelcome();document.getElementById("cnt-badge").textContent=TODOS_COUNT()+" itens";return;}
   pushNav({tipo:"busca",busca:q});
+  if(!_sumulasCarregadas){
+    carregarSumulasBD().then(()=>_executarBusca(q));
+    return;
+  }
+  _executarBusca(q);
+}
+function _executarBusca(q){
+  busca=(q||"").toLowerCase().trim();
   const resNormas=TODOS.filter(i=>{
     if(!i||!i.nome)return false;
     const campos=[i.nome||"",i.sigla||"",i.texto||"",i.descricao||"",i.analise||"",
@@ -1115,10 +1118,14 @@ function buscarGlobal(q){
   if(resNormas.length){
     html+=`<div style="font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Normas e jurisprudência (${resNormas.length})</div>`;
     html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:20px">`;
-    html+=resNormas.map(i=>`<div onclick="selecionarItem('${i.id}','${i.categoria}')" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;cursor:pointer;transition:border-color .18s" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
-      ${i.sigla?`<div style="font-size:9px;color:var(--green);font-family:'JetBrains Mono',monospace">${i.sigla}</div>`:""}
-      <div style="font-size:12px;color:var(--text)">${i.nome}</div>
-    </div>`).join("");
+    html+=resNormas.map(i=>`<div onclick="selecionarItem('${i.id}','${i.categoria}')" style="background:var(--bg2);border:1px solid ${i.tipo==='vinculante'?'rgba(130,80,220,.3)':'var(--border)'};border-radius:8px;padding:10px 13px;cursor:pointer;transition:border-color .18s" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+          ${i.tipo==='vinculante'?`<span style="font-size:9px;background:rgba(120,80,200,.2);border:1px solid rgba(150,100,230,.4);color:#b080f0;padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:700;flex-shrink:0">S.V.</span>`:i.tribunal?`<span style="font-size:9px;color:${i.tribunal==='STJ'?'#3a9a7a':'#4a8adc'};font-family:'JetBrains Mono',monospace;font-weight:700;flex-shrink:0">${i.tribunal}</span>`:''}
+          ${i.numero?`<span style="font-size:10px;color:var(--text-dim);font-family:'JetBrains Mono',monospace">Nº ${i.numero}</span>`:''}
+        </div>
+        <div style="font-size:14px;color:var(--text);font-weight:600;line-height:1.3;margin-bottom:3px">${i.nome.replace(/^Súmula Vinculante \d+\s*/,'').replace(/^Súmula \d+\s*(STF|STJ)\s*/,'').trim()||i.nome}</div>
+        ${(i.texto||i.descricao)?`<div style="font-size:12px;color:var(--text-dim);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${(i.texto||i.descricao).slice(0,90)}…</div>`:""}
+      </div>`).join("");
     html+=`</div>`;
   }
   if(resTermos.length){
@@ -1143,16 +1150,22 @@ function setSecao(id,btn){
   document.getElementById("srch-input").value="";
   busca="";listaBusca="";
   itemAtivo=null;
-  const mapa={"norma":"nd-norma","sumula":"nd-sumula","sumula_vinculante":"nd-sv","repercussao":"nd-rg","dh":"nd-dh"};
+  const mapa={"norma":"nd-norma","sumula":"nd-sumula","repercussao":"nd-rg","dh":"nd-dh"};
   if(mapa[id])setNavDrawer(mapa[id]);
   pushNav({tipo:"secao",id});
-  mostrarListaSecao(id);
+  // Carregar súmulas do BD se ainda não carregadas
+  if(id==="sumula"&&!_sumulasCarregadas){
+    document.getElementById("painel").innerHTML='<div style="text-align:center;padding:60px;color:var(--text-faint)"><div style="margin-bottom:12px;font-size:20px">⚖️</div>Carregando súmulas...</div>';
+    carregarSumulasBD().then(()=>mostrarListaSecao(id));
+  } else {
+    mostrarListaSecao(id);
+  }
 }
 
 function mostrarListaSecao(id){
   const cats=id==="todos"?CATS:CATS.filter(c=>c.id===id);
   // Categorias que agrupam por área temática
-  const comArea=["sumula","sumula_vinculante","repercussao"];
+  const comArea=["sumula","repercussao"];
   let html=`<div id="det-wrap">`;
 
   cats.forEach(cat=>{
@@ -1234,7 +1247,7 @@ function mostrarListaSecao(id){
 }
 
 function selecionarItem(id,cat){
-  const lista=cat==="norma"?NORMAS:cat==="sumula"?SUMULAS:cat==="sumula_vinculante"?SUMULAS_VIN:cat==="repercussao"?TEMAS:DH;
+  const lista=cat==="norma"?NORMAS:cat==="sumula"?SUMULAS:cat==="repercussao"?TEMAS:DH;
   itemAtivo={...lista.find(i=>i.id===id),categoria:cat};
   pushNav({tipo:"detalhe",id,cat});
   mostrarDetalhe();
@@ -2092,7 +2105,7 @@ function renderWelcome(){
       <div class="w-sub">Normas, súmulas, jurisprudência e direitos humanos reunidos em um só lugar.</div>
       <div class="stats">
         <div class="stat" onclick="setSecao('norma',document.querySelectorAll('#filtros .fb')[1])"><div class="stat-ico">📜</div><div class="stat-n">${NORMAS.length}</div><div class="stat-l">Normas</div></div>
-        <div class="stat" onclick="setSecao('sumula',document.querySelectorAll('#filtros .fb')[2])"><div class="stat-ico">⚖️</div><div class="stat-n">${SUMULAS.length+SUMULAS_VIN.length}</div><div class="stat-l">Súmulas</div></div>
+        <div class="stat" onclick="setSecao('sumula',document.querySelectorAll('#filtros .fb')[2])"><div class="stat-ico">⚖️</div><div class="stat-n">${_sumulasCarregadas?SUMULAS.length:"..."}</div><div class="stat-l">Súmulas</div></div>
         <div class="stat" onclick="setSecao('repercussao',document.querySelectorAll('#filtros .fb')[4])"><div class="stat-ico">🏛️</div><div class="stat-n">${TEMAS.length}</div><div class="stat-l">Rep. Geral</div></div>
         <div class="stat" onclick="setSecao('dh',document.querySelectorAll('#filtros .fb')[5])"><div class="stat-ico">🌍</div><div class="stat-n">${totalDH}</div><div class="stat-l">Dir. Humanos</div></div>
       </div>
