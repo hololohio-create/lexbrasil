@@ -813,18 +813,22 @@ const TERMOS=[
 
 // ── ESTRUTURA ────────────────────────────────────────────
 const CATS=[
-  {id:"norma",       icon:"📜", nome:"Normas",                   dados:NORMAS,         cor:"#1a4a9a"},
-  {id:"sumula",      icon:"⚖️", nome:"Súmulas STF/STJ",          dados:SUMULAS,        cor:"#1a3a8a"},
-  {id:"repercussao", icon:"🏛️", nome:"Repercussão Geral",        dados:TEMAS,          cor:"#1a5a7a"},
-  {id:"dh",          icon:"🌍", nome:"Direitos Humanos",          dados:DH,             cor:"#1a6a4a"},
+  {id:"norma",       icon:"📜", nome:"Normas",                   get dados(){return NORMAS;},  cor:"#1a4a9a"},
+  {id:"sumula",      icon:"⚖️", nome:"Súmulas STF/STJ",          get dados(){return SUMULAS;}, cor:"#1a3a8a"},
+  {id:"repercussao", icon:"🏛️", nome:"Repercussão Geral",        get dados(){return TEMAS;},   cor:"#1a5a7a"},
+  {id:"dh",          icon:"🌍", nome:"Direitos Humanos",          get dados(){return DH;},      cor:"#1a6a4a"},
 ];
 
-const TODOS=[
-  ...NORMAS.map(n=>n?({...n,categoria:"norma"}):null),
-  ...SUMULAS.map(s=>s?({...s,categoria:"sumula"}):null),
-  ...TEMAS.map(t=>t?({...t,categoria:"repercussao"}):null),
-  ...DH.map(d=>d?({...d,categoria:"dh"}):null),
-].filter(Boolean);
+// TODOS é calculado dinamicamente para incluir súmulas do BD
+function getTODOS(){
+  return [
+    ...NORMAS.map(n=>n?({...n,categoria:"norma"}):null),
+    ...SUMULAS.map(s=>s?({...s,categoria:"sumula"}):null),
+    ...TEMAS.map(t=>t?({...t,categoria:"repercussao"}):null),
+    ...DH.map(d=>d?({...d,categoria:"dh"}):null),
+  ].filter(Boolean);
+}
+const TODOS=getTODOS(); // snapshot inicial (sem súmulas do BD)
 
 let secaoAtiva="todos", itemAtivo=null, novidades=[], colabs=[], busca="", listaBusca="";
 const catAberta={};
