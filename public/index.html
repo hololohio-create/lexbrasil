@@ -448,6 +448,23 @@ a{color:var(--royal-lt);text-decoration:none;}
 .nav-item-sobre .nav-item-txt{color:rgba(140,180,255,.75);}
 .nav-divider{height:1px;background:var(--border);margin:8px 8px;}
 
+/* ── BIZ & SOARES ─────────────────────────────────────── */
+#bizsoares-wrap{margin-top:12px;background:linear-gradient(135deg,rgba(180,150,60,.08),rgba(120,100,40,.04));border:1px solid rgba(180,150,60,.3);border-radius:12px;padding:16px 20px;}
+#bizsoares-header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+#bizsoares-logo{width:80px;height:80px;object-fit:contain;border-radius:8px;}
+#bizsoares-title{flex:1;}
+#bizsoares-title h2{font-family:'Playfair Display',serif;font-size:16px;color:#c8a020;margin:0 0 2px;}
+#bizsoares-title p{font-size:11px;color:var(--text-dim);margin:0;font-style:italic;}
+.bs-servicos{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:10px 0;}
+.bs-servico{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--text-dim);line-height:1.4;}
+.bs-servico span{color:#c8a020;flex-shrink:0;}
+.bs-aviso{font-size:10px;color:var(--text-faint);border-top:1px solid rgba(180,150,60,.2);padding-top:8px;margin-top:8px;line-height:1.5;}
+.bs-contato{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.bs-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Lato',sans-serif;cursor:pointer;transition:all .2s;text-decoration:none;}
+.bs-btn-wpp{background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.35);color:#25d366;}
+.bs-btn-wpp:hover{background:rgba(37,211,102,.22);}
+.bs-btn-em-breve{background:rgba(80,80,80,.15);border:1px solid rgba(100,100,100,.3);color:var(--text-faint);cursor:default;}
+
 @media(max-width:768px){
   #hdr{height:auto;padding:8px 12px;gap:8px;flex-wrap:nowrap;}
   #logo{flex-shrink:0;}
@@ -939,13 +956,14 @@ async function carregarColabs(){
 
 // ── NOTÍCIAS DO DIA ──────────────────────────────────────
 // ── NOTÍCIAS DOS ÓRGÃOS OFICIAIS ─────────────────────────
+// Feeds via Google News (mais estável que RSS direto)
 const FONTES_NOTICIAS=[
-  {id:"stf",   label:"STF",    cor:"#4a8adc", feed:"https://portal.stf.jus.br/rss/noticia.asp",                        site:"portal.stf.jus.br"},
-  {id:"stj",   label:"STJ",    cor:"#3a9a7a", feed:"https://res.stj.jus.br/hrestp-c-portalp/RSS.xml",                  site:"stj.jus.br"},
-  {id:"camara",label:"Câmara", cor:"#8a5aaa", feed:"https://www.camara.leg.br/noticias/rss/ultimas-noticias",           site:"camara.leg.br"},
-  {id:"senado",label:"Senado", cor:"#aa6a4a", feed:"https://www12.senado.leg.br/noticias/feed",                         site:"senado.leg.br"},
-  {id:"mpf",   label:"MPF",    cor:"#4a8a5a", feed:"https://www.mpf.mp.br/sala-de-imprensa/noticias-do-mpf/@@rss",      site:"mpf.mp.br"},
-  {id:"mpes",  label:"MP-ES",  cor:"#8a7a3a", feed:"https://www.mpes.mp.br/Arquivos/RSS/Noticias.xml",                  site:"mpes.mp.br"},
+  {id:"stf",   label:"STF",    cor:"#4a8adc", gq:"STF+Supremo+Tribunal+Federal+jurídico"},
+  {id:"stj",   label:"STJ",    cor:"#3a9a7a", gq:"STJ+Superior+Tribunal+Justiça"},
+  {id:"camara",label:"Câmara", cor:"#8a5aaa", gq:"Câmara+Deputados+legislação+Brasil"},
+  {id:"senado",label:"Senado", cor:"#aa6a4a", gq:"Senado+Federal+legislação+Brasil"},
+  {id:"mpf",   label:"MPF",    cor:"#4a8a5a", gq:"Ministério+Público+Federal+MPF"},
+  {id:"mpes",  label:"MP-ES",  cor:"#8a7a3a", gq:"Ministério+Público+Espírito+Santo+MPES"},
 ];
 
 const _notCache={};
@@ -974,39 +992,18 @@ async function buscarFeed(fonte){
   if(fonte.id===_notFonteAtiva)mostrarNoticiasAtivas();
   let items=[];
 
-  // 1: allorigins proxy → parse XML nativo
-  try{
-    const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(fonte.feed)}`,{signal:AbortSignal.timeout(8000)});
-    const d=await r.json();
-    if(d.contents)items=parseRSS(d.contents);
-  }catch(e){}
-
-  // 2: rss2json direto
-  if(!items.length){
+  // Google News via rss2json (mais estável)
+  const tentativas=[
+    `https://news.google.com/rss/search?q=${fonte.gq}&hl=pt-BR&gl=BR&ceid=BR:pt-419`,
+    `https://news.google.com/rss/search?q=${encodeURIComponent(fonte.label+" direito")}&hl=pt-BR&gl=BR&ceid=BR:pt-419`,
+  ];
+  for(const gUrl of tentativas){
+    if(items.length)break;
     try{
-      const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.feed)}&count=6`,{signal:AbortSignal.timeout(7000)});
+      const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(gUrl)}&count=6`,{signal:AbortSignal.timeout(8000)});
       const d=await r.json();
-      if(d.status==="ok"&&d.items?.length)items=d.items.map(i=>({title:i.title,link:i.link,pubDate:i.pubDate}));
-    }catch(e){}
-  }
-
-  // 3: Google News pelo domínio
-  if(!items.length){
-    try{
-      const gUrl=`https://news.google.com/rss/search?q=site:${fonte.site}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
-      const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(gUrl)}&count=6`,{signal:AbortSignal.timeout(7000)});
-      const d=await r.json();
-      if(d.status==="ok"&&d.items?.length)items=d.items.map(i=>({title:i.title,link:i.link,pubDate:i.pubDate}));
-    }catch(e){}
-  }
-
-  // 4: Google News pelo nome do órgão
-  if(!items.length){
-    try{
-      const gUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(fonte.label+" direito brasil")}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
-      const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(gUrl)}&count=6`,{signal:AbortSignal.timeout(7000)});
-      const d=await r.json();
-      if(d.status==="ok"&&d.items?.length)items=d.items.map(i=>({title:i.title,link:i.link,pubDate:i.pubDate}));
+      if(d.status==="ok"&&d.items?.length)
+        items=d.items.map(i=>({title:i.title,link:i.link,pubDate:i.pubDate}));
     }catch(e){}
   }
 
@@ -1107,7 +1104,11 @@ function renderVersiculo(){
 function buscarGlobal(q){
   busca=(q||"").toLowerCase().trim();
   if(!busca){renderWelcome();_atualizarContadorSumulas();return;}
-  if(!_sumulasCarregadas){carregarSumulasBD().then(()=>buscarGlobal(q));return;}
+  if(!_sumulasCarregadas){
+    document.getElementById("painel").innerHTML='<div style="text-align:center;padding:60px;color:var(--text-faint)"><div style="font-size:20px;margin-bottom:8px">🔍</div>Carregando base de dados...</div>';
+    carregarSumulasBD().then(()=>buscarGlobal(q));
+    return;
+  }
   pushNav({tipo:"busca",busca:q});
   const resNormas=TODOS.filter(i=>{
     if(!i||!i.nome)return false;
@@ -2111,6 +2112,33 @@ function renderWelcome(){
         <div class="stat" onclick="setSecao('dh',document.querySelectorAll('#filtros .fb')[5])"><div class="stat-ico">🌍</div><div class="stat-n">${totalDH}</div><div class="stat-l">Dir. Humanos</div></div>
       </div>
       <div class="w-hint">💡 Use o menu acima · <span style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:2px" onclick="mostrarSimplificando();setNav(document.querySelector('.fb-gold'))">✦ Simplificando o Direito</span> para entender termos jurídicos</div>
+
+      <div id="bizsoares-wrap">
+        <div id="bizsoares-header">
+          <img id="bizsoares-logo" src="/Logo_1.png" alt="Biz & Soares" onerror="this.style.display='none'">
+          <div id="bizsoares-title">
+            <h2>Biz &amp; Soares — Consultoria Jurídica</h2>
+            <p>Soluções em análise legal · Estudantes de Direito com experiência extrajudicial</p>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:8px">
+          Oferecemos assessoria documental e consultoria jurídica extrajudicial. Com 14 anos de experiência no serviço público e formação em andamento na área jurídica, auxiliamos pessoas físicas e empresas em demandas que não exigem representação judicial.
+        </div>
+        <div class="bs-servicos">
+          <div class="bs-servico"><span>✦</span>Notificações extrajudiciais</div>
+          <div class="bs-servico"><span>✦</span>Análise e revisão de contratos</div>
+          <div class="bs-servico"><span>✦</span>Orientação em proc. administrativos</div>
+          <div class="bs-servico"><span>✦</span>Elaboração de documentos jurídicos</div>
+          <div class="bs-servico"><span>✦</span>Análise documental conforme a lei</div>
+          <div class="bs-servico"><span>✦</span>Triagem e encaminhamento judicial</div>
+        </div>
+        <div class="bs-contato">
+          <span class="bs-btn bs-btn-em-breve">📱 WhatsApp — Em breve</span>
+          <span class="bs-btn bs-btn-em-breve">✉️ E-mail — Em breve</span>
+        </div>
+        <div class="bs-aviso">⚠️ Não somos advogados. Atuamos exclusivamente em âmbito extrajudicial e orientação documental. Para demandas judiciais, contamos com parceria com escritório de advocacia.</div>
+      </div>
+
       <div id="welcome-grid">
         <div>
           <div id="versiculo-wrap">
