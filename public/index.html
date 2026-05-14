@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEXBRASIL — Sistema Jurídico Integrado</title>
+<title>Portal da Lei — Sistema Jurídico Integrado</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -500,7 +500,7 @@ a{color:var(--royal-lt);text-decoration:none;}
 <!-- AVISO -->
 <div id="aviso-overlay">
   <div id="aviso-box">
-    <h2>⚖️ Bem-vindo ao LEXBRASIL</h2>
+    <h2>⚖️ Bem-vindo ao Portal da Lei</h2>
     <p>Este site foi criado para facilitar estudos e pesquisas jurídicas.<br><br>Tentaremos manter o conteúdo o mais atualizado possível, mas <strong style="color:var(--accent)">confira sempre nos sites oficiais</strong> do governo e dos tribunais antes de tomar qualquer decisão.</p>
     <button id="aviso-btn" onclick="fecharAviso()">Entendido — Acessar o Sistema</button>
   </div>
@@ -512,7 +512,7 @@ a{color:var(--royal-lt);text-decoration:none;}
     <div class="logo-icone">
       <svg width="20" height="19" viewBox="0 0 60 56" fill="none"><rect x="28.5" y="4" width="3" height="44" rx="1.5" fill="#c8d8ff"/><rect x="10" y="15" width="40" height="2.5" rx="1.25" fill="#c8d8ff"/><circle cx="30" cy="4" r="3.5" fill="#c8a020"/><line x1="15" y1="17.5" x2="10" y2="28" stroke="#8aa0d0" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="17.5" x2="20" y2="28" stroke="#8aa0d0" stroke-width="1.5" stroke-linecap="round"/><path d="M8 28 Q15 32 22 28" stroke="#c8d8ff" stroke-width="2" fill="none" stroke-linecap="round"/><line x1="45" y1="17.5" x2="40" y2="28" stroke="#8aa0d0" stroke-width="1.5" stroke-linecap="round"/><line x1="45" y1="17.5" x2="50" y2="28" stroke="#8aa0d0" stroke-width="1.5" stroke-linecap="round"/><path d="M38 28 Q45 32 52 28" stroke="#c8d8ff" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="22" y="47" width="16" height="2.5" rx="1.25" fill="#c8d8ff"/><rect x="18" y="49.5" width="24" height="2.5" rx="1.25" fill="#a0b8e8"/></svg>
     </div>
-    <div><div id="logo-name">LEXBRASIL</div><div id="logo-sub">Sistema Jurídico Integrado</div></div>
+    <div><div id="logo-name">Portal da Lei</div><div id="logo-sub">Sistema Jurídico Integrado</div></div>
   </div>
   <button id="btn-menu-mobile" onclick="abrirNavMobile()">☰</button>
   <div id="srch">
@@ -549,7 +549,7 @@ a{color:var(--royal-lt);text-decoration:none;}
 <div id="nav-overlay" onclick="fecharNavMobile()"></div>
 <div id="nav-drawer">
   <div id="nav-drawer-hdr">
-    <span>⚖️ LEXBRASIL</span>
+    <span>⚖️ Portal da Lei</span>
     <button id="nav-drawer-close" onclick="fecharNavMobile()">✕</button>
   </div>
   <div id="nav-drawer-itens">
@@ -576,7 +576,7 @@ a{color:var(--royal-lt);text-decoration:none;}
 
 <!-- FOOTER -->
 <div id="footer">
-  <div>LEXBRASIL · Planalto · STF · STJ · TST · Consulte sempre um advogado habilitado</div>
+  <div>Portal da Lei · Planalto · STF · STJ · TST · Consulte sempre um advogado habilitado</div>
   <div id="footer-brand">Idealizado pelos acadêmicos Gércio B. S. Júnior e Rayane Biz Pramio · 2026 · Todos os direitos reservados</div>
 </div>
 
@@ -607,7 +607,7 @@ function abrirLogin(){
   modal.id="modal-login-wrap";
   modal.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px";
   modal.innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px 32px;max-width:360px;width:100%;text-align:center">
-    <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--accent);margin-bottom:6px">👤 Acessar o LEXBRASIL</div>
+    <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--accent);margin-bottom:6px">👤 Acessar o Portal da Lei</div>
     <div style="font-size:12px;color:var(--text-faint);margin-bottom:20px">Escolha seu tipo de acesso</div>
     <a href="/colaborador.html" style="display:block;background:var(--royal);color:#fff;padding:11px;border-radius:8px;font-weight:700;font-size:13px;margin-bottom:10px;text-decoration:none">👥 Área do Colaborador</a>
     <a href="/admin.html" style="display:block;background:transparent;border:1px solid var(--border2);color:var(--text-dim);padding:10px;border-radius:8px;font-size:12px;text-decoration:none">⚙️ Painel Administrativo</a>
@@ -700,9 +700,28 @@ function carregarSumulasBD(){
     _atualizarContadorSumulas();
     console.log("Súmulas carregadas:",SUMULAS.length);
   }).catch(e=>{
-    console.warn("Supabase indisponível:",e.message);
-    _sumulasCarregadas=true;
-    _sumulasPromise=null;
+    console.warn("Supabase erro:",e.message);
+    // Tentar novamente sem Content-Type (resolve alguns problemas de CORS)
+    return fetch(
+      `${_SUPA_URL}/rest/v1/sumulas?select=sid,numero,tribunal,tipo,nome,texto,analise,area,url&order=tribunal.asc,numero.asc&limit=300`,
+      {headers:{"apikey":_SUPA_KEY,"Authorization":"Bearer "+_SUPA_KEY}}
+    ).then(r=>r.json()).then(data=>{
+      const mapeado=(data||[]).map(s=>({
+        id:s.sid,area:s.area||"",numero:s.numero,nome:s.nome,
+        texto:s.texto,analise:s.analise||"",url:s.url||"",
+        tribunal:s.tribunal,tipo:s.tipo||"normal",
+        temas:[s.area||""].filter(Boolean)
+      }));
+      SUMULAS=mapeado;
+      SUMULAS_VIN=mapeado.filter(s=>s.tipo==="vinculante");
+      _sumulasCarregadas=true;
+      _atualizarContadorSumulas();
+      console.log("Súmulas carregadas (retry):",SUMULAS.length);
+    }).catch(e2=>{
+      console.warn("Supabase indisponível:",e2.message);
+      _sumulasCarregadas=true;
+      _sumulasPromise=null;
+    });
   });
   return _sumulasPromise;
 }
@@ -2073,14 +2092,14 @@ function mostrarSobre(){
   itemAtivo=null;
   document.getElementById("painel").innerHTML=`
   <div id="sobre-wrap">
-    <div class="sobre-titulo">Sobre o LEXBRASIL</div>
+    <div class="sobre-titulo">Sobre o Portal da Lei</div>
     <div class="sobre-deus">
       <h3>✝ A Deus, primeiramente.</h3>
       <p>Nada do que existe aqui seria possível sem Ele. Este projeto nasceu observando o exemplo que veio de cima — da vontade de servir ao próximo com o que nos foi dado aprender. Que cada consulta feita aqui, cada dúvida esclarecida e cada direito compreendido seja também uma forma de honrar a Ele, que é a fonte de toda sabedoria e justiça.</p>
       <em>"Porque d'Ele, por Ele e para Ele são todas as coisas." — Romanos 11:36</em>
     </div>
     <div class="sobre-bloco">
-      <p>O LEXBRASIL nasceu de uma ideia simples e poderosa: <strong>tornar o Direito acessível a todos</strong>. Criado por dois acadêmicos que acreditam que compreender a lei não deve ser privilégio de poucos, este sistema reúne normas, súmulas e jurisprudência de forma organizada, clara e gratuita.</p>
+      <p>O Portal da Lei nasceu de uma ideia simples e poderosa: <strong>tornar o Direito acessível a todos</strong>. Criado por dois acadêmicos que acreditam que compreender a lei não deve ser privilégio de poucos, este sistema reúne normas, súmulas e jurisprudência de forma organizada, clara e gratuita.</p>
     </div>
     <div class="sobre-rayane">
       <img class="rayane-foto" src="/rayane.png" alt="Rayane Biz Pramio" onerror="this.style.display='none'">
@@ -2103,7 +2122,7 @@ function renderWelcome(){
   const totalDH=DH.length;
   document.getElementById("painel").innerHTML=`
     <div id="welcome">
-      <div class="w-title">Consulta Jurídica LEXBRASIL</div>
+      <div class="w-title">Consulta Jurídica — Portal da Lei</div>
       <div class="w-sub">Normas, súmulas, jurisprudência e direitos humanos reunidos em um só lugar.</div>
       <div class="stats">
         <div class="stat" onclick="setSecao('norma',document.querySelectorAll('#filtros .fb')[1])"><div class="stat-ico">📜</div><div class="stat-n">${NORMAS.length}</div><div class="stat-l">Normas</div></div>
@@ -2133,7 +2152,7 @@ function renderWelcome(){
           <div class="bs-servico"><span>✦</span>Triagem e encaminhamento judicial</div>
         </div>
         <div class="bs-contato">
-          <a class="bs-btn bs-btn-wpp" href="https://wa.me/5527998089293?text=Olá!%20Vim%20pelo%20LEXBRASIL%20e%20gostaria%20de%20mais%20informações%20sobre%20os%20serviços%20da%20Biz%20%26%20Soares." target="_blank"><svg width="13" height="13" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</a>
+          <a class="bs-btn bs-btn-wpp" href="https://wa.me/5527998089293?text=Olá!%20Vim%20pelo%20Portal%20da%20Lei%20e%20gostaria%20de%20mais%20informações%20sobre%20os%20serviços%20da%20Biz%20%26%20Soares." target="_blank"><svg width="13" height="13" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</a>
           <span class="bs-btn bs-btn-em-breve">✉️ E-mail — Em breve</span>
         </div>
         <div class="bs-aviso">⚠️ Não somos advogados. Atuamos exclusivamente em âmbito extrajudicial e orientação documental. Para demandas judiciais, contamos com parceria com escritório de advocacia.</div>
@@ -2294,14 +2313,14 @@ function mostrarColabsPage(){
         <div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:24px;text-align:center;color:var(--text-faint)">
           <div style="font-size:36px;margin-bottom:12px">👥</div>
           <div style="font-family:'Playfair Display',serif;font-size:15px;margin-bottom:8px">Nenhum colaborador ativo ainda</div>
-          <div style="font-size:12px">Quer contribuir com o LEXBRASIL? <a href="/colaborador.html" style="color:var(--royal-lt)">Solicite acesso →</a></div>
+          <div style="font-size:12px">Quer contribuir com o Portal da Lei? <a href="/colaborador.html" style="color:var(--royal-lt)">Solicite acesso →</a></div>
         </div>
       </div>`;
       return;
     }
     let html=`<div id="det-wrap" style="max-width:720px">
       <div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:6px">👥 Colaboradores</div>
-      <div style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Conheça quem contribui com conteúdo jurídico para o LEXBRASIL. <a href="/colaborador.html" style="color:var(--royal-lt)">Quero contribuir →</a></div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Conheça quem contribui com conteúdo jurídico para o Portal da Lei. <a href="/colaborador.html" style="color:var(--royal-lt)">Quero contribuir →</a></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">`;
     html+=colabsLista.map(c=>{
       const ini=c.nome?c.nome[0].toUpperCase():"C";
@@ -2460,7 +2479,7 @@ function renderMenuLinksPage(){
     </div>`;
 
   document.getElementById("painel").innerHTML=
-    `<div style="max-width:900px"><div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">🔗 Links Úteis Jurídicos</div><div id="links-grid">${col1}${col2}${col3}</div><div id="links-footer">🔗 Links Úteis LEXBRASIL · Clique em qualquer link para abrir em nova aba</div></div>`;
+    `<div style="max-width:900px"><div style="font-family:'Playfair Display',serif;font-size:21px;color:var(--accent);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">🔗 Links Úteis Jurídicos</div><div id="links-grid">${col1}${col2}${col3}</div><div id="links-footer">🔗 Links Úteis — Portal da Lei · Clique em qualquer link para abrir em nova aba</div></div>`;
 }
 </script>
 </body>
