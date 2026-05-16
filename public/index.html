@@ -956,10 +956,18 @@ window.onload=async()=>{
 // ── CONTADOR ────────────────────────────────────────────
 async function registrarAcesso(){
   const hoje=new Date().toDateString();
-  if(sessionStorage.getItem("lex_acesso")!==hoje){sessionStorage.setItem("lex_acesso",hoje);fetch("/api/acesso",{method:"POST"}).catch(()=>{});}
-  try{const r=await fetch("/api/acesso");if(r.ok){const d=await r.json();atualizarContador(d.total||0);}
-  else{const l=parseInt(localStorage.getItem("lex_cnt")||"0")+1;localStorage.setItem("lex_cnt",l);atualizarContador(l);}}
-  catch(e){const l=parseInt(localStorage.getItem("lex_cnt")||"0")+1;localStorage.setItem("lex_cnt",l);atualizarContador(l);}
+  // Contador local começando em 91 (base real de acessos)
+  const BASE_ACESSOS=91;
+  const hoje2=new Date().toDateString();
+  if(sessionStorage.getItem("lex_acesso")!==hoje2){
+    sessionStorage.setItem("lex_acesso",hoje2);
+    const atual=parseInt(localStorage.getItem("lex_cnt")||BASE_ACESSOS);
+    localStorage.setItem("lex_cnt", atual+1);
+  }
+  const total=parseInt(localStorage.getItem("lex_cnt")||BASE_ACESSOS);
+  atualizarContador(total);
+  // Tenta também a API mas não depende dela
+  try{const r=await fetch("/api/acesso");if(r.ok){const d=await r.json();if(d.total>total)atualizarContador(d.total);}}catch(e){}
 }
 function atualizarContador(n){document.getElementById("cnt-num").textContent=n.toLocaleString("pt-BR");}
 
