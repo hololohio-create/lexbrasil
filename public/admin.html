@@ -172,12 +172,25 @@ function mostrarMsg(id,tipo,texto){
   el.className="msg "+tipo;el.innerHTML=texto;el.style.display="block";
 }
 
-function salvarAuth(){
+async function salvarAuth(){
   const s=document.getElementById("senha").value.trim();
   const k=document.getElementById("apikey").value.trim();
   if(!s){mostrarMsg("msg-auth","err","Informe a senha admin.");return;}
-  if(!k||!k.startsWith("sk-")){mostrarMsg("msg-auth","err","API key inválida.");return;}
-  senhaAdmin=s;apiAdmin=k;
+  mostrarMsg("msg-auth","load","🔄 Verificando...");
+  // Verificar senha pelo Supabase
+  try{
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/meta?select=valor&chave=eq.admin_senha&limit=1`,
+      {headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0"}}
+    );
+    const d=await r.json();
+    if(!d||!d.length||d[0].valor!==s){
+      mostrarMsg("msg-auth","err","❌ Senha incorreta.");return;
+    }
+  }catch(e){
+    mostrarMsg("msg-auth","err","❌ Erro ao verificar senha. Tente novamente.");return;
+  }
+  senhaAdmin=s;apiAdmin=k||"sk-placeholder";
   ss.setItem("adm_s",s);ss.setItem("adm_k",k);
   document.getElementById("login-secao").style.opacity=".5";
   document.getElementById("painel-admin").style.display="block";
@@ -236,18 +249,33 @@ async function cadastrarColab(){
   const cargo=document.getElementById("colab-cargo").value.trim();
   if(!nome||!user||!senha){mostrarMsg("msg-colab-cad","err","Preencha nome, usuário e senha.");return;}
   try{
-    const r=await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"cadastrar",nome,cargo,usuario:user,senha})});
-    const d=await r.json();
-    if(!r.ok||d.error)throw new Error(d.error||"Erro");
-    mostrarMsg("msg-colab-cad","ok",`✅ Colaborador <strong>${nome}</strong> cadastrado! Login: ${user}`);
-    carregarColabsAdmin();
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colaboradores`,
+      {method:"POST",
+      headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Content-Type":"application/json","Prefer":"return=representation"},
+      body:JSON.stringify({nome,cargo,usuario:user,senha,ativo:true})}
+    );
+    if(r.ok||r.status===201){
+      mostrarMsg("msg-colab-cad","ok",`✅ Colaborador <strong>${nome}</strong> cadastrado! Login: ${user}`);
+      document.getElementById("colab-nome").value="";
+      document.getElementById("colab-cargo").value="";
+      document.getElementById("colab-user").value="";
+      document.getElementById("colab-senha").value="";
+      carregarColabsAdmin();
+    }else{
+      const err=await r.json();
+      throw new Error(err.message||JSON.stringify(err));
+    }
   }catch(e){mostrarMsg("msg-colab-cad","err","❌ "+e.message);}
 }
 
 async function carregarColabsAdmin(){
   const el=document.getElementById("lista-colabs-admin");
   try{
-    const r=await fetch("/api/admin-colab?lista=1",{headers:{"x-admin-senha":senhaAdmin}});
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colaboradores?select=id,nome,cargo,usuario,ativo,criado_em&order=criado_em.desc`,
+      {headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0"}}
+    );
     const d=await r.json();
     if(!r.ok)throw new Error();
     const colabs=d.colabs||[];
