@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEXBRASIL — Área do Colaborador</title>
+<title>Portal da Lei — Área do Colaborador</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07090f;--bg2:#0f1422;--bg3:#141929;--border:rgba(65,105,200,.18);--border2:rgba(65,105,200,.4);--royal:#2a4fab;--royal-lt:#3a62cc;--accent:#c8d8ff;--text:#d4dcf0;--text-dim:#6878a0;--text-faint:#2e3a55;--green:#3a9a5c;--gold:#c8a020;}
@@ -50,9 +50,9 @@ input:focus,textarea:focus{border-color:var(--border2);}
 </head>
 <body>
 <div class="page">
-  <a href="/" id="back">← Voltar ao LEXBRASIL</a>
+  <a href="/" id="back">← Voltar ao Portal da Lei</a>
   <div class="logo-area">
-    <div class="logo-nome">LEXBRASIL</div>
+    <div class="logo-nome">Portal da Lei</div>
     <div class="logo-sub">Área do Colaborador</div>
   </div>
 
@@ -93,6 +93,20 @@ input:focus,textarea:focus{border-color:var(--border2);}
     </div>
     <button class="btn-p" id="btn-cad" onclick="solicitarCadastro()">Enviar Solicitação</button>
     <div class="msg" id="msg-cad"></div>
+  </div>
+
+  <!-- TROCA DE SENHA OBRIGATÓRIA -->
+  <div id="sec-trocar-senha" style="display:none">
+    <div class="secao ativa">
+      <h2>🔑 Defina sua nova senha</h2>
+      <div class="info-box">Este é seu primeiro acesso. Por segurança, defina uma senha pessoal antes de continuar.</div>
+      <label>Nova senha</label>
+      <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres">
+      <label>Confirmar nova senha</label>
+      <input type="password" id="conf-senha" placeholder="Repita a senha">
+      <button class="btn-p" onclick="salvarNovaSenha()">Salvar e Entrar</button>
+      <div class="msg" id="msg-nova-senha"></div>
+    </div>
   </div>
 
   <!-- ÁREA LOGADA -->
@@ -152,11 +166,24 @@ async function fazerLogin(){
   if(!user||!senha){mostrarMsg("msg-login","err","Preencha usuário e senha.");return;}
   mostrarMsg("msg-login","load","Verificando...");
   try{
-    const r=await fetch("/api/colab-publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"login",usuario:user,senha})});
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colaboradores?select=id,nome,cargo,usuario,senha,ativo,bloqueado,primeiro_acesso&usuario=eq.${user}&limit=1`,
+      {headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0"}}
+    );
     const d=await r.json();
-    if(!r.ok||d.error)throw new Error(d.error||"Usuário ou senha inválidos.");
-    usuarioLogado={...d.colab,usuario:user,senha};
-    sessionStorage.setItem("colab_user",user);sessionStorage.setItem("colab_senha",senha);
+    if(!d||!d.length)throw new Error("Usuário não encontrado.");
+    const colab=d[0];
+    if(colab.bloqueado)throw new Error("Conta bloqueada. Contate o administrador.");
+    if(!colab.ativo)throw new Error("Conta inativa. Aguarde aprovação.");
+    if(colab.senha!==senha)throw new Error("Senha incorreta.");
+    usuarioLogado={...colab,usuario:user};
+    sessionStorage.setItem("colab_user",user);
+    sessionStorage.setItem("colab_senha",senha);
+    // Primeiro acesso — forçar troca de senha
+    if(colab.primeiro_acesso){
+      mostrarTrocarSenha();
+      return;
+    }
     mostrarAreaLogada();
   }catch(e){mostrarMsg("msg-login","err","❌ "+e.message);}
 }
@@ -203,10 +230,25 @@ async function publicar(){
   const btn=document.getElementById("btn-pub");btn.disabled=true;btn.textContent="Publicando...";
   mostrarMsg("msg-pub","load","Publicando...");
   try{
-    const r=await fetch("/api/colab-publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"publicar",usuario:usuarioLogado.usuario,senha:usuarioLogado.senha,titulo,tipo:document.getElementById("p-tipo").value,texto,dias:parseInt(document.getElementById("p-dias").value)||3})});
-    const d=await r.json();
-    if(!r.ok||d.error)throw new Error(d.error||"Erro ao publicar");
-    mostrarMsg("msg-pub","ok","✅ Publicado com sucesso! Já aparece na tela inicial do LEXBRASIL.");
+    const dias=parseInt(document.getElementById("p-dias").value)||3;
+    const expira=new Date();expira.setDate(expira.getDate()+dias);
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colabs_conteudo`,
+      {method:"POST",
+      headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Content-Type":"application/json","Prefer":"return=representation"},
+      body:JSON.stringify({
+        colab_id:usuarioLogado.id,
+        autor:usuarioLogado.nome,
+        cargo:usuarioLogado.cargo||"",
+        titulo,
+        tipo:document.getElementById("p-tipo").value,
+        texto,
+        expira_em:expira.toISOString(),
+        fixada:false
+      })}
+    );
+    if(!r.ok)throw new Error("Erro ao publicar");
+    mostrarMsg("msg-pub","ok","✅ Publicado com sucesso! Já aparece na tela inicial do Portal da Lei.");
     document.getElementById("p-titulo").value="";document.getElementById("p-texto").value="";
     carregarMinhasPubs();
   }catch(e){mostrarMsg("msg-pub","err","❌ "+e.message);}
@@ -216,25 +258,58 @@ async function publicar(){
 async function carregarMinhasPubs(){
   const el=document.getElementById("minhas-pubs");
   try{
-    const r=await fetch(`/api/colab-publicar?acao=minhas&usuario=${usuarioLogado.usuario}&senha=${usuarioLogado.senha}`);
-    const d=await r.json();
-    const pubs=d.publicacoes||[];
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colabs_conteudo?select=id,titulo,tipo,criado_em,fixada&colab_id=eq.${usuarioLogado.id}&order=criado_em.desc`,
+      {headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0"}}
+    );
+    const pubs=await r.json();
     if(!pubs.length){el.innerHTML='<div style="color:var(--text-faint);font-size:12px">Você ainda não fez nenhuma publicação.</div>';return;}
     el.innerHTML=pubs.map(p=>{
       const data=p.criado_em?new Date(p.criado_em).toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"}):"";
       return`<div class="pub-item"><div class="pub-info"><div class="pub-titulo">${p.titulo}</div><div class="pub-meta">${p.tipo} · 📅 ${data}${p.fixada?" · 📌 Fixada":""}</div></div><button class="btn-rem" onclick="removerPub(${p.id})">Remover</button></div>`;
     }).join("");
-  }catch(e){el.innerHTML='<div style="color:var(--text-faint);font-size:12px">Erro ao carregar publicações.</div>';}
+  } catch(e){el.innerHTML='<div style="color:var(--text-faint);font-size:12px">Erro ao carregar publicações.</div>';}
 }
 
 async function removerPub(id){
   if(!confirm("Remover esta publicação?"))return;
   try{
-    const r=await fetch("/api/colab-publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({acao:"remover",usuario:usuarioLogado.usuario,senha:usuarioLogado.senha,id})});
-    const d=await r.json();
-    if(!r.ok||d.error)throw new Error(d.error);
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colabs_conteudo?id=eq.${id}&colab_id=eq.${usuarioLogado.id}`,
+      {method:"DELETE",headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0"}}
+    );
+    if(!r.ok)throw new Error("Erro ao remover");
     carregarMinhasPubs();
   }catch(e){alert("Erro: "+e.message);}
+}
+
+function mostrarTrocarSenha(){
+  document.getElementById("abas-login").style.display="none";
+  document.getElementById("sec-login").style.display="none";
+  document.getElementById("sec-trocar-senha").style.display="block";
+}
+
+async function salvarNovaSenha(){
+  const nova=document.getElementById("nova-senha").value.trim();
+  const conf=document.getElementById("conf-senha").value.trim();
+  if(!nova||nova.length<6){mostrarMsg("msg-nova-senha","err","Senha deve ter pelo menos 6 caracteres.");return;}
+  if(nova!==conf){mostrarMsg("msg-nova-senha","err","As senhas não coincidem.");return;}
+  mostrarMsg("msg-nova-senha","load","Salvando...");
+  try{
+    const r=await fetch(
+      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colaboradores?id=eq.${usuarioLogado.id}`,
+      {method:"PATCH",
+      headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Content-Type":"application/json"},
+      body:JSON.stringify({senha:nova,primeiro_acesso:false})}
+    );
+    if(!r.ok)throw new Error("Erro ao salvar.");
+    usuarioLogado.senha=nova;
+    usuarioLogado.primeiro_acesso=false;
+    sessionStorage.setItem("colab_senha",nova);
+    document.getElementById("sec-trocar-senha").style.display="none";
+    mostrarMsg("msg-nova-senha","ok","✅ Senha salva!");
+    mostrarAreaLogada();
+  }catch(e){mostrarMsg("msg-nova-senha","err","❌ "+e.message);}
 }
 
 // Auto-login se tiver sessão salva

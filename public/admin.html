@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEXBRASIL — Admin</title>
+<title>Portal da Lei — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#07090f;--bg2:#0f1422;--bg3:#141929;--border:rgba(65,105,200,.18);--border2:rgba(65,105,200,.4);--royal:#2a4fab;--royal-lt:#3a62cc;--accent:#c8d8ff;--text:#d4dcf0;--text-dim:#6878a0;--text-faint:#2e3a55;--green:#3a9a5c;--gold:#c8a020;--red:#aa4a4a;}
@@ -52,7 +52,7 @@ code{display:block;background:rgba(0,0,0,.4);padding:10px 13px;border-radius:6px
 <body>
 <div class="page">
   <a href="/" id="back">← Voltar ao sistema</a>
-  <h1>⚙️ Painel do Administrador — LEXBRASIL</h1>
+  <h1>⚙️ Painel do Administrador — Portal da Lei</h1>
   <div class="sub">Acesso restrito ao administrador. Todas as ações aqui afetam o site público.</div>
 
   <!-- LOGIN -->
@@ -120,7 +120,7 @@ code{display:block;background:rgba(0,0,0,.4);padding:10px 13px;border-radius:6px
     <!-- 3. COLABORADORES -->
     <div class="secao">
       <h2>👥 Gerenciar Colaboradores</h2>
-      <div class="info-box">Colaboradores autorizados podem publicar artigos, dicas e informativos diretamente na tela inicial do LEXBRASIL. Você pode remover qualquer publicação a qualquer momento.</div>
+      <div class="info-box">Colaboradores autorizados podem publicar artigos, dicas e informativos diretamente na tela inicial do Portal da Lei. Você pode remover qualquer publicação a qualquer momento.</div>
 
       <h3 style="font-size:13px;color:var(--text-dim);margin-bottom:10px">➕ Cadastrar Novo Colaborador</h3>
       <div class="row">
@@ -293,7 +293,7 @@ async function carregarColabsAdmin(){
 
     if(ativos.length){
       html+=`<div style="font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Colaboradores Ativos (${ativos.length}) — <a href="/colaborador" target="_blank" style="color:var(--royal-lt)">Página do colaborador →</a></div>`;
-      html+=ativos.map(c=>`<div class="colab-item"><div class="colab-info"><div class="colab-nome">${c.nome} <span class="tag-ativo">ativo</span></div><div class="colab-meta">${c.cargo||""} ${c.instituicao?"· "+c.instituicao:""} · login: <code style="display:inline;padding:1px 5px;font-size:10px;border-radius:3px">${c.usuario}</code></div></div><button class="btn-r" onclick="removerColab(${c.id},'colab')">Remover</button></div>`).join("");
+      html+=ativos.map(c=>`<div class="colab-item"><div class="colab-info"><div class="colab-nome">${c.nome} <span class="${c.bloqueado?'tag-inativo':'tag-ativo'}">${c.bloqueado?'bloqueado':'ativo'}</span>${c.primeiro_acesso?' <span class="tag-inativo">⚠️ 1º acesso</span>':''}</div><div class="colab-meta">${c.cargo||""} · login: <code style="display:inline;padding:1px 5px;font-size:10px;border-radius:3px">${c.usuario}</code></div></div><div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap"><button class="btn-s" style="font-size:10px;padding:4px 8px" onclick="resetarSenhaColab(${c.id},'${c.nome}')">🔑 Resetar</button><button class="btn-s" style="font-size:10px;padding:4px 8px;background:${c.bloqueado?'rgba(58,154,92,.15)':'rgba(200,160,32,.1)'};border-color:${c.bloqueado?'rgba(58,154,92,.3)':'rgba(200,160,32,.3)'};color:${c.bloqueado?'#6abf8a':'#c8a020'}" onclick="bloquearColab(${c.id},'${c.nome}',${c.bloqueado||false})">${c.bloqueado?'🔓 Desbloquear':'🔒 Bloquear'}</button><button class="btn-r" onclick="removerColab(${c.id},'colab')">🗑️ Remover</button></div></div>`).join("");
     }
 
     if(pubs.length){
@@ -333,6 +333,28 @@ async function fixarPub(id,fixada){
     await fetch("/api/admin-colab",{method:"POST",headers:{"Content-Type":"application/json","x-admin-senha":senhaAdmin},body:JSON.stringify({acao:"fixar",id,fixada})});
     carregarColabsAdmin();
   }catch(e){alert("Erro ao fixar: "+e.message);}
+}
+
+async function resetarSenhaColab(id,nome){
+  if(!confirm(`Resetar senha de ${nome} para "Portal2024"?\nEle deverá trocar no próximo acesso.`))return;
+  try{
+    const r=await fetch(`https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colaboradores?id=eq.${id}`,
+      {method:"PATCH",headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Content-Type":"application/json"},
+      body:JSON.stringify({senha:"Portal2024",primeiro_acesso:true})});
+    if(r.ok){mostrarMsg("msg-colab-cad","ok",`✅ Senha de ${nome} resetada para "Portal2024".`);carregarColabsAdmin();}
+    else throw new Error();
+  }catch(e){mostrarMsg("msg-colab-cad","err","❌ Erro ao resetar senha.");}
+}
+
+async function bloquearColab(id,nome,bloqueado){
+  if(!confirm(`${bloqueado?"Desbloquear":"Bloquear"} a conta de ${nome}?`))return;
+  try{
+    const r=await fetch(`https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/colaboradores?id=eq.${id}`,
+      {method:"PATCH",headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Content-Type":"application/json"},
+      body:JSON.stringify({bloqueado:!bloqueado})});
+    if(r.ok){mostrarMsg("msg-colab-cad","ok",`✅ Conta ${bloqueado?"desbloqueada":"bloqueada"}.`);carregarColabsAdmin();}
+    else throw new Error();
+  }catch(e){mostrarMsg("msg-colab-cad","err","❌ Erro.");}
 }
 
 async function removerColab(id,tipo){
