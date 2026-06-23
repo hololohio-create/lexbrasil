@@ -494,6 +494,7 @@ a{color:var(--royal-lt);text-decoration:none;}
   #painel{padding:12px 10px;}
 }
 </style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9098816141602516" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -957,31 +958,17 @@ window.onload=async()=>{
 async function registrarAcesso(){
   const hoje=new Date().toDateString();
   // Contador local começando em 91 (base real de acessos)
-  // Contador global via Supabase
-  const _hoje=new Date().toDateString();
-  const _jaContou=sessionStorage.getItem("pd_acesso")===_hoje;
-  try{
-    const _r=await fetch(
-      `https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/meta?select=valor&chave=eq.acessos&limit=1`,
-      {headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0"}}
-    );
-    const _d=await _r.json();
-    // Usa o valor do banco — NUNCA sobrescreve com valor fixo
-    let _total=parseInt((_d&&_d[0]&&_d[0].valor)?_d[0].valor:"0")||0;
-    if(!_jaContou){
-      sessionStorage.setItem("pd_acesso",_hoje);
-      _total++;
-      fetch(`https://wyoagpcitsaijuetvzja.supabase.co/rest/v1/meta?chave=eq.acessos`,
-        {method:"PATCH",
-        headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b2FncGNpdHNhaWp1ZXR2emphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MTAyMDksImV4cCI6MjA4OTk4NjIwOX0.WDgyp4pAm7vk1Sab0lM6AtTUGOu0KP9OYJI9-T5YFp0","Content-Type":"application/json"},
-        body:JSON.stringify({valor:String(_total)})}
-      ).catch(()=>{});
-    }
-    atualizarContador(_total);
-  }catch(e){
-    // Fallback local — não sobrescreve o banco
-    atualizarContador(parseInt(localStorage.getItem("pd_cnt")||"0")||0);
+  const BASE_ACESSOS=91;
+  const hoje2=new Date().toDateString();
+  if(sessionStorage.getItem("lex_acesso")!==hoje2){
+    sessionStorage.setItem("lex_acesso",hoje2);
+    const atual=parseInt(localStorage.getItem("lex_cnt")||BASE_ACESSOS);
+    localStorage.setItem("lex_cnt", atual+1);
   }
+  const total=parseInt(localStorage.getItem("lex_cnt")||BASE_ACESSOS);
+  atualizarContador(total);
+  // Tenta também a API mas não depende dela
+  try{const r=await fetch("/api/acesso");if(r.ok){const d=await r.json();if(d.total>total)atualizarContador(d.total);}}catch(e){}
 }
 function atualizarContador(n){document.getElementById("cnt-num").textContent=n.toLocaleString("pt-BR");}
 
